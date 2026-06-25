@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+/* Design tokens → become Tailwind utilities (bg-paper, text-ink, text-accent, border-line…) */
+@theme {
+  --color-paper: oklch(0.975 0.006 75);
+  --color-ink: oklch(0.20 0.012 75);
+  --color-muted: oklch(0.52 0.012 75);
+  --color-line: oklch(0.88 0.008 75);
+  --color-accent: oklch(0.62 0.18 42);
+  --color-accent-soft: oklch(0.93 0.045 55);
+}
+
+/* Fonts loaded via next/font (variables set on <html>) → mapped to font-display / font-body / font-mono */
+@theme inline {
+  --font-display: var(--ff-display);
+  --font-body: var(--ff-body);
+  --font-mono: var(--ff-mono);
+  --font-sans: var(--ff-body);
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body), system-ui, sans-serif;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-accent-soft);
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Page-load stagger: runs once on mount. Delays set inline per element. */
+  .reveal {
+    animation: reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  /* Scroll reveal: only where supported, so unsupported browsers show content normally. */
+  @supports (animation-timeline: view()) {
+    .reveal-scroll {
+      opacity: 0;
+      animation: reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 28%;
+    }
+  }
+}
