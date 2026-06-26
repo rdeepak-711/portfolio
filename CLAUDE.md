@@ -7,7 +7,7 @@ Context for any AI session working in this repo. Read before editing.
 ## What this is
 Personal portfolio site for **Deepak Ramesh — AI Engineer · LLM Pipelines & Automation** (Chennai, remote). Audience: recruiters, hiring managers, and VC talent/platform teams at AI-native startups. Job: convey real depth and get a reply. The build plan lives in `plan.html` (open in a browser).
 
-- **Live:** https://portfolio-jade-seven-64.vercel.app
+- **Live:** https://rdeepak.vercel.app
 - **Repo:** github.com/rdeepak-711/portfolio (public)
 - **Local:** `~/Desktop/portfolio`
 
@@ -22,7 +22,7 @@ npm run build        # verify it compiles before deploying
 # deploy to production (CLI is authed; scope is required in non-interactive mode):
 npx vercel@latest --prod --yes --scope onlyforthe20thcentury-5711s-projects
 ```
-Notes: project is NOT git-connected on Vercel, so `git push` does NOT auto-deploy — run the deploy command above. Vercel "Deployment Protection" is OFF (the site must be publicly viewable — never re-enable it). Stable production alias: `portfolio-jade-seven-64.vercel.app`.
+Notes: project is NOT git-connected on Vercel, so `git push` does NOT auto-deploy — run the deploy command above. Vercel "Deployment Protection" is OFF (the site must be publicly viewable — never re-enable it). Stable production alias: `rdeepak.vercel.app`.
 
 ## Design system — "build log"
 Distinctive, document-like, anti-AI-slop. Do NOT drift toward generic templates.
