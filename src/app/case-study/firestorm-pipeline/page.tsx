@@ -2,9 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Case study — Scaling site production 5→32 in 4 weeks · Deepak Ramesh",
+  title: "Scaling site production 5 → 32 in 4 weeks · Deepak Ramesh",
   description:
     "How I built a multi-agent content pipeline on Celery + Redis that scaled WordPress site production from 5 to 32 sites in 4 weeks — and treated LLM output as untrusted by default.",
+  openGraph: {
+    title: "Scaling site production 5 → 32 in 4 weeks",
+    description:
+      "The multi-agent content pipeline — the single-agent failure that forced the split, the Celery/Redis backbone, and treating LLM output as untrusted.",
+    type: "article",
+  },
 };
 
 function H({ no, children }: { no: string; children: React.ReactNode }) {

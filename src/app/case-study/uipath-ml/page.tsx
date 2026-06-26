@@ -2,9 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Case study — Classifying 10K+ emails a month with RPA + ML · Deepak Ramesh",
+  title: "Classifying 10K+ emails a month with RPA + ML · Deepak Ramesh",
   description:
     "How I trained and deployed a Communications-Mining model at UiPath, wired it into SAP and ServiceNow, and lifted enterprise workflow throughput by 70%.",
+  openGraph: {
+    title: "Classifying 10K+ emails a month with RPA + ML",
+    description:
+      "Training and deploying a Communications-Mining model, wiring it into SAP and ServiceNow, and lifting workflow throughput 70%.",
+    type: "article",
+  },
 };
 
 function H({ no, children }: { no: string; children: React.ReactNode }) {
