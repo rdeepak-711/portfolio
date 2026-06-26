@@ -66,7 +66,7 @@ const EXPERIENCE: Role[] = [
       "Built an async job queue (Celery + Redis) — every long task runs as a durable worker with retry policies, exponential backoff, and dead-letter queues. Treats LLM output as untrusted: structured-output validation, retries on malformed responses, human gates where AI is least reliable.",
       "Built an internal contact-management tool (React + FastAPI) aggregating enquiries from 40+ sites with a Gmail-integrated triage interface. Own containerization and CI/CD — Docker, Google Cloud Build, deployed on GCP.",
     ],
-    caseStudy: "/case-study",
+    caseStudy: "/case-study/firestorm-pipeline",
   },
   {
     title: "Associate RPA Developer",
@@ -77,6 +77,7 @@ const EXPERIENCE: Role[] = [
       "Integrated classification outputs with SAP and ServiceNow for downstream routing and validation; redesigned exception handling and routing logic to improve workflow throughput by 70%.",
       "Implemented UiPath Computer Vision for remote-desktop automation — extraction and form-filling across legacy enterprise interfaces.",
     ],
+    caseStudy: "/case-study/uipath-ml",
   },
 ];
 
@@ -157,6 +158,7 @@ export default function Home() {
             <a href="#work" className="transition-colors hover:text-accent">Work</a>
             <a href="#experience" className="transition-colors hover:text-accent">Experience</a>
             <a href="#stack" className="transition-colors hover:text-accent">Stack</a>
+            <a href="#writing" className="transition-colors hover:text-accent">Writing</a>
             <a href="#contact" className="transition-colors hover:text-accent">Contact</a>
             <a
               href="/deepak-ramesh-resume.pdf"
@@ -344,9 +346,45 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Writing */}
+      <section id="writing" className="scroll-mt-16 border-t border-line py-20 sm:py-28">
+        <SectionLabel no="05">Writing &amp; Case Studies</SectionLabel>
+        <div className="reveal-scroll mt-10 flex flex-col gap-8">
+          {[
+            {
+              no: "01",
+              title: "Scaling site production 5 → 32 in 4 weeks",
+              href: "/case-study/firestorm-pipeline",
+              blurb:
+                "The multi-agent content pipeline — the single-agent failure that forced the split, the async backbone, and treating LLM output as untrusted by default.",
+            },
+            {
+              no: "02",
+              title: "Classifying 10K+ emails a month with RPA + ML",
+              href: "/case-study/uipath-ml",
+              blurb:
+                "Training and deploying a Communications-Mining model at UiPath, wiring it into SAP and ServiceNow, and lifting workflow throughput 70%.",
+            },
+          ].map((w) => (
+            <Link key={w.no} href={w.href} className="group block max-w-[66ch]">
+              <div className="flex items-baseline gap-3">
+                <span className="font-mono text-sm text-accent">{w.no}</span>
+                <h3 className="font-display text-xl font-semibold tracking-[-0.02em] transition-colors group-hover:text-accent">
+                  {w.title}
+                </h3>
+              </div>
+              <p className="mt-2 pl-[1.7rem] text-muted">{w.blurb}</p>
+            </Link>
+          ))}
+          <p className="font-mono text-xs text-muted">
+            More notes on LLM pipelines, agents, and evals — as I ship.
+          </p>
+        </div>
+      </section>
+
       {/* Contact */}
       <section id="contact" className="scroll-mt-16 border-t border-line py-20 sm:py-28">
-        <SectionLabel no="05">Contact</SectionLabel>
+        <SectionLabel no="06">Contact</SectionLabel>
         <div className="reveal-scroll mt-10">
           <p className="max-w-[26ch] font-display text-[clamp(1.7rem,5.5vw,2.6rem)] font-semibold leading-[1.08] tracking-[-0.02em]">
             Building something AI-native? Let&apos;s talk.
