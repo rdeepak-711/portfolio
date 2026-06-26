@@ -105,9 +105,33 @@ function SectionLabel({ no, children }: { no: string; children: React.ReactNode 
 
 export default function Home() {
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 sm:px-10">
-      {/* Hero */}
-      <section className="flex min-h-screen flex-col justify-center py-24">
+    <>
+      <header className="sticky top-0 z-50 border-b border-line bg-paper">
+        <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-3.5 sm:px-10">
+          <a
+            href="#top"
+            className="font-mono text-sm font-medium text-ink transition-colors hover:text-accent"
+          >
+            Deepak Ramesh
+          </a>
+          <nav className="hidden gap-7 font-mono text-xs uppercase tracking-[0.1em] text-muted sm:flex">
+            <a href="#work" className="transition-colors hover:text-accent">Work</a>
+            <a href="#experience" className="transition-colors hover:text-accent">Experience</a>
+            <a href="#stack" className="transition-colors hover:text-accent">Stack</a>
+            <a href="#contact" className="transition-colors hover:text-accent">Contact</a>
+          </nav>
+          <a
+            href="#contact"
+            className="font-mono text-xs uppercase tracking-[0.1em] text-accent sm:hidden"
+          >
+            Contact ↗
+          </a>
+        </div>
+      </header>
+
+      <main className="mx-auto w-full max-w-5xl px-6 sm:px-10">
+        {/* Hero */}
+        <section id="top" className="flex min-h-[calc(100svh-3.5rem)] flex-col justify-center py-24">
         <p
           className="reveal font-mono text-[0.72rem] uppercase tracking-[0.18em] text-accent sm:text-[0.78rem]"
           style={{ animationDelay: "0ms" }}
@@ -155,7 +179,7 @@ export default function Home() {
       </section>
 
       {/* Selected Work */}
-      <section className="border-t border-line py-20 sm:py-28">
+      <section id="work" className="scroll-mt-16 border-t border-line py-20 sm:py-28">
         <SectionLabel no="01">Selected Work</SectionLabel>
         <div className="mt-12 flex flex-col gap-16 sm:gap-20">
           {PROJECTS.map((p) => (
@@ -191,7 +215,7 @@ export default function Home() {
       </section>
 
       {/* Experience */}
-      <section className="border-t border-line py-20 sm:py-28">
+      <section id="experience" className="scroll-mt-16 border-t border-line py-20 sm:py-28">
         <SectionLabel no="02">Experience</SectionLabel>
         <div className="mt-12 flex flex-col gap-14 sm:gap-16">
           {EXPERIENCE.map((r) => (
@@ -222,7 +246,7 @@ export default function Home() {
       </section>
 
       {/* Stack */}
-      <section className="border-t border-line py-20 sm:py-28">
+      <section id="stack" className="scroll-mt-16 border-t border-line py-20 sm:py-28">
         <SectionLabel no="03">Stack</SectionLabel>
         <dl className="reveal-scroll mt-12 flex flex-col">
           {SKILLS.map((s) => (
@@ -264,7 +288,7 @@ export default function Home() {
       </section>
 
       {/* Contact */}
-      <section className="border-t border-line py-20 sm:py-28">
+      <section id="contact" className="scroll-mt-16 border-t border-line py-20 sm:py-28">
         <SectionLabel no="05">Contact</SectionLabel>
         <div className="reveal-scroll mt-10">
           <p className="max-w-[26ch] font-display text-[clamp(1.7rem,5.5vw,2.6rem)] font-semibold leading-[1.08] tracking-[-0.02em]">
@@ -292,6 +316,7 @@ export default function Home() {
           <span>built with Next.js · 2026</span>
         </div>
       </footer>
-    </main>
+      </main>
+    </>
   );
 }

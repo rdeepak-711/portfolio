@@ -43,6 +43,10 @@ body {
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+
   /* Page-load stagger: runs once on mount. Delays set inline per element. */
   .reveal {
     animation: reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
