@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import SectionNav from "./section-nav";
 
 const HERO_LINKS = [
   { label: "Email", href: "mailto:deepakrameshh@gmail.com" },
@@ -154,21 +155,7 @@ export default function Home() {
           >
             Deepak Ramesh
           </a>
-          <nav className="hidden gap-7 font-mono text-xs uppercase tracking-[0.1em] text-muted sm:flex">
-            <a href="#work" className="transition-colors hover:text-accent">Work</a>
-            <a href="#experience" className="transition-colors hover:text-accent">Experience</a>
-            <a href="#stack" className="transition-colors hover:text-accent">Stack</a>
-            <a href="#writing" className="transition-colors hover:text-accent">Writing</a>
-            <a href="#contact" className="transition-colors hover:text-accent">Contact</a>
-            <a
-              href="/deepak-ramesh-resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-accent transition-opacity hover:opacity-70"
-            >
-              Résumé ↗
-            </a>
-          </nav>
+          <SectionNav />
           <a
             href="#contact"
             className="font-mono text-xs uppercase tracking-[0.1em] text-accent sm:hidden"
