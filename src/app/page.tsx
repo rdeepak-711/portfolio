@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 const HERO_LINKS = [
   { label: "Email", href: "mailto:deepakrameshh@gmail.com" },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/rdeepak/" },
@@ -18,6 +20,7 @@ type Project = {
   blurb: string;
   stack: string[];
   links: { label: string; href: string }[];
+  image?: { src: string; w: number; h: number; domain: string; href: string };
 };
 
 const PROJECTS: Project[] = [
@@ -29,6 +32,7 @@ const PROJECTS: Project[] = [
       "A multi-tenant WhatsApp booking SaaS for salons and spas — businesses take bookings, enquiries, and payments entirely over WhatsApp, no app install. I built it from scratch: tenant isolation on a shared TiDB (MySQL) database, a per-tenant Twilio number, a pure-function FSM bot (8 states) with a Gemini info-bot, Razorpay payment links with HMAC-verified webhooks, and a Next.js dashboard. Launched commercially, onboarding first paying tenants.",
     stack: ["Next.js 16", "TiDB Cloud", "Twilio", "Razorpay + HMAC", "Gemini", "Prisma", "79 Vitest tests"],
     links: [{ label: "outbuiltit.com", href: "https://outbuiltit.com" }],
+    image: { src: "/work-outbuiltit.jpg", w: 1200, h: 780, domain: "outbuiltit.com", href: "https://outbuiltit.com" },
   },
   {
     no: "02",
@@ -38,6 +42,7 @@ const PROJECTS: Project[] = [
       "A travel-planning platform that tells you when to visit attractions based on crowd-density and wait-time signals. Sole developer — designed the data model, built the frontend and API layer, deployed on GCP. Migrating the stack from React + PHP to Next.js (SSR + API routes) grew daily organic users from 60 to 400+, with zero paid acquisition.",
     stack: ["Next.js", "MySQL", "GCP", "SSR"],
     links: [{ label: "crowd-tracker.com", href: "https://crowd-tracker.com" }],
+    image: { src: "/work-crowdtracker.jpg", w: 1200, h: 673, domain: "crowd-tracker.com", href: "https://crowd-tracker.com" },
   },
 ];
 
@@ -100,6 +105,37 @@ function SectionLabel({ no, children }: { no: string; children: React.ReactNode 
     <p className="font-mono text-[0.72rem] uppercase tracking-[0.18em] text-muted sm:text-[0.78rem]">
       <span className="text-accent">§ {no}</span> — {children}
     </p>
+  );
+}
+
+function ProjectPreview({ image }: { image: NonNullable<Project["image"]> }) {
+  return (
+    <a
+      href={image.href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group mt-7 block overflow-hidden rounded-lg border border-line bg-paper transition-colors hover:border-accent/50"
+    >
+      <div className="flex items-center gap-2 border-b border-line px-3.5 py-2.5">
+        <span className="flex gap-1.5" aria-hidden>
+          <span className="h-2.5 w-2.5 rounded-full bg-line" />
+          <span className="h-2.5 w-2.5 rounded-full bg-line" />
+          <span className="h-2.5 w-2.5 rounded-full bg-line" />
+        </span>
+        <span className="ml-2 font-mono text-xs text-muted">{image.domain}</span>
+        <span className="ml-auto font-mono text-xs text-muted opacity-0 transition-opacity group-hover:opacity-100">
+          open ↗
+        </span>
+      </div>
+      <Image
+        src={image.src}
+        alt={`${image.domain} — live site`}
+        width={image.w}
+        height={image.h}
+        sizes="(max-width: 768px) 100vw, 760px"
+        className="h-auto w-full"
+      />
+    </a>
   );
 }
 
@@ -198,6 +234,7 @@ export default function Home() {
                   </span>
                 </div>
                 <p className="mt-4 max-w-[64ch] text-ink/85">{p.blurb}</p>
+                {p.image && <ProjectPreview image={p.image} />}
                 <p className="mt-6 border-t border-line pt-3 font-mono text-xs leading-relaxed text-muted [overflow-wrap:anywhere]">
                   <span className="text-accent">stack</span>
                   {"  "}
