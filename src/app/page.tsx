@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 const HERO_LINKS = [
   { label: "Email", href: "mailto:deepakrameshh@gmail.com" },
@@ -51,6 +52,7 @@ type Role = {
   company: string;
   dates: string;
   points: string[];
+  caseStudy?: string;
 };
 
 const EXPERIENCE: Role[] = [
@@ -64,6 +66,7 @@ const EXPERIENCE: Role[] = [
       "Built an async job queue (Celery + Redis) — every long task runs as a durable worker with retry policies, exponential backoff, and dead-letter queues. Treats LLM output as untrusted: structured-output validation, retries on malformed responses, human gates where AI is least reliable.",
       "Built an internal contact-management tool (React + FastAPI) aggregating enquiries from 40+ sites with a Gmail-integrated triage interface. Own containerization and CI/CD — Docker, Google Cloud Build, deployed on GCP.",
     ],
+    caseStudy: "/case-study",
   },
   {
     title: "Associate RPA Developer",
@@ -155,6 +158,14 @@ export default function Home() {
             <a href="#experience" className="transition-colors hover:text-accent">Experience</a>
             <a href="#stack" className="transition-colors hover:text-accent">Stack</a>
             <a href="#contact" className="transition-colors hover:text-accent">Contact</a>
+            <a
+              href="/deepak-ramesh-resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-accent transition-opacity hover:opacity-70"
+            >
+              Résumé ↗
+            </a>
           </nav>
           <a
             href="#contact"
@@ -276,6 +287,15 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
+                {r.caseStudy && (
+                  <Link
+                    href={r.caseStudy}
+                    className="group mt-5 inline-flex items-center gap-1.5 font-medium text-ink underline-offset-4 transition-colors hover:text-accent"
+                  >
+                    Read the case study
+                    <span className="text-accent transition-transform group-hover:translate-x-0.5">→</span>
+                  </Link>
+                )}
               </div>
             </article>
           ))}
@@ -340,6 +360,7 @@ export default function Home() {
             <ArrowLink label="Email" href="mailto:deepakrameshh@gmail.com" />
             <ArrowLink label="LinkedIn" href="https://www.linkedin.com/in/rdeepak/" />
             <ArrowLink label="GitHub" href="https://github.com/rdeepak-711" />
+            <ArrowLink label="Résumé" href="/deepak-ramesh-resume.pdf" />
             <ArrowLink label="Outbuiltit" href="https://outbuiltit.com" />
           </nav>
         </div>
