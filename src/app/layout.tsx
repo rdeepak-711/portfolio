@@ -7,9 +7,9 @@ const body = Hanken_Grotesk({ subsets: ["latin"], variable: "--ff-body" });
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--ff-mono" });
 
 export const metadata: Metadata = {
-  title: "Deepak Ramesh — Backend & Automation Engineer",
+  title: "Deepak Ramesh — AI Engineer · LLM Pipelines & Automation",
   description:
-    "I ship LLM-integrated products and the systems that build them, fast. A live WhatsApp SaaS, an automation pipeline that shipped 32 sites in 4 weeks, agents with evals.",
+    "I build and run production AI agents and automation end to end. A live multi-tenant WhatsApp SaaS, a multi-agent pipeline that scaled site production 5→32 in 4 weeks, ML email classification at 10K+/month.",
 };
 
 export default function RootLayout({
