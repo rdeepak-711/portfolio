@@ -1,0 +1,155 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ *
+ * Design tokens — one set, multiple "temperatures":
+ *   editorial (default, light)  ·  terminal (.surface-terminal, dark)
+ *   reader    (.reader, plain white, text-only)
+ * ------------------------------------------------------------------ */
+:root {
+  --canvas: #faf9f5; /* warm off-white */
+  --canvas-2: #f1efe7; /* subtle panel */
+  --ink: #131512; /* near-black */
+  --ink-soft: #45483f; /* secondary text */
+  --ink-faint: #82857a; /* tertiary / captions */
+  --line: #e3e1d6; /* hairlines */
+
+  --accent: #04c79a; /* green-cyan — fills, borders, dark-bg text */
+  --accent-ink: #027a5f; /* darker green-cyan — accent text on light */
+  --accent-glow: #04c79a26; /* translucent for halos */
+
+  --term-bg: #0b0e0c; /* terminal canvas */
+  --term-panel: #11150f;
+  --term-line: #20271f;
+  --term-text: #cfe8d8;
+  --term-dim: #5f7a66;
+
+  --font-serif: "Times New Roman", serif; /* replaced by next/font */
+  --font-sans: ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-canvas-2: var(--canvas-2);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-term-bg: var(--term-bg);
+  --color-term-panel: var(--term-panel);
+  --color-term-line: var(--term-line);
+  --color-term-text: var(--term-text);
+  --color-term-dim: var(--term-dim);
+
+  --font-serif: var(--font-serif);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
+* {
+  border-color: var(--line);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv01";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--accent);
+  color: #04130d;
+}
+
+/* Faint grain so the off-white has atmosphere, not flatness. */
+.grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.4;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+}
+
+/* Accent underline used on links + section markers. */
+.accent-rule {
+  color: var(--accent-ink);
+}
+
+/* ------------------------------------------------------------------ *
+ * Terminal surface — the dark "technical mode" for project detail pages
+ * ------------------------------------------------------------------ */
+.surface-terminal {
+  background: var(--term-bg);
+  color: var(--term-text);
+  font-family: var(--font-mono);
+}
+.surface-terminal ::selection {
+  background: var(--accent);
+  color: #04130d;
+}
+
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.cursor::after {
+  content: "▋";
+  margin-left: 2px;
+  color: var(--accent);
+  animation: blink 1.1s steps(1) infinite;
+}
+
+/* ------------------------------------------------------------------ *
+ * Reader mode — strip to a plain white, single-column, text-only view.
+ * Toggle adds .reader to <html>. Everything decorative collapses away.
+ * ------------------------------------------------------------------ */
+html.reader,
+html.reader body,
+html.reader .surface-terminal {
+  background: #ffffff !important;
+  color: #1a1a1a !important;
+  font-family: var(--font-serif) !important;
+}
+html.reader .grain::before,
+html.reader .no-reader {
+  display: none !important;
+}
+html.reader main {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 6rem;
+}
+html.reader * {
+  color: #1a1a1a !important;
+  border-color: #e5e5e5 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  animation: none !important;
+  transform: none !important;
+  font-family: inherit !important;
+}
+html.reader a {
+  color: #0a5c47 !important;
+  text-decoration: underline;
+}
+html.reader h1 { font-size: 2rem; line-height: 1.2; margin: 1.5rem 0 0.5rem; }
+html.reader h2 { font-size: 1.4rem; margin: 2rem 0 0.5rem; }
+html.reader h3 { font-size: 1.15rem; margin: 1.5rem 0 0.25rem; }
+html.reader p,
+html.reader li { font-size: 1.05rem; line-height: 1.7; margin: 0.5rem 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; scroll-behavior: auto !important; }
+}
