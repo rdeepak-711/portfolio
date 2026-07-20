@@ -75,7 +75,7 @@ export const VIDEOS: ReadonlyArray<Video> = [
     // blocks or input context, and the token-savings claim did NOT survive
     // measurement. Never restate this as "cheaper" or "saves tokens".
     blurb: 'Compresses the prose in Claude’s replies. Shorter answers — not a smaller token bill.',
-    date: '2026-07-16', // TODO(deepak): confirm exact publish date
+    date: '2026-07-17', // confirmed in YouTube Studio
   },
   {
     slug: 'code-review',
@@ -105,9 +105,19 @@ export const VIDEOS: ReadonlyArray<Video> = [
 
 const byNewest = (a: Video, b: Video) => Date.parse(b.date) - Date.parse(a.date)
 
-/** Videos in one lane, newest first. */
-export function videosByLane(lane: Lane): Video[] {
-  return VIDEOS.filter((v) => v.lane === lane).sort(byNewest)
+/**
+ * A scheduled YouTube video stays private until its slot, so embedding it
+ * early paints a dead player. Entries may therefore be added ahead of time
+ * with their scheduled date — they surface on their own once the date passes
+ * and the site is rebuilt.
+ */
+export function isLive(video: Video, now: Date = new Date()): boolean {
+  return Date.parse(video.date) <= now.getTime()
+}
+
+/** Live videos in one lane, newest first. */
+export function videosByLane(lane: Lane, now: Date = new Date()): Video[] {
+  return VIDEOS.filter((v) => v.lane === lane && isLive(v, now)).sort(byNewest)
 }
 
 /** YouTube's image CDN — used so the grid loads without any iframe. */

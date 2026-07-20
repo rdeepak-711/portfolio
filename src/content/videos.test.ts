@@ -74,6 +74,32 @@ describe('videosByLane', () => {
   })
 })
 
+describe('scheduled videos', () => {
+  const lane = LANES[0].id
+
+  it('hides videos whose publish date is still in the future', () => {
+    // a scheduled YouTube video is private until its slot — embedding it early
+    // renders a dead player, which is worse than showing nothing
+    const past = new Date('2026-07-01T00:00:00Z')
+    for (const v of videosByLane(lane, past)) {
+      expect(Date.parse(v.date)).toBeLessThanOrEqual(past.getTime())
+    }
+  })
+
+  it('reveals a video once its date arrives', () => {
+    const earliest = [...VIDEOS].sort((a, b) => Date.parse(a.date) - Date.parse(b.date))[0]
+    const dayOf = new Date(`${earliest.date}T23:59:59Z`)
+    const slugs = LANES.flatMap((l) => videosByLane(l.id, dayOf)).map((v) => v.slug)
+    expect(slugs).toContain(earliest.slug)
+  })
+
+  it('shows everything once all dates have passed', () => {
+    const far = new Date('2030-01-01T00:00:00Z')
+    const total = LANES.reduce((n, l) => n + videosByLane(l.id, far).length, 0)
+    expect(total).toBe(VIDEOS.length)
+  })
+})
+
 describe('url helpers', () => {
   it('thumbnailUrl points at the YouTube image CDN for that id', () => {
     expect(thumbnailUrl('ozUMkwIDjuc')).toBe('https://i.ytimg.com/vi/ozUMkwIDjuc/hqdefault.jpg')
