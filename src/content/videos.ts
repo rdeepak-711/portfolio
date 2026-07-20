@@ -57,6 +57,7 @@ export const VIDEOS: ReadonlyArray<Video> = [
     blurb:
       'The hash map is the easy part. Check for the complement before you store, or a number matches itself.',
     date: '2026-07-20',
+    article: '/writing/two-sum-ordering',
   },
   {
     slug: 'gpt-5-6-copilot',
