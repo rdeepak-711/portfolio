@@ -77,6 +77,7 @@ export const VIDEOS: ReadonlyArray<Video> = [
     // measurement. Never restate this as "cheaper" or "saves tokens".
     blurb: 'Compresses the prose in Claude’s replies. Shorter answers — not a smaller token bill.',
     date: '2026-07-17', // confirmed in YouTube Studio
+    article: '/writing/caveman-shorter-not-cheaper',
   },
   {
     slug: 'code-review',

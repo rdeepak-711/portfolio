@@ -42,9 +42,38 @@ body {
   }
 }
 
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;
+  }
+
+  /* Note overlay: same easing family as .reveal, shorter — it's a response to a click. */
+  .overlay-in {
+    animation: overlay-in 0.18s ease-out both;
+  }
+
+  .sheet-in {
+    animation: sheet-in 0.26s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
   /* Page-load stagger: runs once on mount. Delays set inline per element. */
