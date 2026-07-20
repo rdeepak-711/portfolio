@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { Analytics } from "./analytics";
 
 const display = Bricolage_Grotesque({ subsets: ["latin"], variable: "--ff-display" });
 const body = Hanken_Grotesk({ subsets: ["latin"], variable: "--ff-body" });
@@ -37,7 +38,10 @@ export default function RootLayout({
       lang="en"
       className={`${display.variable} ${body.variable} ${mono.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
