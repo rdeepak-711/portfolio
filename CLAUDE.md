@@ -44,3 +44,5 @@ Distinctive, document-like, anti-AI-slop. Do NOT drift toward generic templates.
 - Data-driven sections: arrays (`PROJECTS`, `EXPERIENCE`, `SKILLS`) mapped in `page.tsx` — add content there, not by duplicating markup.
 - Commit as **Deepak Ramesh <deepakrameshh@gmail.com>** (not the Firestorm work git identity). Verify visual changes with a screenshot before deploying.
 - `plan.html` is a local working doc — gitignored, not deployed.
+
+Portfolio-grade project write-ups (site content source): ~/claude-work-me/projects/

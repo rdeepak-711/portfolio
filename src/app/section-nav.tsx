@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const SECTIONS = [
@@ -44,6 +45,12 @@ export default function SectionNav() {
           {s.label}
         </a>
       ))}
+      <Link
+        href="/building"
+        className="text-muted transition-colors hover:text-accent"
+      >
+        Building
+      </Link>
       <a
         href="/deepak-ramesh-resume.pdf"
         target="_blank"
