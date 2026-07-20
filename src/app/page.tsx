@@ -1,6 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import SectionNav from "./section-nav";
+import { LANES, videosByLane } from "@/content/videos";
+
+// newest three across every track — a teaser, not the catalogue
+const RECENT_VIDEOS = LANES.flatMap((l) => videosByLane(l.id))
+  .sort((a, b) => Date.parse(b.date) - Date.parse(a.date))
+  .slice(0, 3);
+
+const LANE_LABEL = new Map(LANES.map((l) => [l.id, l.label]));
 
 const HERO_LINKS = [
   { label: "Email", href: "mailto:deepakrameshh@gmail.com" },
@@ -369,9 +377,38 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Building in public */}
+      <section id="building" className="scroll-mt-16 border-t border-line py-20 sm:py-28">
+        <SectionLabel no="06">Building in Public</SectionLabel>
+        <ul className="reveal-scroll mt-10 flex flex-col gap-8">
+          {RECENT_VIDEOS.map((v) => (
+            <li key={v.slug}>
+              <Link href="/building" className="group block max-w-[66ch]">
+                <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <span className="font-mono text-xs uppercase tracking-[0.12em] text-accent">
+                    {LANE_LABEL.get(v.lane)}
+                  </span>
+                  <h3 className="font-display text-xl font-semibold tracking-[-0.02em] transition-colors group-hover:text-accent">
+                    {v.title}
+                  </h3>
+                </div>
+                <p className="mt-2 text-muted">{v.blurb}</p>
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <Link
+          href="/building"
+          className="reveal-scroll group mt-8 inline-flex items-center gap-1.5 font-mono text-xs uppercase tracking-[0.1em] text-muted transition-colors hover:text-accent"
+        >
+          All videos
+          <span className="transition-transform group-hover:translate-x-0.5">→</span>
+        </Link>
+      </section>
+
       {/* Contact */}
       <section id="contact" className="scroll-mt-16 border-t border-line py-20 sm:py-28">
-        <SectionLabel no="06">Contact</SectionLabel>
+        <SectionLabel no="07">Contact</SectionLabel>
         <div className="reveal-scroll mt-10">
           <p className="max-w-[26ch] font-display text-[clamp(1.7rem,5.5vw,2.6rem)] font-semibold leading-[1.08] tracking-[-0.02em]">
             Building something AI-native? Let&apos;s talk.

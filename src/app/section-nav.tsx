@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const SECTIONS = [
@@ -8,6 +7,7 @@ const SECTIONS = [
   { id: "experience", label: "Experience" },
   { id: "stack", label: "Stack" },
   { id: "writing", label: "Writing" },
+  { id: "building", label: "Building" },
   { id: "contact", label: "Contact" },
 ];
 
@@ -45,12 +45,6 @@ export default function SectionNav() {
           {s.label}
         </a>
       ))}
-      <Link
-        href="/building"
-        className="text-muted transition-colors hover:text-accent"
-      >
-        Building
-      </Link>
       <a
         href="/deepak-ramesh-resume.pdf"
         target="_blank"
