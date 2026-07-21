@@ -176,6 +176,79 @@ export const NOTES: ReadonlyArray<Note> = [
       },
     ],
   },
+  {
+    slug: '3sum-two-sum-sorted',
+    title: '3Sum is just Two Sum, once you sort',
+    dek: 'The brute force is three nested loops. Sorting first turns the inner two into a two-pointer scan — the exact trick Two Sum uses on a sorted array.',
+    date: '2026-07-21',
+    body: [
+      {
+        kind: 'p',
+        text: '3Sum asks for every unique triplet that sums to zero. It looks like it needs three nested loops, and the first solution most people reach for is exactly that — pick i, pick j, pick k, check the sum. It works and it is O(n³), which times out the moment the array gets large.',
+      },
+      { kind: 'h', text: 'The reframe' },
+      {
+        kind: 'p',
+        text: 'Sort the array first. Now fix the first number, nums[i]. The other two have to sum to its negative, −nums[i]. Finding two numbers that hit a fixed target inside a sorted array is not a new problem — it is Two Sum, and on a sorted array you solve it with two pointers instead of a hash map: one starting at the left of the remaining range, one at the right.',
+      },
+      { kind: 'h', text: 'How the pointers move' },
+      {
+        kind: 'p',
+        text: 'Compare the pair’s sum to the target. Too small? Move the left pointer up, because the array is sorted and everything to the right is larger. Too big? Move the right pointer down. Equal? Record the triplet. Each pointer only ever moves inward, so for a fixed i the whole scan is linear — no rescanning, no second loop over the same elements.',
+      },
+      {
+        kind: 'code',
+        lang: 'python',
+        code: `class Solution:
+    def threeSum(self, nums: list[int]) -> list[list[int]]:
+        nums.sort()
+        ans = []
+        for i in range(len(nums)):
+            if nums[i]>0:
+                break
+            if i>0 and nums[i]==nums[i-1]:
+                continue
+            x = i+1
+            y = len(nums)-1
+            while(x<y):
+                if nums[x]+nums[y]==-nums[i]:
+                    ans.append([nums[i], nums[x], nums[y]])
+                    x+=1
+                    y-=1
+                    while x<y and nums[x]==nums[x-1]:
+                        x+=1
+                    while x<y and nums[y]==nums[y+1]:
+                        y-=1
+                elif nums[x]+nums[y]<-nums[i]:
+                    x+=1
+                else:
+                    y-=1
+        return ans`,
+      },
+      { kind: 'h', text: 'The two details that make it correct and fast' },
+      {
+        kind: 'p',
+        text: 'Duplicates are the part that quietly breaks a solution that is otherwise right. The same triplet can be reached more than once, so you skip past repeated values in three places: for i at the top of the loop, and for both pointers after recording a match. Miss those and the logic is correct but the output has duplicate triplets.',
+      },
+      {
+        kind: 'p',
+        text: 'The other detail is the early break. Because the array is sorted, once nums[i] is positive there is no way three numbers starting from it can sum to zero — everything from here on is positive. Breaking there skips the tail of the array for free.',
+      },
+      { kind: 'h', text: 'Cost' },
+      {
+        kind: 'list',
+        items: [
+          'Brute force: O(n³) — three nested loops',
+          'Sorted + two pointers: O(n²) — one sort, then n passes of a linear scan',
+          'The sort is the unlock — it makes both the two-pointer scan and the de-duplication possible',
+        ],
+      },
+      {
+        kind: 'p',
+        text: 'That is the whole move: one call to sort turns a problem that looks cubic into one you already know how to solve.',
+      },
+    ],
+  },
 ]
 
 export function noteBySlug(slug: string): Note | undefined {
