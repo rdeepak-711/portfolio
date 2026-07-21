@@ -85,7 +85,7 @@ export const VIDEOS: ReadonlyArray<Video> = [
     youtubeId: '_-J1Dc4jvvg',
     title: 'Five agents caught the bug my code reviewer approved',
     blurb: 'Parallel review agents, each with a different lens, run over the same diff.',
-    date: '2026-07-13', // TODO(deepak): confirm exact publish date
+    date: '2026-07-14', // confirmed in YouTube Studio
   },
   {
     slug: 'grill-me',
@@ -101,7 +101,7 @@ export const VIDEOS: ReadonlyArray<Video> = [
     youtubeId: 'LMmOjiQv-1E',
     title: 'Claude Code plugin superpowers',
     blurb: 'The plugin setup that turned Claude Code into the environment I build in.',
-    date: '2026-06-24', // TODO(deepak): confirm exact publish date
+    date: '2026-06-30', // confirmed in YouTube Studio
   },
 ]
 
