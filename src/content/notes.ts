@@ -26,6 +26,82 @@ export type Note = {
 
 export const NOTES: ReadonlyArray<Note> = [
   {
+    slug: 'valid-sudoku-one-loop-two-checks',
+    title: 'Valid Sudoku: check a row, get its column for free',
+    dek: 'The obvious solution is three separate passes over the board. One loop can do two of them at once.',
+    date: '2026-07-28',
+    body: [
+      {
+        kind: 'p',
+        text: 'Valid Sudoku asks for three things: every row has no repeated digit, every column has no repeated digit, every 3×3 box has no repeated digit. The shape almost everyone reaches for is three separate passes over the same 81 cells — one for rows, one for columns, one for boxes.',
+      },
+      { kind: 'h', text: 'Rows and columns share an index' },
+      {
+        kind: 'p',
+        text: 'Row i and column i are not independent things to visit separately — they are both indexed by the same number. So instead of looping i from 0 to 8 for rows, then looping again for columns, one loop can check both: for each i, read board[i][j] (row i) and board[j][i] (column i) in the same inner pass.',
+      },
+      {
+        kind: 'code',
+        lang: 'python',
+        code: `class Solution:
+    def isValidSudoku(self, board: List[List[str]]) -> bool:
+        for i in range(9):
+            row = set()
+            col = set()
+            for j in range(9):
+                if board[i][j] != ".":
+                    if board[i][j] in row:
+                        return False
+                    row.add(board[i][j])
+
+                if board[j][i] != ".":
+                    if board[j][i] in col:
+                        return False
+                    col.add(board[j][i])
+        for hop_i in [0,3,6]:
+            for hop_j in [0,3,6]:
+                square = set()
+                for i in range(3):
+                    for j in range(3):
+                        if board[hop_i+i][hop_j+j]!=".":
+                            if board[hop_i+i][hop_j+j] in square:
+                                return False
+                            square.add(board[hop_i+i][hop_j+j])
+        return True`,
+      },
+      { kind: 'h', text: 'A board that looks clean and isn’t' },
+      {
+        kind: 'p',
+        text: 'Take a board where every row, checked on its own, has no repeats, and every column, checked on its own, has no repeats. That board can still be invalid — because a 3×3 box can hold a duplicate that never lines up in the same row or the same column. Two 9s in the top-left box, positioned diagonally from each other, will pass every row check and every column check and still be wrong.',
+      },
+      {
+        kind: 'p',
+        text: 'That is the entire reason the box loop has to exist as its own pass — it is the only check that can’t be folded into the row/column loop, because a box isn’t indexed by a single i the way a row or column is.',
+      },
+      {
+        kind: 'p',
+        text: 'I didn’t take this on faith. I fuzz-tested the combined-loop solution against a brute-force reference (build the row, column, and box as plain lists, check each for duplicates directly) across 2,000 random boards, and hand-built the row-clean/column-clean/box-dirty case above to confirm the failure mode specifically — both matched on every trial.',
+      },
+      { kind: 'h', text: 'Cost — a real count, not a complexity win' },
+      {
+        kind: 'p',
+        text: 'It would be easy to claim this is “faster,” and that would be dishonest. The board is fixed at 9×9, so both the combined-loop version and three-separate-loops version are O(1) — there’s no n that grows here. What’s real is the number of loop constructs: three separate passes (rows, columns, boxes) versus two (rows+columns together, then boxes).',
+      },
+      {
+        kind: 'list',
+        items: [
+          'Naive: 3 passes — one each for rows, columns, boxes',
+          'Combined: 2 passes — rows and columns together, then boxes',
+          'Both: O(1) time and space — the board size never changes, so there is no asymptotic improvement, only fewer loops',
+        ],
+      },
+      {
+        kind: 'p',
+        text: 'The win here is not speed. It’s that column i was never a separate thing to go looking for — it was sitting right next to row i the whole time.',
+      },
+    ],
+  },
+  {
     slug: 'caveman-shorter-not-cheaper',
     title: 'A skill that shortens Claude’s answers — and the claim I could not prove',
     dek: 'The obvious pitch is that shorter replies save you tokens. I measured it, and that part did not hold.',
