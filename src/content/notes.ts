@@ -26,6 +26,178 @@ export type Note = {
 
 export const NOTES: ReadonlyArray<Note> = [
   {
+    slug: 'two-sum-ii-sorted-deletes-the-hashmap',
+    title: 'Two Sum II: one word in the title deletes the hash map',
+    dek: 'Two Sum needs a dictionary. Two Sum II gives you "sorted" — and that one word replaces it with two integers.',
+    date: '2026-07-29',
+    body: [
+      {
+        kind: 'p',
+        text: 'Two Sum and Two Sum II ask for the same thing: find the pair that adds to the target. The first one needs a hash map — you walk the array once, and for each number you ask whether you have already seen its complement. That is O(n) time, but it is also O(n) space, because you are storing everything you have seen.',
+      },
+      {
+        kind: 'p',
+        text: 'Two Sum II changes exactly one thing in the title: the array is sorted. That word deletes the map.',
+      },
+      { kind: 'h', text: 'Start wide, not narrow' },
+      {
+        kind: 'p',
+        text: 'Put one pointer at each end and add them. Because the array is sorted, that first sum is the largest one you can make from the smallest element and the largest one you can make from the largest element — which means every comparison you make tells you something structural, not incidental.',
+      },
+      {
+        kind: 'list',
+        items: [
+          'Sum is too small — the left number is the problem, because the right one is already the biggest available. Move left inward.',
+          'Sum is too big — the right number is the problem, for the mirror reason. Move right inward.',
+          'Sum equals the target — done.',
+        ],
+      },
+      { kind: 'h', text: 'Why the move is a proof, not a guess' },
+      {
+        kind: 'p',
+        text: 'This is the part worth internalising, and it is the part a brute-force mental model misses. When the sum is too big and you move the right pointer in, you are not just trying the next thing. You are discarding that element permanently — and you are allowed to, because it is the largest remaining value. If it was too big paired with the smallest remaining value, it is too big paired with every other remaining value too.',
+      },
+      {
+        kind: 'p',
+        text: 'So one pointer move does not eliminate one candidate pair. It eliminates every pair that element belonged to, in a single step. That is why the whole thing runs in one pass instead of n².',
+      },
+      { kind: 'h', text: 'The trace' },
+      {
+        kind: 'p',
+        text: 'On [1, 3, 4, 5, 7, 11] with target 9, the pointers move five times and land on 4 + 5. Note that both rules fire — this is worth checking on your own examples, because on LeetCode’s own [2, 7, 11, 15] the left pointer never moves at all, and you can convince yourself you understand the algorithm while only ever having watched half of it run.',
+      },
+      {
+        kind: 'list',
+        items: [
+          '1 + 11 = 12, too big — move right in',
+          '1 + 7 = 8, too small — move left in',
+          '3 + 7 = 10, too big — move right in',
+          '3 + 5 = 8, too small — move left in',
+          '4 + 5 = 9 — found',
+        ],
+      },
+      { kind: 'h', text: 'The solution' },
+      {
+        kind: 'code',
+        lang: 'python',
+        code: `class Solution:
+    def twoSum(self, numbers: List[int], target: int) -> List[int]:
+        l = 0
+        r = len(numbers)-1
+        while(l<r):
+            x = numbers[l]+numbers[r]
+            if x == target:
+                return [l+1, r+1]
+            elif x < target:
+                l+=1
+            else:
+                r-=1`,
+      },
+      { kind: 'h', text: 'The trap: this one is 1-indexed' },
+      {
+        kind: 'p',
+        text: 'Two Sum II returns positions, not indices — the problem statement says the array is 1-indexed. So the answer is [l+1, r+1], not [l, r]. On the trace above that is [3, 4], not [2, 3]. It is the kind of thing that passes your head and fails the submission.',
+      },
+      {
+        kind: 'p',
+        text: 'There is also no return statement after the loop. That is deliberate and it is safe here only because the problem guarantees exactly one solution exists — the loop cannot finish without finding it. Do not copy that habit into a problem without that guarantee.',
+      },
+      { kind: 'h', text: 'Cost' },
+      {
+        kind: 'list',
+        items: [
+          'Time: O(n) — each element is passed at most once',
+          'Space: O(1) — two integers, no dictionary',
+          'Two Sum, by comparison: O(n) time but O(n) space for the hash map',
+        ],
+      },
+      {
+        kind: 'p',
+        text: 'Sorted input is not a detail in the constraints. It is usually the whole solution, and it is worth training yourself to read it as one.',
+      },
+    ],
+  },
+  {
+    slug: 'valid-palindrome-skip-dont-clean',
+    title: 'Valid Palindrome: skip the junk, don’t clean it',
+    dek: 'The usual one-liner filters the string into a new one first. You never have to build that second string.',
+    date: '2026-07-29',
+    body: [
+      {
+        kind: 'p',
+        text: 'Valid Palindrome gives you a string full of spaces, commas and colons, and asks whether it reads the same forwards and backwards once you ignore everything that is not a letter or a digit. Almost every solution starts the same way — filter the string down, then compare it to its reverse.',
+      },
+      {
+        kind: 'code',
+        lang: 'python',
+        code: `t = [c.lower() for c in s if c.isalnum()]
+return t == t[::-1]`,
+      },
+      {
+        kind: 'p',
+        text: 'That works, and in an interview it is a perfectly reasonable first answer. But it allocates: the filtered list is a whole second copy of the input, and the reversal is arguably a third. If the follow-up question is "can you do it in constant space", this shape has no answer.',
+      },
+      { kind: 'h', text: 'The junk never has to move' },
+      {
+        kind: 'p',
+        text: 'The insight is that you do not need a clean string to compare characters — you need a way to land on the next character worth comparing. Two pointers walk inward from each end, and when one lands on a space or a comma, it just keeps walking. The punctuation is skipped in place. It is never removed, because it never had to be.',
+      },
+      {
+        kind: 'code',
+        lang: 'python',
+        code: `class Solution:
+    def isPalindrome(self, s: str) -> bool:
+        l = 0
+        r = len(s)-1
+        s = s.lower()
+        while(l<r):
+            while l<r and not(ord('0')<=ord(s[l])<=ord('9') or ord('a')<=ord(s[l])<=ord('z')):
+                l+=1
+            while l<r and not(ord('0')<=ord(s[r])<=ord('9') or ord('a')<=ord(s[r])<=ord('z')):
+                r-=1
+            if s[l]!=s[r]:
+                return False
+            l+=1
+            r-=1
+        return True`,
+      },
+      {
+        kind: 'p',
+        text: 'On "race a car" the pointers lock r against r, a against a, c against c. Then the right pointer lands on a space, walks past it, and compares e against a — mismatch, return False. The other space in that string is never even visited.',
+      },
+      { kind: 'h', text: 'The check that stops it crashing' },
+      {
+        kind: 'p',
+        text: 'The easiest thing to drop from this solution is the l<r sitting inside the two inner while loops. It looks redundant — the outer loop already checks it. It is not redundant, and here is the input that proves it.',
+      },
+      {
+        kind: 'p',
+        text: 'Feed it ".," — a string with no alphanumeric characters at all. The outer loop starts with l=0, r=1, so it runs. The first inner loop starts walking left forward looking for something alphanumeric, and there is nothing to find. With the guard, l stops at 1 and the loop exits; s[1] equals s[1] and the function returns True. Without the guard, nothing stops l — it walks to index 2 and Python raises an IndexError.',
+      },
+      {
+        kind: 'p',
+        text: 'That is the entire job of those two comparisons: the outer loop guards the pair, the inner ones guard the search for the pair.',
+      },
+      { kind: 'h', text: 'Cost, honestly' },
+      {
+        kind: 'list',
+        items: [
+          'Time: O(n) — each character is crossed at most once',
+          'Space: O(1) for the algorithm — two integers, no filtered copy',
+          'But s = s.lower() allocates a full copy of the string, because Python strings are immutable',
+        ],
+      },
+      {
+        kind: 'p',
+        text: 'So the function is not genuinely O(1) space, and it is worth saying that out loud rather than rounding it off. The algorithm is constant-space; the lower() call is not, and Python gives you no in-place alternative. If you needed true O(1), you would drop the lower() and case-fold the two characters at the point of comparison instead.',
+      },
+      {
+        kind: 'p',
+        text: 'The transferable idea is smaller than the problem: when you catch yourself building a cleaned copy of an input just to walk over it, check whether a pointer could have skipped the parts you were about to delete.',
+      },
+    ],
+  },
+  {
     slug: 'valid-sudoku-one-loop-two-checks',
     title: 'Valid Sudoku: check a row, get its column for free',
     dek: 'The obvious solution is three separate passes over the board. One loop can do two of them at once.',
