@@ -26,6 +26,196 @@ export type Note = {
 
 export const NOTES: ReadonlyArray<Note> = [
   {
+    slug: 'best-time-buy-sell-no-minimum',
+    title: 'Best Time to Buy and Sell Stock: I never track the minimum price',
+    dek: 'Most solutions keep a minPrice variable. This one keeps two pointers — and the buy pointer teleports.',
+    date: '2026-07-31',
+    body: [
+      {
+        kind: 'p',
+        text: 'The standard solution to this problem keeps a running minimum. Walk the array, remember the cheapest price seen so far, and at each step check today’s price against it. That is correct and it is O(n). My version doesn’t have that variable at all — there is no minPrice, and no call to min().',
+      },
+      {
+        kind: 'p',
+        text: 'It keeps two pointers instead. b is the buy day, s is the sell day. Sell walks right and subtracts, and there are exactly two outcomes.',
+      },
+      { kind: 'h', text: 'The only line that matters' },
+      {
+        kind: 'code',
+        lang: 'python',
+        code: `if(a<0):
+    b = s
+else:
+    ans = max(ans, prices[s]-prices[b])`,
+      },
+      {
+        kind: 'p',
+        text: 'If the profit is negative, b = s. Buy doesn’t step forward one day — it teleports all the way to wherever sell currently is. That single line is doing the job the minPrice variable does in every other version.',
+      },
+      { kind: 'h', text: 'Why the jump is safe' },
+      {
+        kind: 'p',
+        text: 'The claim is that b always holds the cheapest price in everything seen so far. It holds by induction. At the start b is index 0, trivially the cheapest of the first one. Then sell visits every index in order, one at a time — so if a price ever comes in below the current buy price, buy moves onto it immediately, on that same iteration. There is no way to pass a new minimum without landing on it.',
+      },
+      {
+        kind: 'p',
+        text: 'That is also why skipping days costs nothing. Every day strictly between the old b and the new one was priced higher than the old b — otherwise buy would already have jumped there when sell passed it. A day dearer than a day you can still buy is worthless as a purchase, forever. So the jump discards them permanently, not provisionally.',
+      },
+      { kind: 'h', text: 'LeetCode’s own example hides this' },
+      {
+        kind: 'p',
+        text: 'On the given [7, 1, 5, 3, 6, 4], buy jumps from index 0 to index 1 — a single step. The set of skipped days is empty, so you can watch the whole thing run and never see the behaviour that makes it work. Use [7, 8, 9, 1, 5, 3, 6, 4] instead: buy jumps 0 to 3, straight past 8 and 9, both dearer than the 7 it was sitting on. Same answer, 5.',
+      },
+      {
+        kind: 'list',
+        items: [
+          '8 − 7 = 1 — profit, ans = 1',
+          '9 − 7 = 2 — profit, ans = 2',
+          '1 − 7 = −6 — negative, so buy jumps from index 0 to index 3, skipping 8 and 9',
+          '5 − 1 = 4 — profit, ans = 4',
+          '3 − 1 = 2 — no improvement, ans stays 4',
+          '6 − 1 = 5 — profit, ans = 5',
+          '4 − 1 = 3 — no improvement, ans stays 5',
+        ],
+      },
+      {
+        kind: 'p',
+        text: 'Buy lands on index 3 and never moves again — it found the cheapest day in the array and there was nothing left to beat it. Sell walks the remaining four days on its own.',
+      },
+      { kind: 'h', text: 'The solution' },
+      {
+        kind: 'code',
+        lang: 'python',
+        code: `class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        b = 0
+        s = 1
+        ans = 0
+        while(s<len(prices)):
+            a = prices[s]-prices[b]
+            if(a<0):
+                b = s
+            else:
+                ans = max(ans, prices[s]-prices[b])
+            s += 1
+        return ans`,
+      },
+      { kind: 'h', text: 'Two honest notes on this code' },
+      {
+        kind: 'p',
+        text: 'The subtraction happens twice — once into a, then again inside the max(). It costs nothing measurable and I have left it as submitted rather than tidying it after the fact.',
+      },
+      {
+        kind: 'p',
+        text: 'And s starts at 1, not 0. On a single-price array the loop never runs and it returns 0, which is the right answer — you cannot sell after buying if there is no day after. Worth checking rather than assuming, because an off-by-one here fails silently on exactly one input.',
+      },
+      { kind: 'h', text: 'Cost' },
+      {
+        kind: 'list',
+        items: [
+          'Time: O(n) — sell visits each day once and never goes back',
+          'Space: O(1) — two integers, and no minimum stored anywhere',
+          'Brute force, by comparison: O(n²) for every buy/sell pair',
+        ],
+      },
+      {
+        kind: 'p',
+        text: 'The wider point is that a pointer can be a variable. Once you notice that b is the running minimum, you stop needing something to hold it.',
+      },
+    ],
+  },
+  {
+    slug: 'longest-repeating-maxfreq-never-drops',
+    title: 'Longest Repeating Character Replacement: maxFreq never goes down',
+    dek: 'The window shrinks and maxFreq stays high — so it is genuinely wrong about the current window. The answer is still correct, and one bound is why.',
+    date: '2026-07-31',
+    body: [
+      {
+        kind: 'p',
+        text: 'This is the question people actually ask about this problem, and most write-ups wave at it. When the window shrinks, why don’t you decrease maxFreq?',
+      },
+      {
+        kind: 'p',
+        text: 'In my solution I don’t. maxFreq = max(maxFreq, freq[s[r]]) only ever raises it, and there is no line anywhere that lowers it. So maxFreq can be larger than the real maximum frequency inside the current window. That is not a hypothetical — it happens on LeetCode’s own second example.',
+      },
+      { kind: 'h', text: 'It really does go stale' },
+      {
+        kind: 'p',
+        text: 'Take "AABABBA" with k = 1. Watch the fourth step onwards, and track what maxFreq claims against what the window actually holds.',
+      },
+      {
+        kind: 'list',
+        items: [
+          'r = 0, window "A" — maxFreq 1, true max 1, ans 1',
+          'r = 1, window "AA" — maxFreq 2, true max 2, ans 2',
+          'r = 2, window "AAB" — maxFreq 2, true max 2, ans 3',
+          'r = 3, window "AABA" — maxFreq 3, true max 3, ans 4',
+          'r = 4, shrink to "ABAB" — maxFreq still 3, true max is 2. Stale.',
+          'r = 5, shrink to "BABB" — maxFreq 3, true max 3 again by coincidence',
+          'r = 6, shrink to "ABBA" — maxFreq 3, true max 2. Stale again.',
+        ],
+      },
+      {
+        kind: 'p',
+        text: 'At r = 4 the window is four characters wide and contains two A’s and two B’s. maxFreq says 3. It is describing a window that no longer exists — the one that had three A’s in it, before the left pointer moved.',
+      },
+      { kind: 'h', text: 'Why the answer survives it' },
+      {
+        kind: 'p',
+        text: 'The whole argument is one bound. ans is only ever assigned windowSize, and the window is only permitted to stay that size while windowSize − maxFreq ≤ k. Rearranged, that says ans ≤ maxFreq + k, at every moment, unconditionally.',
+      },
+      {
+        kind: 'p',
+        text: 'Now ask what maxFreq is. It is a count that was genuinely observed somewhere in the string — some window really did contain that many of one character. And a window containing m copies of a character, plus k replacements, is a real achievable answer of m + k. So the value ans is bounded by is always something reachable. A stale-high maxFreq can let the window sit wider than it strictly should for a step or two, but it can never push ans above a number the string can actually produce.',
+      },
+      {
+        kind: 'p',
+        text: 'On this input maxFreq peaks at 3, k is 1, and the answer is 4. That is not a coincidence — it is the bound being tight.',
+      },
+      { kind: 'h', text: 'What if you did decrement it?' },
+      {
+        kind: 'p',
+        text: 'It would still be correct. You would recompute the maximum over the frequency map every time the window shrank, which is O(26) work per shrink and more code to get wrong. You would get the same answer, more slowly. The stale value is not a shortcut that happens to work — it is a consequence of only ever needing an upper bound.',
+      },
+      { kind: 'h', text: 'The solution' },
+      {
+        kind: 'code',
+        lang: 'python',
+        code: `class Solution:
+    def characterReplacement(self, s: str, k: int) -> int:
+        l = 0
+        r = 0
+        freq = {}
+        maxFreq = 0
+        ans = 0
+        while(r<len(s)):
+            freq[s[r]] = freq.get(s[r],0)+1
+            maxFreq = max(maxFreq, freq[s[r]])
+            windowSize = r - l + 1
+            while(windowSize - maxFreq > k):
+                freq[s[l]] -= 1
+                l += 1
+                windowSize = r - l + 1
+            ans = max(ans, windowSize)
+            r += 1
+        return ans`,
+      },
+      { kind: 'h', text: 'Cost' },
+      {
+        kind: 'list',
+        items: [
+          'Time: O(n) — every character enters the window once and leaves at most once',
+          'Space: O(26) — the frequency map is bounded by the alphabet, not the input',
+          'Brute force, by comparison: O(n²) to check every substring',
+        ],
+      },
+      {
+        kind: 'p',
+        text: 'If a value in your loop only ever needs to be an upper bound, it does not have to be accurate. Knowing which of your variables are bounds and which are facts is most of what makes sliding-window code short.',
+      },
+    ],
+  },
+  {
     slug: 'two-sum-ii-sorted-deletes-the-hashmap',
     title: 'Two Sum II: one word in the title deletes the hash map',
     dek: 'Two Sum needs a dictionary. Two Sum II gives you "sorted" — and that one word replaces it with two integers.',
