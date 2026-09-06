@@ -687,6 +687,282 @@ return t == t[::-1]`,
       },
     ],
   },
+  {
+    slug: 'valid-anagram-immutable-lower',
+    title: 'Valid Anagram: the two lines that did nothing',
+    dek: 'I wrote s.lower() and t.lower(), and they changed nothing — Python strings are immutable, so the result is thrown away unless you assign it. The solution passed anyway, for the wrong reason.',
+    date: '2026-07-22',
+    body: [
+      {
+        kind: 'p',
+        text: 'Valid Anagram asks whether two strings are rearrangements of the same letters. My solution was right about the hard part and wrong about two lines I barely thought about — and it passed regardless, which is the part worth talking about.',
+      },
+      { kind: 'h', text: 'The two lines that do nothing' },
+      {
+        kind: 'p',
+        text: 'I called s.lower() and t.lower() on their own lines to normalise the case. In Python that does nothing. Strings are immutable, so .lower() cannot change the string in place — it returns a new, lowercased string and leaves the original untouched. Call it without assigning the result and the new string is created and immediately discarded. The variable s is exactly what it was.',
+      },
+      { kind: 'h', text: 'Why it passed anyway' },
+      {
+        kind: 'p',
+        text: 'The counting below assumes lowercase — it maps each letter to a slot from 0 to 25 by subtracting the code point of a lowercase a. That only works if every character is already a lowercase letter. LeetCode’s inputs happen to be lowercase, so the no-op never mattered and the tests went green. Passing and being correct are not the same claim — feed it an uppercase letter and the index goes negative.',
+      },
+      { kind: 'h', text: 'The part that actually works' },
+      {
+        kind: 'p',
+        text: 'No sorting, no second dictionary — one array of 26 counts. Walk both strings together: for each position add one for the letter in s and subtract one for the letter in t. If the two are anagrams, every +1 is met by a matching −1 and the whole array cancels back to zero. So the answer is simply whether all 26 counts are still zero.',
+      },
+      {
+        kind: 'code',
+        lang: 'python',
+        code: `class Solution:
+    def isAnagram(self, s: str, t: str) -> bool:
+        if len(s)!=len(t):
+            return False
+        s=s.lower()
+        t=t.lower()
+        temp = [0]*26
+        for i in range(len(s)):
+            temp[ord(s[i])-ord('a')]+=1
+            temp[ord(t[i])-ord('a')]-=1
+        return temp.count(0)==26`,
+      },
+      { kind: 'h', text: 'The fix is one character' },
+      {
+        kind: 'p',
+        text: 'Assign the lowercased string back: s = s.lower(). Now the normalisation is real instead of decorative, and the solution is correct for the reason it looked correct — not by accident of the input.',
+      },
+      { kind: 'h', text: 'Cost' },
+      {
+        kind: 'list',
+        items: [
+          'Sorting both strings and comparing: O(n log n)',
+          'This: O(n) — one pass, adding and subtracting as it goes',
+          'Space: O(1) — the count array is 26 slots no matter how long the strings are',
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'top-k-frequent-min-heap',
+    title: 'Top K Frequent: a min-heap to keep the biggest',
+    dek: 'To hold on to the k most frequent numbers, the instinct is a max-heap. The trick is the opposite — a min-heap of size k, run like a bouncer at the door.',
+    date: '2026-07-22',
+    body: [
+      {
+        kind: 'p',
+        text: 'Top K Frequent asks for the k numbers that appear most often. The obvious plan is to count everything and sort by frequency, which is O(n log n). You do not have to sort — and the approach that avoids it uses a heap in a way that looks backwards at first.',
+      },
+      { kind: 'h', text: 'The counterintuitive part' },
+      {
+        kind: 'p',
+        text: 'You want the largest counts, so the instinct is a max-heap. Use a min-heap instead, capped at size k. The reason is exactly what a min-heap is bad at: the smallest element sits on top, first to come out. That is the wrong thing to return, but the right thing to throw away — so the min-heap becomes a machine for cheaply discarding the least frequent element, which is what keeping the top k actually requires.',
+      },
+      { kind: 'h', text: 'The bouncer' },
+      {
+        kind: 'p',
+        text: 'Count the numbers, then push each (count, number) pair into the heap. The moment the heap holds more than k, pop — and because it is a min-heap, the pop removes the lowest count in the room. Do that for every number and the heap never exceeds k. Whatever is still inside when you finish is the top k.',
+      },
+      {
+        kind: 'p',
+        text: 'Take nums = [1, 1, 1, 2, 2, 3] with k = 2. The counts are 1→3, 2→2, 3→1. All three go in; the heap is now over capacity, so it pops the smallest count — 3, which appeared once. Two survive: 1 and 2. That is the answer.',
+      },
+      {
+        kind: 'code',
+        lang: 'python',
+        code: `from collections import Counter
+from heapq import heappush, heappop,
+  class Solution:
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        presence = Counter(nums)
+        temp = []
+        for key, value in presence.items():
+            heappush(temp,(value, key))
+            if len(temp)>k:
+                heappop(temp)
+        ans=[]
+        for value, key in temp:
+            ans.append(key)
+        return ans`,
+      },
+      { kind: 'h', text: 'Why the pair is (count, number) and not the other way' },
+      {
+        kind: 'p',
+        text: 'A Python heap orders tuples by their first element. The count has to come first so the heap compares on frequency — that is the whole point, popping the least frequent. Put the number first and the heap would order by the number’s value and evict the wrong element. The tuple order is load-bearing, the same way it is in the counting solution to Group Anagrams.',
+      },
+      { kind: 'h', text: 'Cost' },
+      {
+        kind: 'list',
+        items: [
+          'Count everything, then sort: O(n log n)',
+          'This: O(n log k) — every push and pop is log k, and the heap never holds more than k',
+          'Space: O(n) for the counts, plus O(k) for the heap',
+        ],
+      },
+      {
+        kind: 'p',
+        text: 'One honest caveat: bucket sort by frequency solves this in O(n), so the heap is not the asymptotic winner. It is the answer worth knowing because it is the one interviewers expect, and because O(n log k) beats sorting the whole thing when k is small.',
+      },
+    ],
+  },
+  {
+    slug: 'product-except-self-prefix-suffix',
+    title: 'Product of Array Except Self: left times right',
+    dek: 'Division is banned, so the tidy "multiply everything, divide it out" trick is gone. Every answer is just the product of everything on its left times everything on its right.',
+    date: '2026-07-23',
+    body: [
+      {
+        kind: 'p',
+        text: 'Product of Array Except Self asks for an array where each slot holds the product of every other element. The obvious move — multiply the whole array once, then divide out nums[i] at each index — is exactly what the problem forbids. It also quietly breaks the moment a zero appears. So the interesting solution never divides at all.',
+      },
+      { kind: 'h', text: 'Every answer is two products' },
+      {
+        kind: 'p',
+        text: 'Look at one index. The product of everything except nums[i] splits cleanly into two halves: the product of all the elements to its left, and the product of all the elements to its right. Multiply those two and you have the answer for that index — the element itself never enters the calculation, which is the whole point.',
+      },
+      { kind: 'h', text: 'Two sweeps' },
+      {
+        kind: 'p',
+        text: 'Sweep left to right first. At each index, record the running product of everything seen so far — that is the left, or prefix, product. Then sweep right to left, carrying a second running product of everything on that side, and multiply it into what you already stored. After both passes, every slot holds left times right.',
+      },
+      {
+        kind: 'p',
+        text: 'Worked example on [1, 2, 3, 4]: the left products are [1, 1, 2, 6], the right products are [24, 12, 4, 1], and multiplying them position by position gives [24, 12, 8, 6]. For the 3 at index 2, that is 2 (its left) times 4 (its right) — 8, the product of 1, 2 and 4.',
+      },
+      { kind: 'h', text: 'Why one array is enough' },
+      {
+        kind: 'p',
+        text: 'The trick that keeps it at O(1) extra space: the answer array does double duty. The first pass writes the left products directly into it. The second pass never needs a separate suffix array — it carries the right product in a single variable and folds it into each slot in place as it walks backward.',
+      },
+      {
+        kind: 'code',
+        lang: 'python',
+        code: `class Solution:
+    def productExceptSelf(self, nums: List[int]) -> List[int]:
+        prev = 1
+        ans = [1]
+        n = len(nums)
+        for i in range(1, n):
+            prev=prev*nums[i-1]
+            ans.append(prev)
+        prev = nums[-1]
+        for i in range(n-2, -1, -1):
+            ans[i]=ans[i]*prev
+            prev*=nums[i]
+        return ans`,
+      },
+      {
+        kind: 'p',
+        text: 'The first loop builds ans as the prefix products (ans[0] is 1 — nothing sits to the left of the first element). The second loop seeds prev with the last element and walks backward, multiplying the running right-product into each slot, then extending it. The output array does not count as extra space, so this is O(1) beyond the answer.',
+      },
+      { kind: 'h', text: 'Cost' },
+      {
+        kind: 'list',
+        items: [
+          'Brute force — recompute the product of the others at every index: O(n²)',
+          'This — two linear passes: O(n) time',
+          'Space: O(1) extra (the answer array aside), and no division, so a zero in the input is never a problem',
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'contains-duplicate-set-trick',
+    title: 'Contains Duplicate: let the set do the work',
+    dek: 'Checking for a repeat looks like it needs nested loops. It needs one line — a set can’t hold duplicates, so if the set is shorter than the array, something repeated.',
+    date: '2026-07-26',
+    body: [
+      {
+        kind: 'p',
+        text: 'Contains Duplicate asks a yes/no question: does the array have any repeated value? The first instinct is to compare every pair — O(n²), and far more work than the question actually needs.',
+      },
+      { kind: 'h', text: 'A set already answers it' },
+      {
+        kind: 'p',
+        text: 'A set stores each distinct value once — by definition it can’t hold a duplicate. So build a set from the array and look at the sizes. If nothing repeated, the set holds exactly as many elements as the array. If anything repeated, those extra copies collapse into one, and the set comes out shorter.',
+      },
+      {
+        kind: 'p',
+        text: 'That turns the whole problem into a length comparison: the array has a duplicate exactly when its length differs from the length of its set.',
+      },
+      {
+        kind: 'code',
+        lang: 'python',
+        code: `class Solution:
+    def containsDuplicate(self, nums: List[int]) -> bool:
+        return len(nums) != len(set(nums))`,
+      },
+      { kind: 'h', text: 'Cost' },
+      {
+        kind: 'list',
+        items: [
+          'Brute force — compare every pair: O(n²)',
+          'This — build the set once, compare lengths: O(n) time, O(n) space',
+          'Sorting then scanning for equal neighbours also works, but that is O(n log n)',
+        ],
+      },
+      {
+        kind: 'p',
+        text: 'It isn’t so much a trick as picking the structure whose entire job is "no duplicates," and reading the one fact it hands you for free — its size.',
+      },
+    ],
+  },
+  {
+    slug: 'longest-consecutive-why-my-dp-failed',
+    title: 'Longest Consecutive: why my clever solution gave 6 instead of 7',
+    dek: 'I tried to score every number from its neighbours. It broke — and the reason is a good one: stale values, and information that only flows the way you iterate.',
+    date: '2026-07-26',
+    body: [
+      {
+        kind: 'p',
+        text: 'Longest Consecutive Sequence asks for the length of the longest run of consecutive integers, in any order — for [100, 4, 200, 1, 3, 2] the run is 1, 2, 3, 4, so the answer is 4. I tried a solution that felt like dynamic programming, and it returned 6 where the answer was 7. The bug is worth more than the fix.',
+      },
+      { kind: 'h', text: 'The idea that breaks' },
+      {
+        kind: 'p',
+        text: 'For each number, look at its left neighbour’s length and its right neighbour’s length, and combine them into a length for this number. Store every number’s length in a dictionary. It feels reasonable, and it is wrong in two independent ways.',
+      },
+      { kind: 'h', text: 'Bug one: stale values' },
+      {
+        kind: 'p',
+        text: 'The numbers get processed in some order. When 0 is computed, -1 hasn’t been computed yet, so 0 reads a default and freezes at 3. Later, -1 is computed and grows to 5 — but nothing goes back to update 0. Information only flows in the direction you iterate; once a value is written, later discoveries never reach it. So the chain -4, -3, -2, -1, 0, 1, 2 — which should all be part of one run of 7 — ends up holding a patchwork of stale numbers, and the max comes out as 6.',
+      },
+      { kind: 'h', text: 'Bug two: double counting' },
+      {
+        kind: 'p',
+        text: 'Even with fresh values, adding the left length and the right length counts the current number’s own run from both sides — the two halves overlap, so the sum overshoots. The recurrence itself is unsound; no traversal order fixes it.',
+      },
+      { kind: 'h', text: 'The fix: don’t score every number' },
+      {
+        kind: 'p',
+        text: 'Stop storing a length per number. Only start counting from a sequence’s beginning — a number whose predecessor is absent (i - 1 not in the set) — and walk forward while the next number exists. A number in the middle of a run is never a starting point, so it’s only ever walked through once.',
+      },
+      {
+        kind: 'code',
+        lang: 'python',
+        code: `class Solution:
+    def longestConsecutive(self, nums: List[int]) -> int:
+        temp = set(nums)
+        ans = 0
+        for i in temp:
+            if i - 1 not in temp:
+                length = 1
+                while i + length in temp:
+                    length += 1
+                ans = max(ans, length)
+        return ans`,
+      },
+      { kind: 'h', text: 'Why the nested loop is still O(n)' },
+      {
+        kind: 'p',
+        text: 'It looks quadratic — a while loop inside a for loop — but the inner walk only runs for sequence starts, and each element is walked through by exactly one start. Across the whole run, the total number of inner steps is at most n. So it is O(n) time and O(n) space, versus O(n log n) if you sort first.',
+      },
+      {
+        kind: 'p',
+        text: 'The lesson that stuck: a per-element recurrence is only safe if the values it reads are final. When they aren’t — and can’t be, because the data has no order — the fix isn’t a better traversal, it’s a formulation that never needs to revise a value at all.',
+      },
+    ],
+  },
 ]
 
 export function noteBySlug(slug: string): Note | undefined {
