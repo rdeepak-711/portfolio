@@ -65,6 +65,7 @@ const PROJECTS: Project[] = [
       { label: "live packet", href: "https://escalation-gate-rdeepak.vercel.app" },
       { label: "github", href: "https://github.com/rdeepak-711/escalation-gate" },
       { label: "write-up", href: "/writing/escalation-gate" },
+      { label: "upstream fix · PR #480", href: "https://github.com/interviewstreet/hiring-agent/pull/480" },
     ],
     image: { src: "/work-escalation-gate.jpg", w: 1200, h: 780, domain: "escalation-gate-rdeepak.vercel.app", href: "https://escalation-gate-rdeepak.vercel.app/packets/hiring-agent-424.html" },
   },

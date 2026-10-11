@@ -78,7 +78,7 @@ export const NOTES: ReadonlyArray<Note> = [
       { kind: 'h', text: 'And where it was wrong' },
       {
         kind: 'p',
-        text: 'On a second bug, the investigation said GitHub’s /users/{user}/repos?type=all never returns repos owned by an org or another user. That is a claim about GitHub, not about the code, so the checker can’t verify it, and the packet flags it as model reasoning. I tested it against the live API: false. Those repos do come back. The real bug was one line: github.py looks up contributors with the candidate’s username as the repo owner. On a well-known public profile that mislabels 25 of 99 repos as solo projects with zero commits. Fixing it is a two-line change.',
+        text: 'On a second bug, the investigation said GitHub’s /users/{user}/repos?type=all never returns repos owned by an org or another user. That is a claim about GitHub, not about the code, so the checker can’t verify it, and the packet flags it as model reasoning. I tested it against the live API: false. Those repos do come back. The real bug was one line: github.py looks up contributors with the candidate’s username as the repo owner. On a well-known public profile that mislabels 25 of 99 repos as solo projects with zero commits. Fixing it is a two-line change — I filed it upstream as issue #479 with the fix in PR #480.',
       },
       {
         kind: 'p',
@@ -95,7 +95,7 @@ export const NOTES: ReadonlyArray<Note> = [
       },
       {
         kind: 'p',
-        text: 'Code: github.com/rdeepak-711/escalation-gate. Live packet: escalation-gate-rdeepak.vercel.app.',
+        text: 'Code: github.com/rdeepak-711/escalation-gate. Live boards, packets and two short videos: escalation-gate-rdeepak.vercel.app. Upstream fix: github.com/interviewstreet/hiring-agent/pull/480.',
       },
     ],
   },
