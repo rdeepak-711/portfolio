@@ -26,6 +26,80 @@ export type Note = {
 
 export const NOTES: ReadonlyArray<Note> = [
   {
+    slug: 'escalation-gate',
+    title: 'escalation-gate: from a GitHub issue to a checked root cause and the PR that fixes it',
+    dek: 'A model cites the code, a checker verifies every citation, and SQL cuts 192 open PRs to 25. It also caught a mistake in my own review.',
+    date: '2026-10-11',
+    body: [
+      {
+        kind: 'p',
+        text: 'HackerRank’s hiring-agent scores résumés with an LLM. Issue #424 says the same résumé gets different scores on different runs. I scored one résumé 30 times: the spread was 6 points at the default temperature and 3 at temperature 0. The repo had 192 open pull requests. Some of them claimed to fix scoring consistency. Which one actually fixes this bug?',
+      },
+      {
+        kind: 'p',
+        text: 'Answering that by hand took me about 1.5 hours: trace the cause through four files, then check every open PR against it. escalation-gate does it in one command for $0.41, and it hands an engineer one page they can act on in five minutes.',
+      },
+      { kind: 'h', text: 'Six stages, one command' },
+      {
+        kind: 'code',
+        lang: 'bash',
+        code: 'uv run python -m gate.cli --repo interviewstreet/hiring-agent --issue 424',
+      },
+      {
+        kind: 'list',
+        items: [
+          'Collect — open issues, open PRs and every PR’s diff, from the GitHub CLI into Postgres.',
+          'Investigate — Claude Code, headless and read-only (Read, Grep, Glob), finds the cause and cites each claim as file:line:quote, plus the chain from cause to symptom.',
+          'Check — every citation is matched against the source. A miss gets one retry in the same session with the exact failures; a second miss goes to a human.',
+          'Shortlist — SQL over diff hunks keeps only the PRs that change a cited line or mention the issue. No model, no cost.',
+          'Judge — one model call with no tools reads the shortlisted diffs and labels each fixes, partly or no, with one reason.',
+          'Packet — citations re-checked, git merge-tree per candidate PR, one HTML page.',
+        ],
+      },
+      { kind: 'h', text: 'Check the citations, label the reasoning' },
+      {
+        kind: 'p',
+        text: 'I treat model output as untrusted by default. A citation is cheap to verify: open the file, go to the line, look for the quote within five lines either side, whitespace ignored. So every citation is verified, mechanically. The explanation that links the citations is not. The packet says which is which, line by line.',
+      },
+      {
+        kind: 'p',
+        text: 'Merges are the same. "This PR merges clean" is a dry-run git merge-tree against the pinned commit, not an opinion. "This PR fixes the bug" is judged from the diff and labelled that way, because nothing was run.',
+      },
+      { kind: 'h', text: 'The shortlist needs no AI' },
+      {
+        kind: 'p',
+        text: 'A diff hunk header like @@ -240,10 says "this change replaces lines 240–249". If a cited line falls inside that range, the PR touches the bug. The cited lines are already verified, so the filter adds no new guess. On #424 it cut 192 open PRs to 25, and the three that matter were all still in.',
+      },
+      { kind: 'h', text: 'It caught a mistake in my own review' },
+      {
+        kind: 'p',
+        text: 'I wrote the #424 packet by hand first, as the target the tool had to match. My review said #415 only partly fixes the bug. The tool said it fixes it fully. I opened the diff: #415 adds resolve_selected_projects, which rebuilds every selected project from the fetched data. The tool was right. It also found #242, a partial fix I had missed.',
+      },
+      { kind: 'h', text: 'And where it was wrong' },
+      {
+        kind: 'p',
+        text: 'On a second bug, the investigation said GitHub’s /users/{user}/repos?type=all never returns repos owned by an org or another user. That is a claim about GitHub, not about the code, so the checker can’t verify it, and the packet flags it as model reasoning. I tested it against the live API: false. Those repos do come back. The real bug was one line: github.py looks up contributors with the candidate’s username as the repo owner. On a well-known public profile that mislabels 25 of 99 repos as solo projects with zero commits. Fixing it is a two-line change.',
+      },
+      {
+        kind: 'p',
+        text: 'That is the point of labelling. A tool that hides the difference between checked and guessed is worse than no tool.',
+      },
+      { kind: 'h', text: 'Numbers' },
+      {
+        kind: 'list',
+        items: [
+          '#424: 6/6 citations verified · 192 → 25 PRs shortlisted · #425 recommended, merges clean · $0.11 to investigate + $0.30 to judge, on Sonnet.',
+          'Python, Postgres, the GitHub CLI and Claude Code headless (--json-schema, --session-id, stream-json logs). 54 pytest tests, none of which call the model.',
+          'Limits: tested end to end on one repo so far, and runs vary. Next is V2 — apply the recommended PR to a throwaway copy, rerun the reproduction, and put the measured result in the packet.',
+        ],
+      },
+      {
+        kind: 'p',
+        text: 'Code: github.com/rdeepak-711/escalation-gate. Live packet: escalation-gate-lemon.vercel.app.',
+      },
+    ],
+  },
+  {
     slug: 'best-time-buy-sell-no-minimum',
     title: 'Best Time to Buy and Sell Stock: I never track the minimum price',
     dek: 'Most solutions keep a minPrice variable. This one keeps two pointers — and the buy pointer teleports.',
