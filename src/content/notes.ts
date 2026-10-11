@@ -90,12 +90,12 @@ export const NOTES: ReadonlyArray<Note> = [
         items: [
           '#424: 6/6 citations verified · 192 → 25 PRs shortlisted · #425 recommended, merges clean · $0.11 to investigate + $0.30 to judge, on Sonnet.',
           'Python, Postgres, the GitHub CLI and Claude Code headless (--json-schema, --session-id, stream-json logs). 54 pytest tests, none of which call the model.',
-          'Limits: tested end to end on one repo so far, and runs vary. Next is V2 — apply the recommended PR to a throwaway copy, rerun the reproduction, and put the measured result in the packet.',
+          'Limits: tested end to end on two unrelated repos so far (hiring-agent and spark-stratifier), and runs vary. Next is V2 — apply the recommended PR to a throwaway copy, rerun the reproduction, and put the measured result in the packet.',
         ],
       },
       {
         kind: 'p',
-        text: 'Code: github.com/rdeepak-711/escalation-gate. Live packet: escalation-gate-lemon.vercel.app.',
+        text: 'Code: github.com/rdeepak-711/escalation-gate. Live packet: escalation-gate-rdeepak.vercel.app.',
       },
     ],
   },

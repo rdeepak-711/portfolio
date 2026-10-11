@@ -62,11 +62,11 @@ const PROJECTS: Project[] = [
       "Give it a GitHub repo and one issue — it returns the root cause with every code citation checked against the source, and tells you which open PR to merge. Claude Code investigates read-only; a checker verifies each file:line:quote and retries once on a miss; SQL over diff hunks cuts the open PRs to the ones touching cited lines; git merge-tree proves which merge clean. On HackerRank's hiring-agent #424 it cut 192 open PRs to 25 and picked #425 for $0.41 — and caught a mistake in my own 1.5-hour hand review.",
     stack: ["Python", "Postgres", "Claude Code headless", "GitHub CLI", "git merge-tree", "54 pytest tests"],
     links: [
-      { label: "live packet", href: "https://escalation-gate-lemon.vercel.app" },
+      { label: "live packet", href: "https://escalation-gate-rdeepak.vercel.app" },
       { label: "github", href: "https://github.com/rdeepak-711/escalation-gate" },
       { label: "write-up", href: "/writing/escalation-gate" },
     ],
-    image: { src: "/work-escalation-gate.jpg", w: 1200, h: 780, domain: "escalation-gate-lemon.vercel.app", href: "https://escalation-gate-lemon.vercel.app/packets/hiring-agent-424.html" },
+    image: { src: "/work-escalation-gate.jpg", w: 1200, h: 780, domain: "escalation-gate-rdeepak.vercel.app", href: "https://escalation-gate-rdeepak.vercel.app/packets/hiring-agent-424.html" },
   },
 ];
 
