@@ -19,7 +19,7 @@ const HERO_LINKS = [
 const PROOF = [
   "5 → 32 sites / 4 weeks",
   "₹1L+ in month one",
-  "live WhatsApp SaaS",
+  "WhatsApp SaaS, built solo",
   "10K+ emails/mo classified",
 ];
 
@@ -37,10 +37,10 @@ const PROJECTS: Project[] = [
   {
     no: "01",
     name: "Outbuiltit",
-    tag: "my product · live",
+    tag: "my product · paused",
     blurb:
-      "A multi-tenant WhatsApp booking SaaS for salons and spas — businesses take bookings, enquiries, and payments entirely over WhatsApp, no app install. I built it from scratch: tenant isolation on a shared TiDB (MySQL) database, a per-tenant Twilio number, a pure-function FSM bot (8 states) with a Gemini info-bot, Razorpay payment links with HMAC-verified webhooks, and a Next.js dashboard. Launched commercially, onboarding first paying tenants.",
-    stack: ["Next.js 16", "TiDB Cloud", "Twilio", "Razorpay + HMAC", "Gemini", "Prisma", "79 Vitest tests"],
+      "A multi-tenant WhatsApp ordering bot — customers order and pay entirely over WhatsApp, no app install. I built it solo: a pure-function state machine (17 states) instead of an LLM-driven flow, so every conversation is predictable and testable; Razorpay payment links with HMAC-verified webhooks; and a Next.js dashboard. I took it to market and paused it with no paying customers — the product worked, getting it in front of buyers didn't.",
+    stack: ["Next.js", "TypeScript", "Twilio", "Razorpay + HMAC", "49 Vitest tests"],
     links: [{ label: "outbuiltit.com", href: "https://outbuiltit.com" }],
     image: { src: "/work-outbuiltit.jpg", w: 1200, h: 780, domain: "outbuiltit.com", href: "https://outbuiltit.com" },
   },
@@ -343,9 +343,9 @@ export default function Home() {
             agents, the queues, the payments, the eval gates.
           </p>
           <p>
-            My edge is integration and velocity: turning an idea into a working,
-            paying product, or a manual process into a pipeline that runs itself.
-            I&apos;ve shipped a live WhatsApp SaaS solo and an automation pipeline
+            My edge is integration and velocity: turning an idea into a working
+            product, or a manual process into a pipeline that runs itself.
+            I&apos;ve built a multi-tenant WhatsApp SaaS solo and an automation pipeline
             that put 32 sites in production in four weeks.
           </p>
           <p>

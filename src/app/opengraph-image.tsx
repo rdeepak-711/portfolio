@@ -12,7 +12,7 @@ const ACCENT = "#c2541f";
 
 const METRICS = [
   "5 to 32 sites in 4 weeks",
-  "live WhatsApp SaaS",
+  "WhatsApp SaaS, built solo",
   "10K+ emails / month classified",
 ];
 
