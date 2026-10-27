@@ -28,6 +28,10 @@ const SECTIONS = [
     h: 'Revoking access',
     p: 'Access can be removed at any time at myaccount.google.com/permissions. Deleting the token on the laptop also stops the script.',
   },
+  {
+    h: 'This website',
+    p: 'rdeepak.vercel.app uses Google Analytics 4 to count page visits, how people arrive and which pages they read. It sets cookies and collects usage data such as pages viewed, device type and approximate location. You can block it with your browser’s cookie or tracker settings.',
+  },
 ]
 
 export default function Privacy() {
