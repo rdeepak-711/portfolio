@@ -4,11 +4,11 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Scaling site production 5 → 32 in 4 weeks · Deepak Ramesh",
   description:
-    "How I built a multi-agent content pipeline on Celery + Redis that scaled WordPress site production from 5 to 32 sites in 4 weeks — and treated LLM output as untrusted by default.",
+    "How I built the AI content pipeline (Python, Bash, WP-CLI, Claude) that took Firestorm's site production from about 5 a month to 32 in four weeks, with a human gate where the model was least reliable.",
   openGraph: {
     title: "Scaling site production 5 → 32 in 4 weeks",
     description:
-      "The multi-agent content pipeline — the single-agent failure that forced the split, the Celery/Redis backbone, and treating LLM output as untrusted.",
+      "The single-prompt failure that forced the split into stages, the human gate on images, and the review agents that removed the next bottleneck.",
     type: "article",
   },
 };
@@ -25,7 +25,7 @@ const METRICS = [
   ["5 → 32", "sites in 4 weeks"],
   ["₹1L+", "commission, month one"],
   ["4–10 days → hours", "per-site build time"],
-  ["1,200–1,800", "pages / month"],
+  ["68 of 117", "network sites built"],
 ];
 
 export default function CaseStudy() {
@@ -46,10 +46,9 @@ export default function CaseStudy() {
         Scaling site production 5 → 32 in 4 weeks.
       </h1>
       <p className="mt-6 max-w-[60ch] text-lg text-muted">
-        A multi-agent content pipeline on an async queue that took site
-        production from a manual, days-per-site crawl to 32 published sites in a
-        month — while keeping a human in the loop where the AI was least
-        trustworthy.
+        An AI content pipeline that took site production from a manual,
+        days-per-site job to 32 published sites in a month, while keeping a
+        human in the loop where the model was least reliable.
       </p>
 
       <dl className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-4">
@@ -73,64 +72,58 @@ export default function CaseStudy() {
 
         <H no="02">The pipeline</H>
         <p>
-          I built an end-to-end pipeline (Python + Bash + WP-CLI) that takes a
-          blank WordPress install and produces a configured, content-populated,
-          publish-ready site: path discovery and SSH checks, plugin cleanup and
-          install, premium license activation, design customization (logo,
-          colors, typography) via WP-CLI, layout and elements import, indexing
-          settings, AI article generation over templates, image sourcing and
-          interlinking, then publishing. The only human step left is a final
-          image review.
+          I built an end-to-end pipeline in Python, Bash and WP-CLI, with
+          Claude doing the writing, designed and built with Claude Code. It
+          generates the content, sources images from GetYourGuide, and sets up
+          and deploys each WordPress site through WP-CLI. The only human step
+          left is image selection.
         </p>
 
         <H no="03">The multi-agent turn</H>
         <p>
-          My first version used a single agent to do both the writing and the
-          HTML/template generation. It was unreliable — the model juggling two
-          jobs produced worse output on both. So I split it: one agent (Claude)
-          owns content creation, a second path (Python + Claude) owns
-          HTML/template generation. Quality jumped once each agent had a single
-          responsibility. That &quot;one agent, one job&quot; lesson is the core
-          of how I design agent systems now.
+          My first version used a single prompt to do both the writing and the
+          HTML and template generation, and it failed on quality: the model
+          juggling two jobs did worse at both. So I split it into separate LLM
+          stages: content first, then HTML and templates, with Python between
+          them. Quality went up once each stage had one job. That &quot;one
+          stage, one job&quot; lesson is how I design agent systems now.
         </p>
 
-        <H no="04">Treating the LLM as untrusted</H>
+        <H no="04">Where the human stays</H>
         <p>
-          LLM output is untrusted by default in this system. Every model
-          response is validated against the structure I expect; malformed
-          responses are retried before anything moves downstream. And I kept a
-          deliberate human gate exactly where the AI was least reliable and a
-          wrong output going live was most costly — image selection. Knowing
-          when <em>not</em> to automate is as much the design as the automation.
+          I kept a deliberate human gate on image selection, because that is
+          where the model was least reliable and a wrong image going live cost
+          the most. Everything mechanical around it is automated. Knowing when
+          <em> not</em> to automate is as much the design as the automation.
         </p>
 
-        <H no="05">The async backbone</H>
+        <H no="05">The next bottleneck: review</H>
         <p>
-          Generation, image fetching, and publishing are long-running and
-          failure-prone, so they don&apos;t run inline. I built an async job
-          queue on Celery + Redis: every task is a durable worker with retry
-          policies, exponential backoff, and dead-letter queues, so a transient
-          API failure costs a retry, not a run. The same backbone powers an
-          internal contact-management tool that aggregates enquiries across 40+
-          sites.
+          Once the pipeline was building sites fast, first-run review that used
+          to be spread across five writers all landed on me. I fixed that with a
+          review template, an agent that reads the writers&apos; review and
+          turns it into todos, and a second agent that reads the code, decides
+          whether each issue is an exception or a code bug, and fixes it. One
+          review round went from a few hours to under 45 minutes. Every fix was
+          checked twice: I read the agent&apos;s fix, then the writers reviewed
+          the output on the re-run.
         </p>
 
         <H no="06">Outcome</H>
         <p>
-          The pipeline scaled production from 5 to 32 sites in 4 weeks and drove
-          ₹1L+ in affiliate commission in the first month, with per-site build
-          time dropping from days to a few hours and throughput reaching
-          1,200–1,800 pages a month. The whole thing is containerized and
-          shipped through Google Cloud Build on GCP.
+          Per-site build time fell from 4–10 days to a few hours. Production
+          went from about 5 sites a month to 32 in the first four weeks and 36
+          in the next four, which is 68 of the network&apos;s 117 sites. Those
+          sites earned ₹1L+ in affiliate commission in the first month.
         </p>
 
         <H no="07">What I&apos;d do next</H>
         <p>
-          Add an eval layer that scores generated content before publish (not
-          just schema-validates it), so quality is measured, not assumed; widen
-          the human gate into a lightweight review queue with quality signals;
-          and add per-task observability — token cost, latency, retry rates —
-          to tune the pipeline on data rather than intuition.
+          Add an eval layer that scores generated content before publish, so
+          quality is measured, not assumed; widen the human gate into a
+          lightweight review queue with quality signals; and add per-task
+          observability (token cost, latency, failure rates) to tune the
+          pipeline on data rather than intuition.
         </p>
       </div>
 

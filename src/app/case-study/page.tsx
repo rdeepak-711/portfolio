@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Case Studies · Deepak Ramesh",
   description:
-    "Deep-dives on the systems I've built — a multi-agent content pipeline and an enterprise RPA + ML email-classification system.",
+    "Deep-dives on the systems I've built — an AI content pipeline and the enterprise automations around an email classifier.",
 };
 
 const STUDIES = [
@@ -14,15 +14,15 @@ const STUDIES = [
     org: "Firestorm Internet",
     href: "/case-study/firestorm-pipeline",
     blurb:
-      "The multi-agent content pipeline — the single-agent failure that forced the split, the Celery/Redis backbone, and treating LLM output as untrusted by default.",
+      "The single-prompt failure that forced the split into stages, the human gate on images, and the review agents that removed the next bottleneck.",
   },
   {
     no: "02",
-    title: "Classifying 10K+ emails a month with RPA + ML",
+    title: "Routing 10K+ emails a month into SAP and ServiceNow",
     org: "UiPath",
     href: "/case-study/uipath-ml",
     blurb:
-      "Training and deploying a Communications-Mining model, wiring it into SAP and ServiceNow, and lifting enterprise workflow throughput by 70%.",
+      "Building the automations around a Communications Mining classifier, wiring its output into SAP and ServiceNow, and lifting enterprise workflow throughput by 70%.",
   },
 ];
 

@@ -9,7 +9,7 @@ Personal portfolio site for **Deepak Ramesh — AI Engineer · LLM Pipelines & A
 
 - **Live:** https://rdeepak.vercel.app
 - **Repo:** github.com/rdeepak-711/portfolio (public)
-- **Local:** `~/Desktop/portfolio`
+- **Local:** `/Volumes/asus/projects/portfolio`
 
 ## Stack
 - Next.js 16 (App Router, Turbopack) · TypeScript · Tailwind v4 (CSS-first `@theme`) · `next/font/google`.
@@ -35,7 +35,9 @@ Distinctive, document-like, anti-AI-slop. Do NOT drift toward generic templates.
 
 ## Content rules (IMPORTANT — honesty)
 - Source of truth for all claims = `cv.md` in the career-ops project (`~/.../career-ops/cv.md`). Only state things that are TRUE and in the CV. Verify any new claim with Deepak.
-- Showcase: Outbuiltit (his product), CrowdTracker (his product), Firestorm experience (his automation pipeline work), UiPath experience (RPA/ML).
+- Showcase (27 Oct 2026): Outbuiltit as his studio (outbuiltit.com) holding escalation-gate (gate.outbuiltit.com, MCP server) and LifeDots (lifedots.outbuiltit.com, Chrome Web Store), plus the WhatsApp bots as past work with no paying customers; CrowdTracker as a Firestorm product he is sole developer of; Firestorm experience; UiPath experience (automations around an AI scientist's classifier, not model training).
+- Firestorm title is "Software Engineer" (never "II"). Never claim Cloud Build, CI/CD, dead-letter queues, backoff or structured-output validation. `src/app/content-honesty.test.tsx` fails if any retired claim comes back; add to its BANNED list when a claim is retired.
+- Résumé: `public/Deepak-R-Resume.pdf` is a copy of career-ops `output/Deepak-R-Resume.pdf`; `public/deepak-ramesh-resume.pdf` is kept as the same file so old links still work.
 - DELIBERATELY EXCLUDED: `presolv-agent` (private take-home tied to a live hiring process) and `career-ops` (a fork he extended, not his build). Do not add them.
 - Positioning line: "AI Engineer · LLM Pipelines & Automation". Lead with real strengths (LLM integration + automation + velocity); do not overclaim deep-ML-research depth.
 

@@ -9,7 +9,7 @@ const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--ff-mono" });
 const SITE = "https://rdeepak.vercel.app";
 const TITLE = "Deepak Ramesh — AI Engineer · LLM Pipelines & Automation";
 const DESCRIPTION =
-  "I build and run production AI agents and automation end to end. A live multi-tenant WhatsApp SaaS, a multi-agent pipeline that scaled site production 5→32 in 4 weeks, ML email classification at 10K+/month.";
+  "I build AI agents and LLM automation end to end: the pipeline behind 68 of Firestorm's 117 sites (5 → 32 a month), escalation-gate (an open-source agent that checks every citation it makes) and LifeDots, from my studio Outbuiltit.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),

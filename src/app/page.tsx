@@ -19,8 +19,8 @@ const HERO_LINKS = [
 const PROOF = [
   "5 → 32 sites / 4 weeks",
   "₹1L+ in month one",
-  "WhatsApp SaaS, built solo",
-  "10K+ emails/mo classified",
+  "6/6 citations checked",
+  "10K+ emails/mo routed",
 ];
 
 type Project = {
@@ -37,37 +37,51 @@ const PROJECTS: Project[] = [
   {
     no: "01",
     name: "Outbuiltit",
-    tag: "my product · paused",
+    tag: "my studio · 2025 — present",
     blurb:
-      "A multi-tenant WhatsApp ordering bot — customers order and pay entirely over WhatsApp, no app install. I built it solo: a pure-function state machine (17 states) instead of an LLM-driven flow, so every conversation is predictable and testable; Razorpay payment links with HMAC-verified webhooks; and a Next.js dashboard. I took it to market and paused it with no paying customers — the product worked, getting it in front of buyers didn't.",
-    stack: ["Next.js", "TypeScript", "Twilio", "Razorpay + HMAC", "49 Vitest tests"],
+      "My indie product studio, where I build my own products solo, from the first commit to the deploy. Two are live: escalation-gate and LifeDots, below. Before them came WhatsApp bots: GlowZone, a salon booking bot with a pure state-machine core, LLM intent parsing on top with a keyword fallback, an owner dashboard that prevents double-booking and 495 Vitest tests; then a multi-tenant ordering bot with a 17-state machine and HMAC-verified Razorpay webhooks. The bots worked; finding buyers for them didn't, so I moved on to tools developers use.",
+    stack: ["Next.js", "TypeScript", "Prisma", "MySQL (TiDB Cloud)", "WhatsApp Cloud API", "Razorpay + HMAC", "Vitest"],
     links: [{ label: "outbuiltit.com", href: "https://outbuiltit.com" }],
     image: { src: "/work-outbuiltit.jpg", w: 1200, h: 780, domain: "outbuiltit.com", href: "https://outbuiltit.com" },
   },
   {
     no: "02",
-    name: "CrowdTracker",
-    tag: "my product · live",
-    blurb:
-      "A travel-planning platform that tells you when to visit attractions based on crowd-density and wait-time signals. Sole developer — designed the data model, built the frontend and API layer, deployed on GCP. Migrating the stack from React + PHP to Next.js (SSR + API routes) grew daily organic users from 60 to 400+, with zero paid acquisition.",
-    stack: ["Next.js", "MySQL", "GCP", "SSR"],
-    links: [{ label: "crowd-tracker.com", href: "https://crowd-tracker.com" }],
-    image: { src: "/work-crowdtracker.jpg", w: 1200, h: 673, domain: "crowd-tracker.com", href: "https://crowd-tracker.com" },
-  },
-  {
-    no: "03",
     name: "escalation-gate",
-    tag: "my build · open source",
+    tag: "outbuiltit · open source",
     blurb:
-      "Give it a GitHub repo and one issue — it returns the root cause with every code citation checked against the source, and tells you which open PR to merge. Claude Code investigates read-only; a checker verifies each file:line:quote and retries once on a miss; SQL over diff hunks cuts the open PRs to the ones touching cited lines; git merge-tree proves which merge clean. On HackerRank's hiring-agent #424 it cut 192 open PRs to 25 and picked #425 for $0.41 — and caught a mistake in my own 1.5-hour hand review.",
-    stack: ["Python", "Postgres", "Claude Code headless", "GitHub CLI", "git merge-tree", "54 pytest tests"],
+      "Give it a GitHub repo and an issue: it finds the root cause, checks every code citation against the source, and names the open PR that fixes it and whether it merges cleanly. The model runs in 2 of 6 stages; the other four check or narrow its work: a citation checker, a SQL shortlist from diff hunk ranges, git merge-tree dry-run merges, and a packet that keeps model reasoning apart from checked facts. On HackerRank's hiring-agent issue #424 it verified 6 of 6 citations, cut 192 open PRs to 25 and picked #425 for $0.41. It caught a mistake in my own hand review, and it found an unreported bug I filed upstream (issue #479, fix PR #480). It also runs as an MCP server, so an agent like Claude Code can sweep a repo's top issues in the background and get the PR to merge for each.",
+    stack: ["Python", "PostgreSQL", "Claude Code headless", "MCP server", "GitHub CLI", "git merge-tree", "pytest"],
     links: [
-      { label: "live packet", href: "https://escalation-gate-rdeepak.vercel.app" },
+      { label: "gate.outbuiltit.com", href: "https://gate.outbuiltit.com" },
       { label: "github", href: "https://github.com/rdeepak-711/escalation-gate" },
       { label: "write-up", href: "/writing/escalation-gate" },
       { label: "upstream fix · PR #480", href: "https://github.com/interviewstreet/hiring-agent/pull/480" },
     ],
-    image: { src: "/work-escalation-gate.jpg", w: 1200, h: 780, domain: "escalation-gate-rdeepak.vercel.app", href: "https://escalation-gate-rdeepak.vercel.app/packets/hiring-agent-424.html" },
+    image: { src: "/work-escalation-gate.jpg", w: 1200, h: 780, domain: "gate.outbuiltit.com", href: "https://gate.outbuiltit.com/packets/hiring-agent-424.html" },
+  },
+  {
+    no: "03",
+    name: "LifeDots",
+    tag: "outbuiltit · chrome extension",
+    blurb:
+      "A Chrome extension that counts real minutes on the sites you pick for one habit (LeetCode, say) and gives you one dot a day. No streaks to break, and nothing leaves your computer: it makes no network requests at all. Published on the Chrome Web Store.",
+    stack: ["TypeScript", "Chrome Manifest V3", "Vite", "Vitest"],
+    links: [
+      { label: "lifedots.outbuiltit.com", href: "https://lifedots.outbuiltit.com" },
+      { label: "chrome web store", href: "https://chromewebstore.google.com/detail/lifedots/jnilnnaeidhijpogedkmchpbiphngdkc" },
+      { label: "github", href: "https://github.com/rdeepak-711/lifedots-extension" },
+    ],
+    image: { src: "/work-lifedots.jpg", w: 1200, h: 780, domain: "lifedots.outbuiltit.com", href: "https://lifedots.outbuiltit.com" },
+  },
+  {
+    no: "04",
+    name: "CrowdTracker",
+    tag: "at firestorm · live",
+    blurb:
+      "A Firestorm product that tells travellers when to visit an attraction. I'm its sole developer: I migrated it from React and PHP to Next.js, and organic users grew from 60–70 a day to 600+ a day (17,331 users and 25,463 page views in the 28 days to 15 Oct 2026, GA4).",
+    stack: ["Next.js", "SSR", "migrated from React + PHP"],
+    links: [{ label: "crowd-tracker.com", href: "https://crowd-tracker.com" }],
+    image: { src: "/work-crowdtracker.jpg", w: 1200, h: 673, domain: "crowd-tracker.com", href: "https://crowd-tracker.com" },
   },
 ];
 
@@ -81,14 +95,14 @@ type Role = {
 
 const EXPERIENCE: Role[] = [
   {
-    title: "Software Engineer II",
+    title: "Software Engineer",
     company: "Firestorm Internet",
     dates: "Jul 2025 — Present",
     points: [
-      "Built and run an end-to-end AI automation pipeline that scaled WordPress site production from 5 to 32 sites in 4 weeks — generating ₹1L+ in affiliate commissions in the first month. Handles AI content generation, image sourcing, and WordPress deployment, with a human gate only on image review.",
-      "Designed a multi-agent content architecture after hitting single-agent failures — separated content creation (Claude) from HTML/template generation (Python + Claude); quality jumped once each agent had one responsibility.",
-      "Built an async job queue (Celery + Redis) — every long task runs as a durable worker with retry policies, exponential backoff, and dead-letter queues. Treats LLM output as untrusted: structured-output validation, retries on malformed responses, human gates where AI is least reliable.",
-      "Built an internal contact-management tool (React + FastAPI) aggregating enquiries from 40+ sites with a Gmail-integrated triage interface. Own containerization and CI/CD — Docker, Google Cloud Build, deployed on GCP.",
+      "Built the AI content automation pipeline (Python, Bash, WP-CLI, Claude) behind 68 of the network's 117 attraction-ticket sites. It writes the content, sources images from GetYourGuide, and sets up and deploys each WordPress site. Per-site build time fell from 4–10 days to a few hours: 32 sites in the first four weeks and 36 in the next four, up from about 5 a month. The sites earned ₹1L+ in affiliate commission in the first month.",
+      "Split a single-prompt pipeline into separate LLM stages (content, then HTML and templates, with Python between them) after the single-prompt version failed on quality. Kept a human gate on image selection on purpose: that's where the model was least reliable and a wrong output going live cost the most.",
+      "Removed the review bottleneck the pipeline created: a review template, an agent that turns the writers' review into todos, and a second agent that reads the code, decides whether each issue is an exception or a code bug, and fixes it. One review round went from a few hours to under 45 minutes, and I checked every fix.",
+      "Built an internal contact tool (React + FastAPI) that pulls enquiries from 40+ sites into one Gmail-integrated inbox, and an async background job queue on Celery and Redis. Containerised the services with Docker.",
     ],
     caseStudy: "/case-study/firestorm-pipeline",
   },
@@ -97,21 +111,23 @@ const EXPERIENCE: Role[] = [
     company: "UiPath",
     dates: "Feb 2023 — Nov 2024",
     points: [
-      "Helped train and deploy an ML email-classification system (UiPath Communications Mining) routing 10K+ emails/month across 200+ client-configured sources — 85–90% accuracy, built with an AI scientist.",
-      "Integrated classification outputs with SAP and ServiceNow for downstream routing and validation; redesigned exception handling and routing logic to improve workflow throughput by 70%.",
-      "Implemented UiPath Computer Vision for remote-desktop automation — extraction and form-filling across legacy enterprise interfaces.",
+      "Built the automations around a Communications Mining email classifier (the model was an AI scientist's): 10K+ emails a month from 200+ sources, at 85–90% accuracy on historical data, routed into SAP and ServiceNow.",
+      "Redesigned exception handling, routing and validation across the SAP and ServiceNow integrations, which raised workflow throughput by 70%.",
+      "Built remote-desktop automations with UiPath Computer Vision for data extraction and form filling on legacy enterprise screens.",
+      "Fixed a client's document problem by changing the input, not the model: a medical-insurance client's invoices came in too many layouts for Document Understanding, so we gave their team an Excel template with drop-downs. Complete entries went from roughly 40% to 80%.",
+      "Led most client delivery calls, walking client teams through what was being automated and how.",
     ],
     caseStudy: "/case-study/uipath-ml",
   },
 ];
 
 const SKILLS: { group: string; items: string }[] = [
-  { group: "LLM & AI", items: "Claude · OpenAI · Gemini · multi-agent pipelines · structured-output validation · agent reliability · Claude Code" },
-  { group: "Automation & Async", items: "end-to-end pipelines · Celery · Redis · retry policies · backoff · dead-letter queues · UiPath Studio · Communications Mining" },
-  { group: "Backend", items: "Python · TypeScript · JavaScript · Bash · Java · FastAPI · REST · WP-CLI · Prisma" },
-  { group: "Data", items: "MySQL · TiDB Cloud · MongoDB · PostgreSQL" },
-  { group: "Cloud / DevOps / Frontend", items: "GCP · Vercel · Docker · Cloud Build (CI/CD) · Git · React · Next.js (App Router)" },
-  { group: "Integrations / Testing", items: "Twilio · Razorpay · OpenRouter · pytest · Vitest" },
+  { group: "AI & agents", items: "LLM pipelines · AI agents · MCP servers · Claude · OpenAI · OpenRouter · output checking (citations, run-to-run variance) · Claude Code" },
+  { group: "Automation & RPA", items: "UiPath (Studio, Orchestrator, Apps, Computer Vision, Communications Mining) · SAP and ServiceNow integrations · WP-CLI · Bash" },
+  { group: "Backend", items: "Python · TypeScript · FastAPI · REST APIs · Celery · Redis" },
+  { group: "Databases", items: "PostgreSQL · MySQL (TiDB Cloud) · Prisma" },
+  { group: "Frontend", items: "React · Next.js (App Router)" },
+  { group: "Infra & testing", items: "Docker · GCP · Vercel · Git · WhatsApp Cloud API · Razorpay · pytest · Vitest" },
 ];
 
 function ArrowLink({ label, href }: { label: string; href: string }) {
@@ -196,7 +212,7 @@ export default function Home() {
           style={{ animationDelay: "0ms" }}
         >
           AI Engineer · LLM Pipelines &amp; Automation
-          <span className="text-muted"> — Chennai · Remote</span>
+          <span className="text-muted"> — Chennai · on-site anywhere in India or remote</span>
         </p>
 
         <h1
@@ -210,9 +226,10 @@ export default function Home() {
           className="reveal mt-7 max-w-[60ch] text-base text-muted sm:text-lg"
           style={{ animationDelay: "160ms" }}
         >
-          I build and run production AI agents and automation end to end — and I
-          treat LLM output as untrusted by default: schema validation, retries,
-          human gates. I ship only code I&apos;ve read and tested.
+          I build AI agents and automation end to end, and I treat LLM output as
+          untrusted by default: code checks what the model claims, and a human
+          gate sits where the model is least reliable. I ship only code I&apos;ve
+          read and tested.
         </p>
 
         <ul
@@ -337,16 +354,16 @@ export default function Home() {
         <SectionLabel no="04">About</SectionLabel>
         <div className="reveal-scroll mt-10 max-w-[62ch] space-y-5 text-lg text-ink/85">
           <p>
-            I&apos;m an AI and automation engineer in Chennai, India. I came up
-            through RPA at UiPath, moved into building production automation
-            pipelines, and now build LLM-integrated products end to end — the
-            agents, the queues, the payments, the eval gates.
+            I&apos;m a software engineer in Chennai, India, about three years
+            in. I came up through RPA at UiPath, moved into building LLM
+            pipelines at Firestorm, and run Outbuiltit, my own studio, on the
+            side: the agents, the checks around them, the payments, the deploys.
           </p>
           <p>
-            My edge is integration and velocity: turning an idea into a working
-            product, or a manual process into a pipeline that runs itself.
-            I&apos;ve built a multi-tenant WhatsApp SaaS solo and an automation pipeline
-            that put 32 sites in production in four weeks.
+            My edge is integration and velocity: turning a manual process into a
+            pipeline that runs itself, or an idea into a working product. I
+            built the pipeline that put 32 sites in production in four weeks,
+            and an open-source agent that checks every citation it makes.
           </p>
           <p>
             B.E. Computer Science, Coimbatore Institute of Technology (8.5/10).
@@ -366,14 +383,21 @@ export default function Home() {
               title: "Scaling site production 5 → 32 in 4 weeks",
               href: "/case-study/firestorm-pipeline",
               blurb:
-                "The multi-agent content pipeline — the single-agent failure that forced the split, the async backbone, and treating LLM output as untrusted by default.",
+                "The single-prompt failure that forced the split into stages, the human gate on images, and the review agents that removed the next bottleneck.",
             },
             {
               no: "02",
-              title: "Classifying 10K+ emails a month with RPA + ML",
+              title: "escalation-gate: from a GitHub issue to the PR that fixes it",
+              href: "/writing/escalation-gate",
+              blurb:
+                "A model cites the code, a checker verifies every citation, and SQL cuts 192 open PRs to 25. It also caught a mistake in my own review.",
+            },
+            {
+              no: "03",
+              title: "Routing 10K+ emails a month into SAP and ServiceNow",
               href: "/case-study/uipath-ml",
               blurb:
-                "Training and deploying a Communications-Mining model at UiPath, wiring it into SAP and ServiceNow, and lifting workflow throughput 70%.",
+                "Building the automations around a Communications Mining classifier at UiPath, wiring its output into SAP and ServiceNow, and lifting workflow throughput 70%.",
             },
           ].map((w) => (
             <Link key={w.no} href={w.href} className="group block max-w-[66ch]">
@@ -429,15 +453,15 @@ export default function Home() {
             Building something AI-native? Let&apos;s talk.
           </p>
           <p className="mt-5 max-w-[52ch] text-lg text-muted">
-            I&apos;m after remote AI-engineering or forward-deployed work where
-            shipping fast and building the automation around LLMs is the actual
-            job — not a side quest. Fastest way to reach me is email.
+            I&apos;m after AI-engineering, backend or forward-deployed work,
+            on-site anywhere in India or remote, where building the automation
+            around LLMs is the actual job. Fastest way to reach me is email.
           </p>
           <nav className="mt-8 flex flex-wrap gap-x-8 gap-y-3 text-base">
             <ArrowLink label="Email" href="mailto:deepakrameshh@gmail.com" />
             <ArrowLink label="LinkedIn" href="https://www.linkedin.com/in/rdeepak/" />
             <ArrowLink label="GitHub" href="https://github.com/rdeepak-711" />
-            <ArrowLink label="Résumé" href="/deepak-ramesh-resume.pdf" />
+            <ArrowLink label="Résumé" href="/Deepak-R-Resume.pdf" />
             <ArrowLink label="Outbuiltit" href="https://outbuiltit.com" />
           </nav>
         </div>

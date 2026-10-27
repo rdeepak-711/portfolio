@@ -46,7 +46,7 @@ export default function SectionNav() {
         </a>
       ))}
       <a
-        href="/deepak-ramesh-resume.pdf"
+        href="/Deepak-R-Resume.pdf"
         target="_blank"
         rel="noopener noreferrer"
         className="text-accent transition-opacity hover:opacity-70"

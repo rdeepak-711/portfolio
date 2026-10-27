@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Classifying 10K+ emails a month with RPA + ML — case study";
+export const alt = "Routing 10K+ emails a month into SAP and ServiceNow — case study";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -33,7 +33,7 @@ export default function Image() {
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", fontSize: 68, fontWeight: 700, letterSpacing: -2, lineHeight: 1.05, maxWidth: 1000 }}>
-            Classifying 10K+ emails a month with RPA + ML
+            Routing 10K+ emails a month into SAP and ServiceNow
           </div>
           <div style={{ display: "flex", marginTop: 18, fontSize: 30, color: MUTED }}>by Deepak Ramesh</div>
         </div>

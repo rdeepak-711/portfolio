@@ -33,7 +33,7 @@ export const NOTES: ReadonlyArray<Note> = [
     body: [
       {
         kind: 'p',
-        text: 'HackerRank’s hiring-agent scores résumés with an LLM. Issue #424 says the same résumé gets different scores on different runs. I scored one résumé 30 times: the spread was 6 points at the default temperature and 3 at temperature 0. The repo had 192 open pull requests. Some of them claimed to fix scoring consistency. Which one actually fixes this bug?',
+        text: 'HackerRank’s hiring-agent scores résumés with an LLM. Issue #424 says the GitHub enrichment step works out each repo’s project type and contributor counts, and none of it reaches the evaluator. The repo had 192 open pull requests, and several of them touch this path. Which one actually fixes this bug?',
       },
       {
         kind: 'p',
@@ -89,13 +89,13 @@ export const NOTES: ReadonlyArray<Note> = [
         kind: 'list',
         items: [
           '#424: 6/6 citations verified · 192 → 25 PRs shortlisted · #425 recommended, merges clean · $0.11 to investigate + $0.30 to judge, on Sonnet.',
-          'Python, Postgres, the GitHub CLI and Claude Code headless (--json-schema, --session-id, stream-json logs). 54 pytest tests, none of which call the model.',
+          'Python, Postgres, the GitHub CLI and Claude Code headless (--json-schema, --session-id, stream-json logs). The pytest suite never calls the model. Since this write-up it also runs as an MCP server, so an agent like Claude Code can sweep a repo’s top issues in the background.',
           'Limits: tested end to end on two unrelated repos so far (hiring-agent and spark-stratifier), and runs vary. Next is V2 — apply the recommended PR to a throwaway copy, rerun the reproduction, and put the measured result in the packet.',
         ],
       },
       {
         kind: 'p',
-        text: 'Code: github.com/rdeepak-711/escalation-gate. Live boards, packets and two short videos: escalation-gate-rdeepak.vercel.app. Upstream fix: github.com/interviewstreet/hiring-agent/pull/480.',
+        text: 'Code: github.com/rdeepak-711/escalation-gate. Live boards, packets and two short videos: gate.outbuiltit.com. Upstream fix: github.com/interviewstreet/hiring-agent/pull/480.',
       },
     ],
   },

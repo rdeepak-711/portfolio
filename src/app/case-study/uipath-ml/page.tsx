@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Classifying 10K+ emails a month with RPA + ML · Deepak Ramesh",
+  title: "Routing 10K+ emails a month into SAP and ServiceNow · Deepak Ramesh",
   description:
-    "How I trained and deployed a Communications-Mining model at UiPath, wired it into SAP and ServiceNow, and lifted enterprise workflow throughput by 70%.",
+    "How I built the automations around a Communications Mining email classifier at UiPath, wired its output into SAP and ServiceNow, and lifted enterprise workflow throughput by 70%.",
   openGraph: {
-    title: "Classifying 10K+ emails a month with RPA + ML",
+    title: "Routing 10K+ emails a month into SAP and ServiceNow",
     description:
-      "Training and deploying a Communications-Mining model, wiring it into SAP and ServiceNow, and lifting workflow throughput 70%.",
+      "Building the automations around a Communications Mining classifier, wiring its output into SAP and ServiceNow, and lifting workflow throughput 70%.",
     type: "article",
   },
 };
@@ -22,7 +22,7 @@ function H({ no, children }: { no: string; children: React.ReactNode }) {
 }
 
 const METRICS = [
-  ["10K+ / mo", "emails classified"],
+  ["10K+ / mo", "emails routed"],
   ["85–90%", "accuracy"],
   ["+70%", "workflow throughput"],
   ["200+", "client sources"],
@@ -43,13 +43,13 @@ export default function UiPathCaseStudy() {
         Case Study · UiPath
       </p>
       <h1 className="mt-4 font-display text-[clamp(2rem,6vw,3.25rem)] font-semibold leading-[1.06] tracking-[-0.025em]">
-        Classifying 10K+ emails a month with RPA + ML.
+        Routing 10K+ emails a month into SAP and ServiceNow.
       </h1>
       <p className="mt-6 max-w-[60ch] text-lg text-muted">
-        An ML email-classification system that routed enterprise mail across
-        200+ sources at 85–90% accuracy — and, just as importantly, bridged its
-        output into the SAP and ServiceNow systems where the actual work
-        happens.
+        The automations around an email classifier that sorted enterprise
+        mail from 200+ sources at 85–90% accuracy, and the part that mattered
+        most: getting its output into the SAP and ServiceNow systems where the
+        actual work happens.
       </p>
 
       <dl className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-4">
@@ -73,11 +73,10 @@ export default function UiPathCaseStudy() {
 
         <H no="02">The classification model</H>
         <p>
-          Working with an AI scientist, I helped train and deploy an
-          email-classification system on UiPath&apos;s Communications Mining
-          API. It learned the clients&apos; real categories from historical
-          mail and reached 85–90% accuracy — high enough to route confidently,
-          with low-confidence cases falling back to a human.
+          The model was an AI scientist&apos;s, built on UiPath&apos;s
+          Communications Mining. It reached 85–90% accuracy on historical mail.
+          My job was everything around it: taking its output and turning it into
+          automations that did the work.
         </p>
 
         <H no="03">Bridging ML to enterprise systems</H>
@@ -119,10 +118,10 @@ export default function UiPathCaseStudy() {
         <H no="07">What I took from it</H>
         <p>
           This is where I learned to treat model output as a signal to be
-          validated and routed, not trusted blindly — confidence thresholds,
-          human fallback, exception paths. It&apos;s the same posture I apply to
-          LLMs today: schema-validate, retry, and keep a human gate where a wrong
-          answer is expensive.
+          validated and routed, not trusted blindly: validation, routing rules,
+          exception paths. It&apos;s the same posture I apply to
+          LLMs today: check what the model claims, and keep a human gate where a
+          wrong answer is expensive.
         </p>
       </div>
 

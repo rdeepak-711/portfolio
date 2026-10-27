@@ -12,8 +12,8 @@ const ACCENT = "#c2541f";
 
 const METRICS = [
   "5 to 32 sites in 4 weeks",
-  "WhatsApp SaaS, built solo",
-  "10K+ emails / month classified",
+  "open-source agent, 6/6 citations checked",
+  "10K+ emails / month routed",
 ];
 
 export default function OpengraphImage() {
