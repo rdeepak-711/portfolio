@@ -32,3 +32,13 @@ Why the site is the way it is. Newest first. Never delete an entry; mark it reve
 - CrowdTracker "60 to 400+" → "60–70 to 600+ a day" (GA4, 28 days to 15 Oct 2026); "my product" → a Firestorm product.
 - escalation-gate: issue #424 was described as "the same résumé gets different scores"; the real issue is "GitHub enrichment: project_type and contributor counts never reach the evaluator". Links moved from escalation-gate-rdeepak.vercel.app to gate.outbuiltit.com. "54 pytest tests" dropped (stale count).
 - Hero "schema validation, retries" → "code checks what the model claims, and a human gate sits where the model is least reliable".
+
+## 2026-10-27 · A /privacy page for the Codephilic publisher
+
+**Decided:** add `src/app/privacy/page.tsx`, a short privacy statement for the Codephilic publisher (the script that uploads to my YouTube channel), and use rdeepak.vercel.app as the home page and authorised domain on the codephilic-analytics Google OAuth consent screen.
+
+**Considered:** a GitHub Pages page on the codephilic-media repo. Rejected because that repo is a public image host for Instagram, and the portfolio is already the one site linked everywhere.
+
+**Why this won:** Google keeps "Publish app" disabled until the consent screen's branding has a home page and privacy policy, and a Testing-mode app's tokens expire after 7 days, which would break unattended uploads.
+
+**Cost:** an unlinked page on the portfolio that must stay true if the publisher ever gets other users or sends data anywhere.
