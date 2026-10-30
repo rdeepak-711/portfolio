@@ -22,6 +22,18 @@ const BANNED = [
   'escalation-gate-rdeepak.vercel.app',
   'same résumé gets different scores',
   'Classifying 10K+',
+  // retired 31 Oct 2026 (engineering dossier, 07_EVIDENCE_REGISTER.md)
+  'PakkaBot',
+  'Reckitt',
+  '600+',
+  '68 of',
+  '68 of the',
+  'fixed upstream',
+  'Senior',
+  'Quantitative',
+  '495 tests',
+  '79 tests',
+  '17-state',
 ]
 
 const pages = {
