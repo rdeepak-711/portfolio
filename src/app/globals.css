@@ -91,3 +91,57 @@ body {
     }
   }
 }
+
+@keyframes dee-idle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+@keyframes pipeline-reveal {
+  from { opacity: 0.25; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dee-figure { animation: dee-idle 3.8s ease-in-out infinite; }
+  .pipeline-stage { opacity: 0.25; animation: pipeline-reveal 0.45s ease-out forwards; }
+}
+
+@media (max-width: 639px) {
+  .dee-panel { border-radius: 1rem 1rem 0 0; }
+  .dee-panel-tour { height: auto; }
+  .dee-panel-chat { height: auto; }
+}
+
+.dee-tour-target {
+  position: relative;
+  scroll-margin-top: 80px;
+  outline: 1px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.dee-tour-target::before {
+  content: "Dee is here";
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
+  padding: 0.2rem 0.45rem;
+  border: 1px solid var(--color-accent);
+  background: var(--color-paper);
+  color: var(--color-accent);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.65rem;
+  line-height: 1.2;
+}
+
+.dee-launcher:focus-visible,
+.dee-panel :is(button, input, textarea):focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Tour targets keep their heading clear of the sticky header, even before the highlight class lands */
+#top, [id^="project-"], #how-i-work, #contact {
+  scroll-margin-top: 80px;
+}

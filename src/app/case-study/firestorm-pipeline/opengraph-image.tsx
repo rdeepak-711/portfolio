@@ -10,7 +10,7 @@ const MUTED = "#5c574f";
 const LINE = "#e2ddd6";
 const ACCENT = "#c2541f";
 
-const METRICS = ["5 to 32 sites in 4 weeks", "68 of 117 sites", "human gate on images"];
+const METRICS = ["5 to 32 sites in 4 weeks", "70+ sites", "human gate on images"];
 
 export default function Image() {
   return new ImageResponse(

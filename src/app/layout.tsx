@@ -11,9 +11,9 @@ const body = Hanken_Grotesk({ subsets: ["latin"], variable: "--ff-body" });
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--ff-mono" });
 
 const SITE = "https://rdeepak.vercel.app";
-const TITLE = "Deepak Ramesh — AI Engineer · LLM Pipelines & Automation";
+const TITLE = "Deepak Ramesh — Forward Deployed / Applied AI Engineer";
 const DESCRIPTION =
-  "I build AI agents and LLM automation end to end: the pipeline behind 68 of Firestorm's 117 sites (5 → 32 a month), escalation-gate (an open-source agent that checks every citation it makes) and LifeDots, from my studio Outbuiltit.";
+  "I turn slow manual work into checked AI pipelines: 70+ sites at Firestorm, a CrowdTracker migration with 108,043 users and 163,804 views from June to October 2026, and customer-side automation at UiPath.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),

@@ -5,7 +5,7 @@
 Context for any AI session working in this repo. Read before editing.
 
 ## What this is
-Personal portfolio site for **Deepak Ramesh — AI Engineer · LLM Pipelines & Automation** (Chennai, remote). Audience: recruiters, hiring managers, and VC talent/platform teams at AI-native startups. Job: convey real depth and get a reply. The build plan lives in `plan.html` (open in a browser).
+Personal portfolio site for **Deepak Ramesh — Forward Deployed / Applied AI Engineer** (Chennai, remote). Audience: recruiters, hiring managers, and VC talent/platform teams at AI-native startups. Job: convey real depth and get a reply. The build plan lives in `plan.html` (open in a browser).
 
 - **Live:** https://rdeepak.vercel.app
 - **Repo:** github.com/rdeepak-711/portfolio (public)
@@ -34,12 +34,12 @@ Distinctive, document-like, anti-AI-slop. Do NOT drift toward generic templates.
 - Responsive: verified at 390px. Section grids use `sm:` breakpoints that collapse to single column. Keep headlines `[overflow-wrap:break-word]`.
 
 ## Content rules (IMPORTANT — honesty)
-- Source of truth for all claims = `cv.md` in the career-ops project (`~/.../career-ops/cv.md`). Only state things that are TRUE and in the CV. Verify any new claim with Deepak.
+- Source of truth for public claims and numbers = `/Volumes/asus/engineering-dossier/dossier/07_EVIDENCE_REGISTER.md`; portfolio copy is in `05_PORTFOLIO_CONTENT.md`. Never use wording in the register’s “Retired or forbidden wording” list, and omit any claim that is absent from the register.
 - Showcase (27 Oct 2026): Outbuiltit as his studio (outbuiltit.com) holding escalation-gate (gate.outbuiltit.com, MCP server) and LifeDots (lifedots.outbuiltit.com, Chrome Web Store), plus the WhatsApp bots as past work with no paying customers; CrowdTracker as a Firestorm product he is sole developer of; Firestorm experience; UiPath experience (automations around an AI scientist's classifier, not model training).
 - Firestorm title is "Software Engineer" (never "II"). Never claim Cloud Build, CI/CD, dead-letter queues, backoff or structured-output validation. `src/app/content-honesty.test.tsx` fails if any retired claim comes back; add to its BANNED list when a claim is retired.
 - Résumé: `public/Deepak-R-Resume.pdf` is a copy of career-ops `output/Deepak-R-Resume.pdf`; `public/deepak-ramesh-resume.pdf` is kept as the same file so old links still work.
 - DELIBERATELY EXCLUDED: `presolv-agent` (private take-home tied to a live hiring process) and `career-ops` (a fork he extended, not his build). Do not add them.
-- Positioning line: "AI Engineer · LLM Pipelines & Automation". Lead with real strengths (LLM integration + automation + velocity); do not overclaim deep-ML-research depth.
+- Positioning line: “Forward Deployed / Applied AI Engineer”. Lead with customer-facing automation and checked AI pipelines; do not overclaim deep-ML-research depth.
 
 ## Conventions
 - All styling via Tailwind utilities (tokens are wired into `@theme`); avoid inline styles except the per-element `animationDelay`.

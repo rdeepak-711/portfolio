@@ -25,7 +25,7 @@ const METRICS = [
   ["5 → 32", "sites in 4 weeks"],
   ["₹1L+", "commission, month one"],
   ["4–10 days → hours", "per-site build time"],
-  ["68 of 117", "network sites built"],
+  ["70+", "sites produced"],
 ];
 
 export default function CaseStudy() {
@@ -113,7 +113,7 @@ export default function CaseStudy() {
         <p>
           Per-site build time fell from 4–10 days to a few hours. Production
           went from about 5 sites a month to 32 in the first four weeks and 36
-          in the next four, which is 68 of the network&apos;s 117 sites. Those
+          in the next four. More than 70 sites have come out of the pipeline. Those
           sites earned ₹1L+ in affiliate commission in the first month.
         </p>
 

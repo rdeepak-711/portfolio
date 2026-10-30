@@ -1,6 +1,6 @@
-import type { Claim, GoldenCase } from '@/content/dee/types'
-import { ungroundedNumbers } from './grounding'
-import { findPolicyViolations } from './policy'
+import type { Claim, GoldenCase } from '../../content/dee/types.ts'
+import { ungroundedNumbers } from './grounding.ts'
+import { findPolicyViolations } from './policy.ts'
 
 export function gradeAnswer(
   testCase: GoldenCase,

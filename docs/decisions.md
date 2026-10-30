@@ -42,3 +42,53 @@ Why the site is the way it is. Newest first. Never delete an entry; mark it reve
 **Why this won:** Google keeps "Publish app" disabled until the consent screen's branding has a home page and privacy policy, and a Testing-mode app's tokens expire after 7 days, which would break unattended uploads.
 
 **Cost:** an unlinked page on the portfolio that must stay true if the publisher ever gets other users or sends data anywhere.
+
+## 2026-10-31 · Keep the build-log theme
+
+**Decided:** portfolio v2 keeps the warm paper, rust accent, existing type system, section marks, hairline rules and restrained motion, while using the space for a Forward Deployed / Applied AI story.
+
+**Considered:** replacing the page with a conventional dark AI portfolio. Rejected because it would discard the visual identity already associated with the site and blur the evidence-first tone.
+
+**Why this won:** the existing build-log system already reads like an engineer's working record; the new hierarchy and diagrams make the evidence easier to scan without changing that identity.
+
+**Cost:** some interaction patterns, including Dee and the pipeline, need careful responsive and reduced-motion behavior within the restrained palette.
+
+## 2026-10-31 · Dee uses a TypeScript knowledge base rather than YAML
+
+**Decided:** Dee's claims, FAQ, limits, profile, tour and golden cases stay as typed TypeScript modules.
+
+**Considered:** YAML plus Markdown as drafted in the mascot design. Rejected because the Next.js app consumes these records directly, while TypeScript checks links between claim IDs and UI types without adding a parser or a second content-loading path.
+
+**Why this won:** the compact knowledge base fits in the existing prompt builder and can be imported by both route handlers and deterministic graders.
+
+**Cost:** copy edits require a TypeScript build and data modules are less approachable to nontechnical editors.
+
+## 2026-10-31 · Ask Deepak is an asynchronous handoff
+
+**Decided:** unanswered questions are collected in a form and delivered through the existing email and Telegram integrations.
+
+**Considered:** a live takeover through a socket or presence-aware chat. Rejected because it requires Deepak to be online and adds a real-time relay to a small portfolio feature.
+
+**Why this won:** visitors can leave a question at any time and Dee can keep the conversation bounded to the verified record.
+
+**Cost:** the visitor does not receive an immediate human response; the interface sets an expected reply window.
+
+## 2026-10-31 · Use Haiku with a daily cap, OpenRouter fallback and FAQ-only no-key mode
+
+**Decided:** use Claude Haiku as the primary model, stop primary spend at $5 per day, use OpenRouter as a fallback, and answer from FAQ matching when no model key is available.
+
+**Considered:** making the portfolio chat unavailable without keys or letting the primary model run without a daily spend limit. Rejected because either choice makes the preview less useful or leaves cost unbounded.
+
+**Why this won:** the tour and FAQ path remain available in a no-key preview, while the cap and fallback keep generation optional after the spend threshold.
+
+**Cost:** FAQ mode covers only known matches, and a fallback model still needs evaluation against the same grounding rules.
+
+## 2026-10-31 · Keep pricing in a conservative code constant
+
+**Decided:** model token pricing lives in the budget module as a conservative constant with an explicit pre-launch verification note.
+
+**Considered:** configuring prices through environment variables or looking them up at request time. Rejected because either approach adds operational coupling to the spend guard.
+
+**Why this won:** cost calculation stays deterministic and the cap behavior can be checked without network access.
+
+**Cost:** a price change requires a code edit and the constant must be checked against provider pricing before launch.

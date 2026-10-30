@@ -1,0 +1,120 @@
+<svg viewBox="0 0 240 240" width="320" height="320" aria-label="Dee">
+  <defs>
+    <pattern id="dee-stub" width="4" height="4" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r=".75" fill="#1a120d"/><circle cx="3" cy="3" r=".7" fill="#1a120d"/>
+    </pattern>
+    <clipPath id="dee-scr"><rect x="148" y="64" width="80" height="58" rx="3"/></clipPath>
+  </defs>
+
+  <!-- back layers -->
+  <g class="pose-explain">
+    <g transform="translate(168 30)">
+      <path d="M18 10 C40 10 40 62 18 62 C-4 62 -4 114 18 114" fill="none" stroke="#9aa3b5" stroke-width="3" stroke-dasharray="5 5"/>
+      <circle id="dee-dot" cx="18" cy="10" r="5" fill="#E07B2C"/>
+      <rect x="0" y="0" width="36" height="20" rx="6" fill="#fffdf8" stroke="#1b1a17" stroke-width="2.5"/><text x="7" y="14" font-family="JetBrains Mono,monospace" font-size="10" font-weight="700" fill="#1b1a17">in</text>
+      <rect x="0" y="52" width="36" height="20" rx="6" fill="#16150f" stroke="#9aa3b5" stroke-width="2.5"/><text x="11" y="66" font-family="JetBrains Mono,monospace" font-size="10" font-weight="700" fill="#5fd38d">AI</text>
+      <rect x="0" y="104" width="36" height="20" rx="6" fill="#11734b" stroke="#1b1a17" stroke-width="2.5"/><path d="M12 114 l4 4 l8 -8" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </g>
+  <g class="pose-code">
+    <rect x="142" y="58" width="92" height="70" rx="7" fill="#2a2a2e" stroke="#9aa3b5" stroke-width="2"/>
+    <rect x="148" y="64" width="80" height="58" rx="3" fill="#05070a"/>
+    <g clip-path="url(#dee-scr)"><g id="dee-scroll">
+      <g transform="translate(152 70)">
+        <rect y="0" width="22" height="4" rx="2" fill="#E07B2C"/><rect x="26" y="0" width="30" height="4" rx="2" fill="#9fb0ff"/>
+        <rect x="8" y="9" width="40" height="4" rx="2" fill="#5fd38d"/>
+        <rect x="8" y="18" width="18" height="4" rx="2" fill="#9fb0ff"/><rect x="30" y="18" width="34" height="4" rx="2" fill="#c9ccd3"/>
+        <rect x="16" y="27" width="44" height="4" rx="2" fill="#f2c46b"/>
+        <rect x="8" y="36" width="26" height="4" rx="2" fill="#5fd38d"/>
+        <rect y="45" width="12" height="4" rx="2" fill="#E07B2C"/>
+        <rect y="54" width="22" height="4" rx="2" fill="#E07B2C"/><rect x="26" y="54" width="30" height="4" rx="2" fill="#9fb0ff"/>
+        <rect x="8" y="63" width="40" height="4" rx="2" fill="#5fd38d"/>
+        <rect x="8" y="72" width="18" height="4" rx="2" fill="#9fb0ff"/><rect x="30" y="72" width="34" height="4" rx="2" fill="#c9ccd3"/>
+        <rect x="16" y="81" width="44" height="4" rx="2" fill="#f2c46b"/>
+        <rect x="8" y="90" width="26" height="4" rx="2" fill="#5fd38d"/>
+        <rect y="99" width="12" height="4" rx="2" fill="#E07B2C"/>
+        <rect y="108" width="22" height="4" rx="2" fill="#E07B2C"/><rect x="26" y="108" width="30" height="4" rx="2" fill="#9fb0ff"/>
+        <rect x="8" y="117" width="40" height="4" rx="2" fill="#5fd38d"/>
+      </g>
+    </g></g>
+    <path d="M182 128 v12 M170 142 h24" stroke="#9aa3b5" stroke-width="6" stroke-linecap="round"/>
+  </g>
+  <g class="pose-check">
+    <g transform="translate(160 46)">
+      <rect x="0" y="0" width="70" height="56" rx="8" fill="#16150f" stroke="#9aa3b5" stroke-width="2.5"/>
+      <rect x="8" y="10" width="40" height="5" rx="2" fill="#5a6280"/><rect x="8" y="22" width="54" height="5" rx="2" fill="#9fb0ff"/><rect x="8" y="34" width="30" height="5" rx="2" fill="#5a6280"/>
+      <g id="dee-tick"><circle cx="56" cy="44" r="10" fill="#3fb950"/><path d="M51 44 l4 4 l7 -8" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g>
+    </g>
+  </g>
+
+  <g id="dee-bob">
+    <g id="dee-person">
+      <!-- black tee -->
+      <path d="M44 240 C44 186 68 160 100 158 C132 160 156 186 156 240 Z" fill="#1c1c1f" stroke="#3a3a40" stroke-width="3"/>
+      <rect x="92" y="142" width="16" height="18" fill="#94603e"/>
+      <path d="M84 160 Q100 174 116 160" fill="none" stroke="#34343a" stroke-width="4" stroke-linecap="round"/>
+      <g class="pose-check"><rect x="86" y="192" width="28" height="22" rx="3" fill="none" stroke="#E07B2C" stroke-width="2.5"/><text x="91" y="208" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700" fill="#E07B2C">&lt;/&gt;</text></g>
+      <!-- head -->
+      <g id="dee-dip"><g id="dee-headwrap">
+        <ellipse cx="54" cy="92" rx="7" ry="11" fill="#94603e" stroke="#1b1a17" stroke-width="3"/>
+        <ellipse cx="146" cy="92" rx="7" ry="11" fill="#94603e" stroke="#1b1a17" stroke-width="3"/>
+        <path d="M56 80 C56 52 76 38 100 38 C124 38 144 52 144 80 L144 104 C144 132 124 148 100 148 C76 148 56 132 56 104 Z" fill="#94603e" stroke="#1b1a17" stroke-width="3.5"/>
+        <path d="M58 100 C60 130 78 146 100 146 C122 146 140 130 142 100 C140 118 132 128 124 132 C118 136 108 138 100 138 C92 138 82 136 76 132 C68 128 60 118 58 100 Z" fill="#3a2719" opacity=".35"/>
+        <path d="M58 100 C60 130 78 146 100 146 C122 146 140 130 142 100 C140 118 132 128 124 132 C118 136 108 138 100 138 C92 138 82 136 76 132 C68 128 60 118 58 100 Z" fill="url(#dee-stub)" opacity=".55"/>
+        <path d="M84 112 C91 107 109 107 116 112 C110 111 105 112 100 113 C95 112 90 111 84 112 Z" fill="#3a2719" opacity=".6"/>
+        <path d="M50 84 C44 60 54 36 74 30 C80 18 100 16 110 22 C124 16 142 24 146 38 C158 44 158 66 150 84 C148 72 142 62 134 58 C134 64 128 66 124 62 C118 66 108 64 104 58 C98 64 86 64 82 58 C76 64 68 64 64 60 C58 66 54 74 52 86 Z" fill="#17110d" stroke="#1b1a17" stroke-width="2"/>
+        <path d="M70 26 q6 -6 12 -2 M100 18 q8 -4 14 2 M128 24 q8 0 10 8 M60 40 q2 -8 10 -10" fill="none" stroke="#2c211a" stroke-width="3" stroke-linecap="round"/>
+        <g id="dee-eyes">
+          <path d="M74 88 q6 -6 12 0" fill="none" stroke="#120d0a" stroke-width="3.5" stroke-linecap="round"/>
+          <path d="M114 88 q6 -6 12 0" fill="none" stroke="#120d0a" stroke-width="3.5" stroke-linecap="round"/>
+        </g>
+        <path d="M70 76 q10 -4 20 0 M110 76 q10 -4 20 0" fill="none" stroke="#17110d" stroke-width="3" stroke-linecap="round"/>
+        <rect x="64" y="78" width="32" height="22" rx="7" fill="rgba(255,255,255,.12)" stroke="#16130f" stroke-width="4"/>
+        <rect x="104" y="78" width="32" height="22" rx="7" fill="rgba(255,255,255,.12)" stroke="#16130f" stroke-width="4"/>
+        <path d="M96 86 q4 -3 8 0 M64 84 L54 82 M136 84 L146 82" fill="none" stroke="#16130f" stroke-width="3.5" stroke-linecap="round"/>
+        <path d="M99 98 q-3 8 2 10" fill="none" stroke="#5e3a24" stroke-width="2.5" stroke-linecap="round"/>
+        <g id="dee-m0"><path d="M85 117 Q100 131 115 117 Z" fill="#3a1d14" stroke="#120d0a" stroke-width="2.5" stroke-linejoin="round"/><path d="M87 118 L113 118 L111 122 Q100 124 89 122 Z" fill="#fbf7ee"/></g>
+        <g id="dee-m1" opacity="0"><path d="M84 117 Q100 136 116 117 Z" fill="#3a1d14" stroke="#120d0a" stroke-width="2.5" stroke-linejoin="round"/><path d="M86 118 L114 118 L112 123 Q100 125 88 123 Z" fill="#fbf7ee"/></g>
+        <g id="dee-m2" opacity="0"><path d="M82 116 Q100 142 118 116 Z" fill="#3a1d14" stroke="#120d0a" stroke-width="2.5" stroke-linejoin="round"/><path d="M84 117 L116 117 L113 123 Q100 126 87 123 Z" fill="#fbf7ee"/><ellipse cx="100" cy="132" rx="7" ry="3.5" fill="#c4574a"/></g>
+        <g id="dee-m3" opacity="0"><ellipse cx="100" cy="123" rx="8" ry="9" fill="#3a1d14" stroke="#120d0a" stroke-width="2.5"/></g>
+      </g></g>
+    </g>
+
+    <!-- front layers -->
+    <g class="pose-explain">
+      <g id="dee-armL">
+        <path d="M62 222 L88 206" stroke="#1c1c1f" stroke-width="15" stroke-linecap="round"/>
+        <path d="M78 214 L92 204" stroke="#94603e" stroke-width="11" stroke-linecap="round"/>
+        <g transform="translate(96 200) rotate(-30)"><ellipse rx="9" ry="8" fill="#94603e" stroke="#1b1a17" stroke-width="2.5"/><path d="M5 -6 l7 -6 M7 -2 l9 -4 M8 3 l8 0" stroke="#94603e" stroke-width="4.5" stroke-linecap="round"/></g>
+        <g fill="#1b1a17"><circle cx="82" cy="212" r="2.4"/><circle cx="84" cy="216" r="2.4"/><circle cx="86" cy="208" r="2.4"/></g>
+      </g>
+      <g id="dee-armR">
+        <path d="M138 222 L112 206" stroke="#1c1c1f" stroke-width="15" stroke-linecap="round"/>
+        <path d="M122 214 L108 204" stroke="#94603e" stroke-width="11" stroke-linecap="round"/>
+        <g transform="translate(104 200) rotate(30) scale(-1 1)"><ellipse rx="9" ry="8" fill="#94603e" stroke="#1b1a17" stroke-width="2.5"/><path d="M5 -6 l7 -6 M7 -2 l9 -4 M8 3 l8 0" stroke="#94603e" stroke-width="4.5" stroke-linecap="round"/></g>
+        <rect x="114" y="204" width="8" height="11" rx="2.5" fill="#0d0d0f" transform="rotate(-30 118 210)"/>
+      </g>
+    </g>
+    <g class="pose-code">
+      <rect x="22" y="206" width="134" height="30" rx="7" fill="#c9ccd3" stroke="#1b1a17" stroke-width="3"/>
+      <g fill="#9ea3ad">
+        <rect x="30" y="212" width="12" height="7" rx="2"/><rect x="45" y="212" width="12" height="7" rx="2"/><rect x="60" y="212" width="12" height="7" rx="2"/><rect x="75" y="212" width="12" height="7" rx="2"/><rect x="90" y="212" width="12" height="7" rx="2"/><rect x="105" y="212" width="12" height="7" rx="2"/><rect x="120" y="212" width="12" height="7" rx="2"/><rect x="135" y="212" width="14" height="7" rx="2"/>
+        <rect x="34" y="222" width="12" height="7" rx="2"/><rect x="49" y="222" width="56" height="7" rx="2"/><rect x="108" y="222" width="12" height="7" rx="2"/><rect x="123" y="222" width="26" height="7" rx="2"/>
+      </g>
+      <path d="M40 192 L52 208" stroke="#1c1c1f" stroke-width="15" stroke-linecap="round"/>
+      <path d="M132 192 L120 208" stroke="#1c1c1f" stroke-width="15" stroke-linecap="round"/>
+      <g id="dee-typeL"><path d="M50 205 L62 213" stroke="#94603e" stroke-width="11" stroke-linecap="round"/><ellipse cx="66" cy="214" rx="10" ry="6" fill="#94603e" stroke="#1b1a17" stroke-width="2.5"/><g fill="#1b1a17"><circle cx="52" cy="206" r="2.3"/><circle cx="55" cy="209" r="2.3"/></g></g>
+      <g id="dee-typeR"><path d="M122 205 L110 213" stroke="#94603e" stroke-width="11" stroke-linecap="round"/><ellipse cx="106" cy="214" rx="10" ry="6" fill="#94603e" stroke="#1b1a17" stroke-width="2.5"/><rect x="117" y="203" width="7" height="9" rx="2" fill="#0d0d0f" transform="rotate(35 120 207)"/></g>
+    </g>
+    <g class="pose-check">
+      <g id="dee-lift">
+        <path d="M146 196 C160 186 168 168 170 150" fill="none" stroke="#1c1c1f" stroke-width="16" stroke-linecap="round"/>
+        <path d="M158 182 C164 172 168 162 170 150" fill="none" stroke="#94603e" stroke-width="11" stroke-linecap="round"/>
+        <circle cx="172" cy="144" r="8" fill="#94603e" stroke="#1b1a17" stroke-width="3"/>
+        <line x1="174" y1="136" x2="180" y2="114" stroke="#8a5a36" stroke-width="7" stroke-linecap="round"/>
+        <circle cx="186" cy="94" r="20" fill="rgba(160,220,255,.25)" stroke="#e6edf3" stroke-width="5"/>
+        <g fill="#1b1a17"><circle cx="162" cy="176" r="2.4"/><circle cx="160" cy="180" r="2.4"/><circle cx="164" cy="172" r="2.4"/></g>
+      </g>
+    </g>
+  </g>
+</svg>

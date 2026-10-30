@@ -1,4 +1,4 @@
-import type { Claim } from '@/content/dee/types'
+import type { Claim } from '../../content/dee/types.ts'
 
 const NUMBER_PATTERN = /(?:[$₹]\s?\d+(?:,\d{3})*(?:\.\d+)?(?:L\+)?|\d{1,3}(?:,\d{3})+(?:\.\d+)?(?:%|\+)?|\d+(?:\.\d+)?\s*[–—-]\s*\d+(?:\.\d+)?%?|\d+(?:\.\d+)?(?:%|\+)?)/g
 
