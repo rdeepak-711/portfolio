@@ -59,6 +59,70 @@ export type Note = {
 
 export const NOTES: ReadonlyArray<Note> = [
   {
+    slug: 'escalation-gate-as-an-mcp-server',
+    lane: 'outbuiltit',
+    title: 'Turning escalation-gate into an MCP server, and the hang only a real database found',
+    dek: 'An agent needs different things from a tool than a person at a terminal: work that runs in the background, a spending limit, and errors it can read. Then every call hung.',
+    date: '2026-10-31',
+    body: [
+      {
+        kind: 'p',
+        text: 'escalation-gate started as a command: give it a GitHub issue, and it finds the cause in the code and the open PR that fixes it. In late October I made it an MCP server too, so an agent like Claude Code can sweep a repo’s top issues without anyone at a terminal.',
+      },
+      {
+        kind: 'code',
+        lang: 'bash',
+        code: 'claude mcp add --scope user escalation-gate -- \\\n  uv run --directory "$(pwd)" python -m gate.mcp_server',
+      },
+      { kind: 'h', text: 'Four tools, shaped for an agent' },
+      {
+        kind: 'list',
+        items: [
+          'start_sweep refreshes the repo’s issues and PRs, then investigates the top open issues in the background and returns at once. One issue takes minutes; an agent shouldn’t sit blocked on ten of them.',
+          'sweep_status says which issue it’s on and how each finished one went.',
+          'get_board returns every investigated issue with the PR to merge, the other PRs that also fix it, and a confidence level.',
+          'stop_sweep stops after the current issue.',
+        ],
+      },
+      { kind: 'p', text: 'Three choices matter more with an agent than with a person:' },
+      {
+        kind: 'list',
+        items: [
+          'A spending limit. max_usd defaults to $2 and is checked before each issue, so a sweep stops itself. It can overshoot by the one issue in progress, and the stop reason says “cost cap”.',
+          'Errors as one sentence. A preflight check turns a missing GitHub or Claude login into a line the agent can act on, not a stack trace.',
+          'Confidence as a label built only from checks that ran — the cause lines are in the code, the fixing lines are in the PR’s diff, the PR merges clean — never a percentage. Whether those lines fix the bug is still the model’s judgment, and the board says so.',
+        ],
+      },
+      { kind: 'h', text: 'Then every call hung' },
+      {
+        kind: 'p',
+        text: 'The first version passed its tests. Those tests faked the database. With a sweep running against real Postgres, every other call — sweep_status, get_board — just waited.',
+      },
+      {
+        kind: 'p',
+        text: 'The cause was in connect(). Every connection ran the schema, including ALTER TABLE … ADD COLUMN IF NOT EXISTS. That statement takes Postgres’ strictest table lock even when the column already exists. A sweep holds a read transaction open for minutes while Claude works on an issue, so every new connection queued behind it.',
+      },
+      {
+        kind: 'p',
+        text: 'A test against real Postgres reproduced it: with a 5-second lock timeout, several tests failed on the lock wait. The fix: connect() reads the catalog once and runs the schema only when a table or column is actually missing, so a normal connection runs no schema changes at all. The list of expected columns is parsed from the schema text itself, so the two can’t drift apart. The suite went from about 40 seconds to about 3.',
+      },
+      {
+        kind: 'p',
+        text: 'I’d considered a lock timeout instead. It would have turned a hang into an error, and the call would still have failed while a sweep ran.',
+      },
+      { kind: 'h', text: 'What I changed in how I test' },
+      {
+        kind: 'p',
+        text: 'Faking the database lets SQL and locking bugs straight through, because the fake has no locks. Now every function that touches SQL gets at least one test against a real Postgres.',
+      },
+      {
+        kind: 'p',
+        text: 'Limits: it runs locally, on your own Postgres and your own Claude login. It reads diffs; it doesn’t run the PRs yet. That’s the next version.',
+      },
+      { kind: 'link', label: 'The MCP section of the README', href: 'https://github.com/rdeepak-711/escalation-gate#use-it-from-claude-code-mcp' },
+    ],
+  },
+  {
     slug: 'measured-or-estimated',
     lane: 'travel-measured',
     title: 'Measured or estimated: every day on my crowd calendar says which',

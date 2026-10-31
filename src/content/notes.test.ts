@@ -150,3 +150,12 @@ describe('Travel Measured measured-vs-estimated post', () => {
     )
   })
 })
+
+describe('escalation-gate MCP post', () => {
+  it('sits under Outbuiltit, links the public repo, and never claims outside users', () => {
+    const n = noteBySlug('escalation-gate-as-an-mcp-server')
+    expect(n?.lane).toBe('outbuiltit')
+    expect(n!.body.some((b) => b.kind === 'link' && b.href.startsWith('https://github.com/rdeepak-711/escalation-gate'))).toBe(true)
+    expect(JSON.stringify(n)).not.toMatch(/agents use|teams use|used by/i)
+  })
+})

@@ -192,3 +192,14 @@ A test bars any note from calling LifeDots a "LeetCode tracker" or stating a use
 **Considered and left out:** the line that Firestorm allowed the idea but not a copy. It's true, but it's about an employer and doesn't help the post.
 
 **Cost:** the accuracy page has no numbers yet, and the post says so. Revisit once the first monthly report publishes.
+
+## 2026-10-31 · escalation-gate post: the MCP server and the connect() hang
+
+**Decided:** add "Turning escalation-gate into an MCP server, and the hang only a real database found" under Outbuiltit. Sources:
+- public `gate/mcp_server.py` and the README "Use it from Claude Code (MCP)" section (main 35b2902);
+- `gate/sweep.py:144`, where the cap is checked before each issue, hence "can overshoot by one issue";
+- escalation-gate `docs/decisions.md` (25 Oct, commit 96ee0f7): the ALTER TABLE ACCESS EXCLUSIVE lock, the 5 s lock_timeout reproduction, ~40 s → ~3 s, and the lock_timeout alternative rejected.
+
+**Considered and left out:** "7 bugs the faked tests missed". It's only in session memory, not in the repo. Also left out any claim that other people or agents use it: Tier 4, an outside install, hasn't happened. A test bars "agents use / used by".
+
+**Cost:** the post describes Codex's first pass only as "the first version", without naming who wrote which line. That's consistent with the dossier's build-method wording elsewhere.
