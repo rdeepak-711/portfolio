@@ -92,3 +92,10 @@ Why the site is the way it is. Newest first. Never delete an entry; mark it reve
 **Why this won:** cost calculation stays deterministic and the cap behavior can be checked without network access.
 
 **Cost:** a price change requires a code edit and the constant must be checked against provider pricing before launch.
+
+## 2026-10-31 — Dee fails safe when Redis is down, and strips inline claim tags
+
+**Decided:** if the Upstash store throws, rate limits are skipped (the request goes through), today's spend is treated as over the cap (so the paid model is skipped and Dee uses OpenRouter or the FAQ), and a failed spend write is ignored. Inline tags like `[F2]` are removed from answer text, and the prompt now tells the model to list claim IDs only in `claimIds`. Haiku 5.5 is priced at $0.125 in (the cache-write rate) / $0.50 out / $0.01 cache read, and thinking is off.
+**Considered:** failing the whole request with a 500 (what happened with a mistyped Redis URL); failing open on spend too.
+**Why:** a store outage should cost visitors an answer quality step, not the page, and should never be able to lift the $5/day cap. The page already shows sources as chips, so inline tags were noise.
+**Cost:** while Redis is down there are no rate limits, and Dee answers only from the fallback model or the FAQ.

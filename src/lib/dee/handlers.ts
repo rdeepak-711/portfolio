@@ -55,15 +55,19 @@ export function createDeeHandler(deps: DeeDeps): (req: Request) => Promise<Respo
     }
 
     const ip = firstIp(req)
-    const ipLimit = await checkRateLimit(deps.store, `ip:${ip}`, 60, DAY_SECONDS)
-    const sessionLimit = await checkRateLimit(deps.store, `session:${data.sessionId}`, 20, DAY_SECONDS)
-    if (!ipLimit.allowed || !sessionLimit.allowed) return json({ error: 'Rate limit exceeded.' }, 429)
+    // A store outage lets the request through; the spend check below fails closed instead.
+    try {
+      const ipLimit = await checkRateLimit(deps.store, `ip:${ip}`, 60, DAY_SECONDS)
+      const sessionLimit = await checkRateLimit(deps.store, `session:${data.sessionId}`, 20, DAY_SECONDS)
+      if (!ipLimit.allowed || !sessionLimit.allowed) return json({ error: 'Rate limit exceeded.' }, 429)
+    } catch { /* store unavailable */ }
 
     const messages = data.messages as Messages
     const system = buildSystemPrompt({ claims, faq, limits: LIMITS, profile: PROFILE, mode: data.mode as Mode })
     let reply: ModelReply | undefined
     let source: 'primary' | 'fallback' | 'faq' = 'faq'
-    const usePrimary = pickModel(await deps.spentToday()) === 'primary' && deps.primary !== null
+    const spent = await deps.spentToday().catch(() => Infinity)
+    const usePrimary = pickModel(spent) === 'primary' && deps.primary !== null
     const candidates: { client: ModelClient | null; source: 'primary' | 'fallback' }[] = usePrimary
       ? [{ client: deps.primary, source: 'primary' }, { client: deps.fallback, source: 'fallback' }]
       : [{ client: deps.fallback, source: 'fallback' }]
@@ -72,7 +76,7 @@ export function createDeeHandler(deps: DeeDeps): (req: Request) => Promise<Respo
       try {
         reply = await candidate.client(system, messages)
         source = candidate.source
-        if (source === 'primary') await deps.addSpend(costUsd(reply.usage, deps.price))
+        if (source === 'primary') await deps.addSpend(costUsd(reply.usage, deps.price)).catch(() => {})
         break
       } catch { /* Try the next configured model, then FAQ. */ }
     }
@@ -80,6 +84,7 @@ export function createDeeHandler(deps: DeeDeps): (req: Request) => Promise<Respo
       const question = [...messages].reverse().find((message) => message.role === 'user')?.content ?? ''
       reply = { ...faqAnswer(question, faq), usage: { inputTokens: 0, outputTokens: 0 } }
     }
+    reply = { ...reply, text: stripClaimTags(reply.text) }
     if (findPolicyViolations(reply.text).length || ungroundedNumbers(reply.text, claims).length) {
       reply = { text: "Dee can't verify that answer. Want to use Ask Deepak?", claimIds: [], escalate: true, usage: reply.usage }
     }
@@ -101,6 +106,11 @@ export function createAskHandler(deps: AskDeps): (req: Request) => Promise<Respo
     const delivered = await deps.notify(validated.value)
     return json({ ok: true, delivered })
   }
+}
+
+// The UI shows sources as chips, so drop inline tags like "[F2]" or "[F2, U1]"
+function stripClaimTags(text: string): string {
+  return text.replace(/\s*\[[A-Z]\d+(?:\s*,\s*[A-Z]\d+)*\]/g, '').trim()
 }
 
 function isMessage(value: unknown): value is Messages[number] {
