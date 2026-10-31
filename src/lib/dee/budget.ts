@@ -1,7 +1,8 @@
 export const DAILY_CAP_USD = 5
 
-// VERIFY against anthropic.com/pricing before launch
-export const MODEL_PRICES = { inputPerMTok: 1, outputPerMTok: 5, cachedInputPerMTok: 0.1 } // conservative: overestimating trips the $5 cap early, never late
+// claude-haiku-5-5, checked 31 Oct 2026: $0.10 in / $0.50 out / $0.01 cache read per MTok (prompts up to 100K tokens).
+// Input is priced at the $0.125 cache-write rate so a cache write is never undercounted.
+export const MODEL_PRICES = { inputPerMTok: 0.125, outputPerMTok: 0.5, cachedInputPerMTok: 0.01 }
 
 export function costUsd(
   usage: { inputTokens: number; outputTokens: number; cachedInputTokens?: number },

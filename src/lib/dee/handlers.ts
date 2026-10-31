@@ -15,7 +15,7 @@ export type ModelReply = {
   text: string
   claimIds: string[]
   escalate: boolean
-  usage: { inputTokens: number; outputTokens: number }
+  usage: { inputTokens: number; outputTokens: number; cachedInputTokens?: number }
 }
 type Messages = { role: 'user' | 'assistant'; content: string }[]
 type ModelClient = (system: string, messages: Messages) => Promise<ModelReply>

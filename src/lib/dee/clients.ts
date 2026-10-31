@@ -81,6 +81,7 @@ function anthropicClient(apiKey: string, fetcher: typeof fetch): ModelClient {
       body: JSON.stringify({
         model: 'claude-haiku-5-5',
         max_tokens: 600,
+        thinking: { type: 'disabled' },
         system: [{ type: 'text', text: system, cache_control: { type: 'ephemeral' } }],
         messages,
       }),
@@ -88,10 +89,13 @@ function anthropicClient(apiKey: string, fetcher: typeof fetch): ModelClient {
     if (!response.ok) throw new Error(`Anthropic returned ${response.status}`)
     const data = await response.json() as {
       content?: { type?: string; text?: string }[]
-      usage?: { input_tokens?: number; output_tokens?: number }
+      usage?: { input_tokens?: number; output_tokens?: number; cache_creation_input_tokens?: number; cache_read_input_tokens?: number }
     }
     const raw = data.content?.find((block) => block.type === 'text')?.text ?? ''
-    const usage = { inputTokens: data.usage?.input_tokens ?? 0, outputTokens: data.usage?.output_tokens ?? 0 }
+    // Anthropic's input_tokens excludes cached tokens, so add them back for the spend cap
+    const cachedInputTokens = data.usage?.cache_read_input_tokens ?? 0
+    const inputTokens = (data.usage?.input_tokens ?? 0) + (data.usage?.cache_creation_input_tokens ?? 0) + cachedInputTokens
+    const usage = { inputTokens, outputTokens: data.usage?.output_tokens ?? 0, cachedInputTokens }
     return { ...parseModelJson(raw), usage }
   }
 }
