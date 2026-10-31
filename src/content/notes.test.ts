@@ -130,3 +130,12 @@ describe('escalation-gate #477', () => {
     )
   })
 })
+
+describe('LifeDots research post', () => {
+  it('sits under Outbuiltit, states the real corpus size and links the live site', () => {
+    const n = noteBySlug('lifedots-3339-bad-reviews')
+    expect(n?.lane).toBe('outbuiltit')
+    expect(JSON.stringify(n)).toContain('3,339')
+    expect(n!.body.some((b) => b.kind === 'link' && b.href === 'https://lifedots.outbuiltit.com')).toBe(true)
+  })
+})

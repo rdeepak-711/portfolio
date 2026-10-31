@@ -59,6 +59,57 @@ export type Note = {
 
 export const NOTES: ReadonlyArray<Note> = [
   {
+    slug: 'lifedots-3339-bad-reviews',
+    lane: 'outbuiltit',
+    title: 'What 3,339 bad reviews told me before I built LifeDots',
+    dek: 'Before writing any code I collected the one- and two-star reviews of habit apps on iOS and Android. Four complaints decided what LifeDots does — and one thing the reviews couldn’t tell me.',
+    date: '2026-10-31',
+    body: [
+      {
+        kind: 'p',
+        text: 'LifeDots is a Chrome extension that counts real minutes on the sites you pick for one habit, and fills a dot for the day when you reach your target. Before building it, I wanted to know why people quit the apps that already do this.',
+      },
+      {
+        kind: 'p',
+        text: 'So I pulled every one- and two-star review I could reach: 1,474 from 23 iOS apps through Apple’s public review feed, and 1,865 from 13 Android apps through Google Play’s own review endpoint. That’s 3,339, and about 4,000 with the browser extension stores added. Two AI agents sorted them into themes, one per platform. The two platforms agreeing is what made the findings worth acting on.',
+      },
+      { kind: 'h', text: '1 · The habit that fails is the logging' },
+      {
+        kind: 'p',
+        text: '“I used this for a while and liked it but found just remembering to mark off was tedious so I deleted.” Again and again, people didn’t quit the habit. They quit ticking the box. So LifeDots has no box. It counts the minutes itself while you’re on your sites, and the dot fills on its own.',
+      },
+      { kind: 'h', text: '2 · Streaks punish the wrong thing' },
+      {
+        kind: 'p',
+        text: 'Almost nobody wrote “I missed a day and gave up”. They wrote that the app judged them unfairly: a streak lost to a timezone, to a flight, to starting at 11:57 PM and finishing at 12:02 AM. One person on Hacker News lost a 300-day reading streak that way and didn’t open the book app again for two years.',
+      },
+      {
+        kind: 'p',
+        text: 'So LifeDots has no streak counter. It’s a year of dots, and a gap is just a gap — nothing resets to zero. And when a session crosses local midnight, the minutes are split at the boundary, so each side lands on the right day instead of being dumped into whichever day it is now.',
+      },
+      { kind: 'h', text: '3 · Permissions break trust' },
+      {
+        kind: 'p',
+        text: 'Broad permissions show up in the extension reviews as a reason to uninstall, and “no permissions needed” shows up as praise. LifeDots doesn’t ask for the tabs permission — the one Chrome describes as “Read your browsing history”. It gets access only to the sites you name, when you name them, so it can’t see the rest of your browsing at all. The install prompt is one line: “Display notifications.”',
+      },
+      { kind: 'h', text: '4 · Losing the data is the worst betrayal' },
+      {
+        kind: 'p',
+        text: '“I’ve used this app for many years and when I went to check off my habits last night, everything was gone.” A year of dots is a year of effort. Everything stays on your computer, and there’s an export button in the popup.',
+      },
+      {
+        kind: 'p',
+        text: 'The biggest complaint of all was money: 36% of the iOS reviews and 45% of the Android ones were about paywalls in front of the basic function. The whole of LifeDots is free.',
+      },
+      { kind: 'h', text: 'What reviews can’t tell you' },
+      {
+        kind: 'p',
+        text: 'The research flagged its own blind spot: reviews capture betrayal, not boredom. People who quietly drift away after eleven days never write anything. And no review tells you how people find a product in the first place. That turned out to be the hard part. The reviews told me what not to build. Getting it in front of people is the problem I’m working on now.',
+      },
+      { kind: 'link', label: 'Try LifeDots', href: 'https://lifedots.outbuiltit.com' },
+    ],
+  },
+  {
     slug: 'pr-merges-clean-and-crashes',
     lane: 'outbuiltit',
     title: 'A pull request that merges clean and would crash',

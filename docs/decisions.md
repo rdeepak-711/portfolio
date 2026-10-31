@@ -166,3 +166,19 @@ A test bars any note from calling LifeDots a "LeetCode tracker" or stating a use
 **Considered:** naming the PR author (no: the post is about the tool, not about them); asserting the crash without checking it (no: that is the unverified-claim habit the Travel Measured post is about).
 
 **Cost:** the crash is shown by reading the diff and Python's call rules, not by running the PR. The post says so, and says V2 will run it.
+
+## 2026-10-31 · LifeDots post: what 3,339 bad reviews decided
+
+**Decided:** add "What 3,339 bad reviews told me before I built LifeDots" under Outbuiltit. It uses 3,339 (the exact 1★/2★ count in `lifedots/research/WHY-HABIT-TRACKERS-FAIL.md`), with "about 4,000" only for the total that includes the extension stores (`lifedots/README.md`).
+
+**Each finding is tied only to shipped behaviour:**
+- passive counting;
+- no streak counter;
+- the midnight split in `lib/time.ts`;
+- no `tabs` permission and the one-line install prompt, verified in v0 per `lifedots/docs/decisions.md`;
+- local data with an Export button (`popup/main.ts:522`);
+- a free product.
+
+**Considered and left out:** the unbuilt Pro tier, and the AI-generated character faces finding (an open decision, not a result).
+
+**Cost:** the post says the reviews were sorted into themes by two AI agents, because that's how it was done. It ends on distribution as the open problem, without a user count.
