@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+.scrollbar-none {
+  scrollbar-width: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 /* Design tokens → become Tailwind utilities (bg-paper, text-ink, text-accent, border-line…) */
 @theme {
   --color-paper: oklch(0.975 0.006 75);

@@ -31,7 +31,7 @@ export default function SectionNav() {
   }, []);
 
   return (
-    <nav className="hidden items-center gap-7 font-mono text-xs uppercase tracking-[0.1em] sm:flex">
+    <nav className="order-last flex basis-full gap-7 overflow-x-auto whitespace-nowrap scrollbar-none font-mono text-xs uppercase tracking-[0.1em] sm:order-none sm:basis-auto sm:items-center">
       {SECTIONS.map((s) => (
         <a
           key={s.id}

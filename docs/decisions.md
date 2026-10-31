@@ -2,6 +2,16 @@
 
 Why the site is the way it is. Newest first. Never delete an entry; mark it reversed and say what changed.
 
+## 2026-10-31 · Tighten the portfolio home page and make room for Dee
+
+**Decided:** reduce the numbered home sections to six by folding Stack into Experience and videos into Writing; make outside-work proof a full-width tinted band; use first-person project copy, link-aware arrows, and dashed fact chips; provide a horizontally scrolling phone nav and a readable phone pipeline list; remove inline Dee figures and add empty hero and contact docks for measurement.
+
+**Considered:** retaining separate Stack and Building sections, leaving outside-work proof at the same visual weight as surrounding content, and keeping the figures beside existing proof. Rejected because the page needed fewer sections, stronger checkable proof, and clear space for the travelling Dee without changing its data or launcher.
+
+**Why this won:** it follows the existing warm-paper build-log system, preserves the existing menu order and content sources, and gives Dee stable measurement targets without rendering duplicate figures.
+
+**Cost:** Writing and Experience now contain more content, the full-bleed band and phone nav need viewport checks, and the Dee docks are intentionally blank until the separate flight component measures them.
+
 ## 2026-10-27 · The site follows the CV, and a test enforces it
 
 **Decided:** every claim on the site is rewritten from career-ops `cv.md` and `profile/work-history.md`, and `src/app/content-honesty.test.tsx` fails the build's test run if any retired claim reappears (BANNED list) or if the studio, its products, the CV stack words or the current résumé link go missing.
