@@ -13,12 +13,12 @@ describe('OUTSIDE_WORK', () => {
     )
   })
 
-  // an open PR or a comment is never described as a fix that landed
+  // an open PR or a comment is never described as a fix that landed ("isn't merged yet" is fine)
   it('never calls unmerged work fixed or merged', () => {
     for (const w of OUTSIDE_WORK) {
       expect(['open', 'merged', 'comment']).toContain(w.status)
       for (const l of w.links) expect(l.href, w.title).toMatch(/^https:\/\/github\.com\//)
-      if (w.status !== 'merged') expect(`${w.title} ${w.plain}`, w.title).not.toMatch(/\bfixed\b|merged/i)
+      if (w.status !== 'merged') expect(`${w.title} ${w.plain}`, w.title).not.toMatch(/\bfixed\b|\b(was|been|got) merged\b|merged into/i)
     }
   })
 
