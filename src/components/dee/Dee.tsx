@@ -122,10 +122,10 @@ export default function Dee() {
   const showAskButton = !askOpen && (tourDone || tourIndex === TOUR_STOPS.length - 1 || Boolean(answer?.escalate))
   return (
     <>
-      <button ref={launcher} type="button" aria-label="Open Dee, Deepak's guide" onClick={() => setOpen(true)} className="dee-launcher fixed bottom-5 left-5 z-[60] flex items-center gap-2 rounded-full border border-line bg-paper px-3 py-2 shadow-sm hover:border-accent sm:bottom-7 sm:left-7">
+      <button ref={launcher} type="button" aria-label="Open Dee, Deepak's guide" onClick={() => setOpen(true)} className="dee-launcher fixed bottom-5 right-5 z-[60] flex items-center gap-2 rounded-full border border-line bg-paper px-3 py-2 shadow-sm hover:border-accent sm:bottom-7 sm:right-7">
         <DeeFigure pose="explain" className="h-10 w-10"/><span className="font-mono text-xs text-ink">Ask Dee</span>
       </button>
-      {open && <div className={`fixed inset-0 z-[70] flex items-end justify-start p-0 sm:items-end sm:p-7 ${tourStop ? '' : 'bg-ink/20'}`} onMouseDown={(e) => { if (!tourStop && e.target === e.currentTarget) setOpen(false) }}>
+      {open && <div className={`fixed inset-0 z-[70] flex items-end justify-end p-0 sm:items-end sm:p-7 ${tourStop ? '' : 'bg-ink/20'}`} onMouseDown={(e) => { if (!tourStop && e.target === e.currentTarget) setOpen(false) }}>
         <section role="dialog" aria-modal="true" aria-labelledby="dee-title" className={`dee-panel sheet-in relative flex w-full flex-col overflow-hidden border border-line bg-paper shadow-xl sm:mb-0 sm:ml-0 sm:rounded-xl ${tourStop ? 'dee-panel-tour max-h-[40dvh] sm:max-w-[360px]' : 'dee-panel-chat max-h-[85dvh] sm:max-h-[88dvh] sm:max-w-md'}`}>
           <header className="flex items-start justify-between border-b border-line px-5 py-4">
             <div className="flex items-center gap-3"><DeeFigure pose={tourStop?.pose ?? 'explain'} className={tourStop ? 'h-9 w-9' : 'h-12 w-12'}/><div><h2 id="dee-title" className="font-display text-xl font-semibold">Dee, Deepak&apos;s guide</h2>{!tourStop && <p className="mt-1 max-w-[34ch] text-xs text-muted">{DISCLOSURE}</p>}</div></div>
