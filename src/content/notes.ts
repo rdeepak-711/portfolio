@@ -59,6 +59,65 @@ export type Note = {
 
 export const NOTES: ReadonlyArray<Note> = [
   {
+    slug: 'lifedots-stops-after-60-seconds',
+    lane: 'outbuiltit',
+    title: 'Why LifeDots stops counting after 60 seconds',
+    dek: 'Working a hard problem out on paper counts as zero. That’s on purpose — and someone on X showed me a better answer than the one I had.',
+    date: '2026-10-31',
+    body: [
+      {
+        kind: 'p',
+        text: 'LifeDots is a Chrome extension that counts real minutes on the sites you pick for one habit — LeetCode, say — and fills today’s dot when you reach your target. “Real minutes” is the whole promise, so the hard question is when to stop counting.',
+      },
+      { kind: 'h', text: 'Three ways the clock stops' },
+      {
+        kind: 'list',
+        items: [
+          'The Chrome window loses focus.',
+          'The tab in front isn’t one of your sites.',
+          'Nobody touches the keyboard or mouse for 60 seconds. Chrome reports the machine as idle or locked, and both mean nobody’s there.',
+        ],
+      },
+      {
+        kind: 'code',
+        lang: 'ts',
+        code: '// no keyboard or mouse this long: stop\nexport const IDLE_SECONDS = 60\n\nchrome.idle.setDetectionInterval(\n  IDLE_SECONDS,\n)',
+      },
+      {
+        kind: 'p',
+        text: 'The 60 seconds before Chrome flags you idle still count. The rule is strict, not punitive.',
+      },
+      { kind: 'h', text: 'The two errors aren’t equal' },
+      {
+        kind: 'p',
+        text: 'There’s a second guard. The extension wakes every minute to bank the time in progress, but Chrome throttles background alarms, so a gap can stretch. Any gap longer than 5 minutes is capped, and the excess is thrown away.',
+      },
+      {
+        kind: 'p',
+        text: 'That cap is generous on purpose. Before building, I read about 4,000 reviews of habit and time-tracking apps, and the failure that made people angriest was “it reset although I did the habit”. Crediting five minutes of a sleeping laptop, once, is invisible. Throwing away a minute someone really worked is how you lose them. So the cap leans toward the user, and idle detection does the real work.',
+      },
+      { kind: 'h', text: 'Then someone on X found the hole' },
+      {
+        kind: 'p',
+        text: 'On 16 Oct someone pointed out that when you work a hard problem out on paper, or just sit and think, LifeDots counts zero. They’re right. For DSA practice that thinking is often the most valuable part.',
+      },
+      {
+        kind: 'p',
+        text: 'My first fix was a setting: an idle window of 1, 3 or 5 minutes, capped at 5 to match the gap cap. The cost is that a longer window also counts the time you walk away to make tea, and the dot stops meaning real minutes.',
+      },
+      {
+        kind: 'p',
+        text: 'Their answer was better: keep the strict 1-minute default and show thinking time as its own number. Focused minutes fill the dot. Thinking minutes sit next to them but don’t count toward the target. Nobody has to wonder which number they’re looking at.',
+      },
+      { kind: 'h', text: 'Why it isn’t built yet' },
+      {
+        kind: 'p',
+        text: 'One comment isn’t enough reason to build a feature, and the default is what almost everyone gets. LifeDots had 51 installs between 30 Sep and 29 Oct. I’ll build the split when people who use it every day ask for it. The design is written down and ready.',
+      },
+      { kind: 'link', label: 'Try LifeDots', href: 'https://lifedots.outbuiltit.com' },
+    ],
+  },
+  {
     slug: 'site-said-every-30-minutes',
     lane: 'travel-measured',
     title: 'My site said every 30 minutes. It recorded about every 5 hours.',

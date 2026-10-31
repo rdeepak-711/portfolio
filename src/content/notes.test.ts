@@ -98,3 +98,21 @@ describe('Travel Measured', () => {
       for (const b of n.body) if (b.kind === 'link') expect(b.href, n.slug).toMatch(/^https:\/\//)
   })
 })
+
+describe('LifeDots', () => {
+  it('has the 60-second idle post under Outbuiltit, linking the live site', () => {
+    const n = noteBySlug('lifedots-stops-after-60-seconds')
+    expect(n?.lane).toBe('outbuiltit')
+    expect(n!.body.some((b) => b.kind === 'link' && b.href === 'https://lifedots.outbuiltit.com')).toBe(true)
+  })
+
+  // LifeDots counts any sites the user picks, and the register allows installs,
+  // never a user count
+  it('never calls LifeDots a LeetCode tracker or states a user count', () => {
+    for (const n of NOTES) {
+      const text = JSON.stringify(n)
+      if (!text.includes('LifeDots')) continue
+      expect(text, n.slug).not.toMatch(/LeetCode tracker|\d+\s+(weekly\s+)?users|active users/i)
+    }
+  })
+})

@@ -137,3 +137,19 @@ Why the site is the way it is. Newest first. Never delete an entry; mark it reve
 - live /method: "Recorded 5 times in the last 24 hours" on 31 Oct.
 
 **Cost:** the post states the cron-job.org trigger isn't on yet. When Deepak turns it on (D0), add a dated line to the post rather than rewriting history. No traffic numbers are published, and the repo isn't linked because it's private.
+
+## 2026-10-31 · LifeDots post: the 60-second idle rule
+
+**Decided:** add "Why LifeDots stops counting after 60 seconds" under Outbuiltit. Sources:
+- `everdot/extension/src/lib/config.ts` (`IDLE_SECONDS = 60`);
+- `lib/time.ts` (`MAX_GAP_MS` and the "it reset although I did the habit" reasoning);
+- the 16 Oct exchange on X;
+- register P4 for installs.
+
+A test bars any note from calling LifeDots a "LeetCode tracker" or stating a user count.
+
+**Considered:** naming the X commenter (it was public, but they never agreed to be quoted), and saying "51 installs in its first 30 days". The register covers 30 Sep – 29 Oct, and installs started 20 Sep, so "first" was false.
+
+**Why this won:** it's a design-tradeoff post with a real outside voice, and it shows judgment about defaults over feature-building.
+
+**Cost:** the focused and thinking-minutes split is described as a design, not a feature. If it ships, the post needs a dated update.
