@@ -26,15 +26,30 @@ export default function Dee() {
   const [busy, setBusy] = useState(false)
   const [question, setQuestion] = useState('')
   const [error, setError] = useState('')
+  const [hello, setHello] = useState(false)
   const launcher = useRef<HTMLButtonElement>(null)
   const closeButton = useRef<HTMLButtonElement>(null)
   const input = useRef<HTMLInputElement>(null)
   const sessionId = useRef(`dee-${Math.random().toString(36).slice(2)}`)
 
+  const wasOpen = useRef(false)
   useEffect(() => {
+    // Return focus to the launcher only after Dee closes, never on page load
     if (open) closeButton.current?.focus()
-    else launcher.current?.focus()
+    else if (wasOpen.current) launcher.current?.focus()
+    wasOpen.current = open
   }, [open])
+
+  // Greet once per visit, after the landing bounce
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem('dee-hello')) return
+      sessionStorage.setItem('dee-hello', '1')
+    } catch { /* storage blocked: greet anyway */ }
+    const show = setTimeout(() => setHello(true), 1600)
+    const hide = setTimeout(() => setHello(false), 12000)
+    return () => { clearTimeout(show); clearTimeout(hide) }
+  }, [])
 
   useEffect(() => {
     const target = tourIndex === null ? null : document.getElementById(TOUR_STOPS[tourIndex].sectionId)
@@ -122,7 +137,11 @@ export default function Dee() {
   const showAskButton = !askOpen && (tourDone || tourIndex === TOUR_STOPS.length - 1 || Boolean(answer?.escalate))
   return (
     <>
-      <button ref={launcher} type="button" aria-label="Open Dee, Deepak's guide" onClick={() => setOpen(true)} className="dee-launcher fixed bottom-5 right-5 z-[60] flex items-center gap-2 rounded-full border border-line bg-paper px-3 py-2 shadow-sm hover:border-accent sm:bottom-7 sm:right-7">
+      {hello && !open && <div className="dee-hello fixed bottom-[4.75rem] right-5 z-[60] flex max-w-[16rem] items-start gap-1 rounded-2xl rounded-br-sm border border-line bg-paper py-2 pl-3 pr-1 shadow-sm sm:bottom-[5.5rem] sm:right-7">
+        <button type="button" onClick={() => { setHello(false); setOpen(true) }} className="text-left text-sm text-ink hover:text-accent">Hi, I&apos;m Dee. I&apos;ll show you Deepak&apos;s work in 90 seconds.</button>
+        <button type="button" aria-label="Dismiss Dee greeting" onClick={() => setHello(false)} className="px-1.5 font-mono text-xs text-muted hover:text-ink">×</button>
+      </div>}
+      <button ref={launcher} type="button" aria-label="Open Dee, Deepak's guide" onClick={() => { setHello(false); setOpen(true) }} className="dee-launcher fixed bottom-5 right-5 z-[60] flex items-center gap-2 rounded-full border border-line bg-paper px-3 py-2 shadow-sm hover:border-accent sm:bottom-7 sm:right-7">
         <DeeFigure pose="explain" className="h-10 w-10"/><span className="font-mono text-xs text-ink">Ask Dee</span>
       </button>
       {open && <div className={`fixed inset-0 z-[70] flex items-end justify-end p-0 sm:items-end sm:p-7 ${tourStop ? '' : 'bg-ink/20'}`} onMouseDown={(e) => { if (!tourStop && e.target === e.currentTarget) setOpen(false) }}>
