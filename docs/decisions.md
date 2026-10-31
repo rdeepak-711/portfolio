@@ -203,3 +203,31 @@ A test bars any note from calling LifeDots a "LeetCode tracker" or stating a use
 **Considered and left out:** "7 bugs the faked tests missed". It's only in session memory, not in the repo. Also left out any claim that other people or agents use it: Tier 4, an outside install, hasn't happened. A test bars "agents use / used by".
 
 **Cost:** the post describes Codex's first pass only as "the first version", without naming who wrote which line. That's consistent with the dossier's build-method wording elsewhere.
+
+## 2026-10-31 · Complete the home page UI v3 contact and project scan
+
+**Decided:** keep the existing build-log system and make the contact address directly visible and copyable, surface the current employer below the hero heading, alternate screenshot placement across wide project bands while preserving text-first DOM order, and add Travel Measured with its two existing posts. Writing and outside-work collections continue to render from `NOTES`/`NOTE_LANES` and `OUTSIDE_WORK`.
+
+**Considered:** adding a new theme or changing the navigation and content sources. Rejected because the UI spec asks for a focused home-page update and the source modules are already the canonical content.
+
+**Why this won:** it makes contact and recent proof easier to scan while retaining the warm paper, rust accent and existing responsive structure; native browser clipboard feedback gives the copy action a visible result and failure path.
+
+**Cost:** the desktop project layout uses explicit grid placement for the number, text and screenshot columns, so future band changes must preserve the alternating column classes and the mobile stack.
+
+## 2026-10-31 · UI v3 review fixes (Claude, after Codex steps 3–6)
+
+**Decided:**
+- On `lg`, band figures get `lg:self-start`.
+- The shot `sizes` is `(min-width: 1024px) 400px, 100vw`.
+- The CopyEmail `role="status"` span is always mounted.
+
+**Why:**
+- The grid stretched each figure to the band's full height, leaving an empty box under the escalation-gate screenshot at 1440px.
+- The image column is 400px wide, so `50vw` requested twice the pixels it shows.
+- A live region inserted at the moment of the update is often not announced, while one that is already mounted is.
+
+**Also corrected this round (spec owner's own errors, both caught by Codex stopping instead of working around them):**
+- The Building test searched the whole page and now scopes to `section#building`.
+- The outside-work test banned the word "merged" outright; it now bans only claims that work landed.
+
+**Cost:** none known. The blank factory screenshot seen in one headless capture was lazy-load timing, not a bug: the image serves 200 in under 0.05 s.

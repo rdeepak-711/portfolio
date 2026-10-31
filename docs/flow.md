@@ -1,5 +1,9 @@
 # Dee request flow
 
+## Home page content and contact
+
+`src/app/page.tsx` renders the home page. Its Writing section sorts `NOTES` from `src/content/notes.ts` by date, takes the three newest notes, and maps non-empty `NOTE_LANES` to disclosure lists. Its Found in other people’s code section maps `OUTSIDE_WORK` from `src/content/outside.ts` into the entries after Work. The contact section links the email address with `mailto:` and renders `CopyEmail` from `src/components/CopyEmail.tsx`; clicking the button uses the browser clipboard API, reports success or failure through a live status, then clears that status after two seconds. The main project list maps `PROJECTS` to alternating data bands, with each screenshot figure inside its article and placed in the opposite wide-screen column for right bands. The secondary project grid maps `SECONDARY`, including Travel Measured and its two writing links. The footer links to email and the résumé. These are client-side links and clipboard interaction; there is no new server boundary.
+
 ## Entry points
 
 The homepage is rendered by `src/app/page.tsx`, which renders the client component `src/components/dee/Dee.tsx` once. `Dee` opens its panel, runs the tour from `src/lib/dee/tour.ts`, and submits visitor chat or an Ask Deepak form.
@@ -26,4 +30,4 @@ When the visitor chooses the handoff, `sendAsk` in `src/components/dee/Dee.tsx` 
 
 The browser communicates with the two route handlers over HTTP. `createClients` uses Upstash Redis REST when configured and otherwise uses `MemoryStore`. Its primary model client calls the Anthropic Messages API; its fallback calls OpenRouter. `notifyDeepak` calls Resend and Telegram from the server; credentials stay in server environment variables. When Redis exists, the injected `save` function in `src/lib/dee/clients.ts` pushes asks into the `dee:asks` list; without Redis it writes the ask to the server log, so there is no durable ask store in that mode.
 
-This session added the client panel and its request calls, the inline artwork, the home page sections, and the live golden-case script. It did not change the API handlers, data modules, providers, rate-limit logic or notification behavior.
+This UI round added the large copyable email, employer line, alternating project bands and Travel Measured card in `src/app/page.tsx`, plus `src/components/CopyEmail.tsx`. The home Writing section reads the existing `NOTES` and `NOTE_LANES`; the outside section reads the existing `OUTSIDE_WORK`. It did not change the Dee API handlers, knowledge data, providers, rate-limit logic or notification behavior.
