@@ -139,3 +139,14 @@ describe('LifeDots research post', () => {
     expect(n!.body.some((b) => b.kind === 'link' && b.href === 'https://lifedots.outbuiltit.com')).toBe(true)
   })
 })
+
+describe('Travel Measured measured-vs-estimated post', () => {
+  it('sits in its lane and links the live method and accuracy pages', () => {
+    const n = noteBySlug('measured-or-estimated')
+    expect(n?.lane).toBe('travel-measured')
+    const hrefs = n!.body.flatMap((b) => (b.kind === 'link' ? [b.href] : []))
+    expect(hrefs).toEqual(
+      expect.arrayContaining(['https://travelmeasured.vercel.app/method', 'https://travelmeasured.vercel.app/accuracy']),
+    )
+  })
+})

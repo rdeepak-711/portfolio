@@ -182,3 +182,13 @@ A test bars any note from calling LifeDots a "LeetCode tracker" or stating a use
 **Considered and left out:** the unbuilt Pro tier, and the AI-generated character faces finding (an open decision, not a result).
 
 **Cost:** the post says the reviews were sorted into themes by two AI agents, because that's how it was done. It ends on distribution as the open problem, without a user count.
+
+## 2026-10-31 · Travel Measured post: measured or estimated
+
+**Decided:** add "Measured or estimated: every day on my crowd calendar says which" to the Travel Measured lane. Sources:
+- the live /method and /accuracy pages (31 Oct);
+- travel-measured-site `docs/decisions.md`: 11 Oct labels, the 35/65/90 percentile cuts, the 60-day early-data label and the SEO review catching it, plus 30 Oct estimates ranked within the park's own open days (the raw-score unit mismatch, the ~44 floor).
+
+**Considered and left out:** the line that Firestorm allowed the idea but not a copy. It's true, but it's about an employer and doesn't help the post.
+
+**Cost:** the accuracy page has no numbers yet, and the post says so. Revisit once the first monthly report publishes.

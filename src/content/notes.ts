@@ -59,6 +59,66 @@ export type Note = {
 
 export const NOTES: ReadonlyArray<Note> = [
   {
+    slug: 'measured-or-estimated',
+    lane: 'travel-measured',
+    title: 'Measured or estimated: every day on my crowd calendar says which',
+    dek: 'Most crowd calendars give each day one score and never say where it came from. Travel Measured labels every day — and the label caught a bug that made Low impossible.',
+    date: '2026-10-31',
+    body: [
+      {
+        kind: 'p',
+        text: 'A theme-park crowd calendar answers one question: is the park busy on my day? Most give each day a single score and never say whether it was measured or guessed. Travel Measured gives every day one of two labels, and draws them differently.',
+      },
+      { kind: 'h', text: 'A past day is measured' },
+      {
+        kind: 'list',
+        items: [
+          'Through the day, each ride’s posted wait is recorded from Queue-Times.',
+          'The day’s value is the average wait across the rides that run on most open days, so one ride closing for maintenance doesn’t swing it.',
+          'That value is ranked against the park’s own measured days: Low below the 35th percentile, Medium to the 65th, High to the 90th, Peak above.',
+          'It’s drawn solid.',
+        ],
+      },
+      {
+        kind: 'p',
+        text: 'Levels compare a park with itself. A 30-minute average is a quiet day at one park and a busy one at another, and the visitor’s question is whether the day is busy for that park. The cost: you can’t compare levels between parks, so the method page says so.',
+      },
+      { kind: 'h', text: 'A future day is estimated' },
+      {
+        kind: 'p',
+        text: 'Future days start from an average day and add terms: day of the week, month, public and school holidays, known events. Each day shows its biggest reasons, like “Saturday + July + Independence Day”. It’s drawn tinted and dashed.',
+      },
+      {
+        kind: 'p',
+        text: 'Until a park has 60 measured open days, those terms are hand-set starting values shared by similar parks, not anything measured at that park. So the page says “Estimate (early data)”. My spec asked for that label; the first build left it out, and an SEO review caught the gap. Without it, the page claimed more than it knew.',
+      },
+      { kind: 'h', text: 'The bug the labels exposed' },
+      {
+        kind: 'p',
+        text: 'By 30 Oct a northern park’s calendar read only Medium and High. No open day was ever Low. That looked like a tuning problem. It wasn’t: it was a unit mismatch.',
+      },
+      {
+        kind: 'p',
+        text: 'Measured days were cut on a percentile of the park’s own history. Estimated days were cut on a raw 0–100 formula score. A northern park’s quietest open-season estimate scored about 44, so it could never fall below the Low line, whatever the season.',
+      },
+      {
+        kind: 'p',
+        text: 'Retuning the starting values would have hidden it for a while, then drifted again per group of parks. The fix was to put both kinds of day in the same unit: an estimated day’s level is now its rank among the park’s open days in the forecast, cut at the same 35/65/90 lines. The cost is that a level means “compared with this park’s other open days this year”, so a quiet July Saturday can still read High at a park whose July is busy.',
+      },
+      { kind: 'h', text: 'Then every estimate gets marked' },
+      {
+        kind: 'p',
+        text: 'Every night the site saves what it predicts for each park 1, 7 and 30 days ahead. Once that day is measured, the two are compared, and the accuracy page publishes how often the forecast was right or within one level — good or bad. A month is only published once at least 20 forecasts can be checked. Right now there isn’t a full month of readings, so the page says “not enough data yet” instead of showing a number.',
+      },
+      {
+        kind: 'p',
+        text: 'That’s the whole idea: a label for where each number came from, and a score for how good the guesses were.',
+      },
+      { kind: 'link', label: 'How the levels are made', href: 'https://travelmeasured.vercel.app/method' },
+      { kind: 'link', label: 'The accuracy page', href: 'https://travelmeasured.vercel.app/accuracy' },
+    ],
+  },
+  {
     slug: 'lifedots-3339-bad-reviews',
     lane: 'outbuiltit',
     title: 'What 3,339 bad reviews told me before I built LifeDots',
