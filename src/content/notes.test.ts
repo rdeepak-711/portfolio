@@ -116,3 +116,17 @@ describe('LifeDots', () => {
     }
   })
 })
+
+describe('escalation-gate #477', () => {
+  it('has the merges-clean-but-crashes post under Outbuiltit, linking the packet and the PR', () => {
+    const n = noteBySlug('pr-merges-clean-and-crashes')
+    expect(n?.lane).toBe('outbuiltit')
+    const hrefs = n!.body.flatMap((b) => (b.kind === 'link' ? [b.href] : []))
+    expect(hrefs).toEqual(
+      expect.arrayContaining([
+        'https://gate.outbuiltit.com/hiring-agent/issues/476.html',
+        'https://github.com/interviewstreet/hiring-agent/pull/477',
+      ]),
+    )
+  })
+})

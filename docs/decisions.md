@@ -153,3 +153,16 @@ A test bars any note from calling LifeDots a "LeetCode tracker" or stating a use
 **Why this won:** it's a design-tradeoff post with a real outside voice, and it shows judgment about defaults over feature-building.
 
 **Cost:** the focused and thinking-minutes split is described as a design, not a feature. If it ships, the post needs a dated update.
+
+## 2026-10-31 · escalation-gate post: #477 merges clean and would crash
+
+**Decided:** E1 tells the #476/#477 story rather than #479/#480. The first escalation-gate note already covers #479/#480 under "And where it was wrong", including the 25-of-99 owner bug, so writing it again would repeat it.
+
+**Verified before writing:** the 15 Oct audit flagged the #477 TypeError reasoning as not re-checked against the diff, so I checked it on 31 Oct.
+- `gh pr diff 477` removes `prefix` from `fetch_profile` and from 4 of 5 calls. The `dev_profile` call keeps `"dev"`, matching `transform.py` at e0ece80.
+- The packet at gate.outbuiltit.com/hiring-agent/issues/476.html says: $0.04, 8/8 citations, 192 → 11, #477 "Partly · Merges clean".
+- #477 is open and unmerged per the GitHub API.
+
+**Considered:** naming the PR author (no: the post is about the tool, not about them); asserting the crash without checking it (no: that is the unverified-claim habit the Travel Measured post is about).
+
+**Cost:** the crash is shown by reading the diff and Python's call rules, not by running the PR. The post says so, and says V2 will run it.

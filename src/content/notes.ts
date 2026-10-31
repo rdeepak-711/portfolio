@@ -59,6 +59,65 @@ export type Note = {
 
 export const NOTES: ReadonlyArray<Note> = [
   {
+    slug: 'pr-merges-clean-and-crashes',
+    lane: 'outbuiltit',
+    title: 'A pull request that merges clean and would crash',
+    dek: 'Git said PR #477 merges without conflicts. escalation-gate said it only partly fixes the bug and would raise a TypeError. I read the diff: the TypeError is real.',
+    date: '2026-10-31',
+    body: [
+      {
+        kind: 'p',
+        text: 'escalation-gate takes a GitHub issue, finds the cause in the code with every citation checked against the source, then judges which open pull requests fix it. This is one run on HackerRank’s hiring-agent.',
+      },
+      {
+        kind: 'p',
+        text: 'Issue #476 reports three pieces of dead code: a month_map that maps every month to itself, a prefix parameter that fetch_profile never uses, and a stream option the model provider never reads. A small issue: $0.04 to investigate, 8 of 8 citations verified, 192 open PRs cut to 11 by the lines they touch.',
+      },
+      { kind: 'h', text: 'Two checks, two different kinds of answer' },
+      {
+        kind: 'p',
+        text: 'For every shortlisted PR the packet gives two results, and never folds them into one. “Merges clean” comes from git merge-tree against the pinned commit — that’s a fact. “Fixes it” comes from one model call reading the diff — that’s a judgment, and it’s labelled as one.',
+      },
+      {
+        kind: 'p',
+        text: 'PR #477 is titled “fix: remove identity month_map, dead params, and dead options”. Git said it merges clean. The judge said it only partly fixes the issue, and gave this reason:',
+      },
+      {
+        kind: 'p',
+        text: '“The diff leaves the dev_profile call as fetch_profile(..., ["dev community", "dev"], "dev") with the third argument, so that caller would raise a TypeError.”',
+      },
+      { kind: 'h', text: 'I checked it by hand' },
+      {
+        kind: 'p',
+        text: 'The PR removes prefix from the function and from four of the five calls. The fifth is still there:',
+      },
+      {
+        kind: 'code',
+        lang: 'diff',
+        code: '-def fetch_profile(profiles, network_names, prefix):\n+def fetch_profile(profiles, network_names):\n ...\n dev_profile = fetch_profile(\n     basics.profiles, ["dev community", "dev"], "dev"\n )',
+      },
+      {
+        kind: 'p',
+        text: 'Those three lines didn’t change, so on a review page they show as grey context and are easy to read past. After a merge, Python would stop there with “fetch_profile() takes 2 positional arguments but 3 were given” — on every résumé that lists a profile link, because that block only runs when the résumé has profiles.',
+      },
+      { kind: 'h', text: 'What it shows' },
+      {
+        kind: 'p',
+        text: '“Merges clean” and “works” are different claims. Git can only say the text combines without conflicts; it can’t say the result runs. That’s why the packet keeps them apart instead of giving one “approve”.',
+      },
+      {
+        kind: 'p',
+        text: 'It’s also why the judge’s answer is labelled as judged, not verified. Until I opened the diff it was one model’s reading. Now it’s checked, by hand. The next version applies the PR to a throwaway copy and runs it, so a claim like this gets measured instead of read.',
+      },
+      {
+        kind: 'p',
+        text: 'As of 31 Oct, #477 is still open and unmerged.',
+      },
+      { kind: 'link', label: 'The #476 packet', href: 'https://gate.outbuiltit.com/hiring-agent/issues/476.html' },
+      { kind: 'link', label: 'PR #477 on GitHub', href: 'https://github.com/interviewstreet/hiring-agent/pull/477' },
+    ],
+  },
+  {
     slug: 'lifedots-stops-after-60-seconds',
     lane: 'outbuiltit',
     title: 'Why LifeDots stops counting after 60 seconds',
