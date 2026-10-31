@@ -12,12 +12,14 @@ export type Block =
   | { kind: 'h'; text: string }
   | { kind: 'code'; lang: string; code: string }
   | { kind: 'list'; items: string[] }
+  | { kind: 'link'; label: string; href: string }
 
-export type NoteLane = 'outbuiltit' | 'code-review' | 'hackathons' | 'videos' | 'job-hunt' | 'claude-code' | 'leetcode'
+export type NoteLane = 'outbuiltit' | 'travel-measured' | 'code-review' | 'hackathons' | 'videos' | 'job-hunt' | 'claude-code' | 'leetcode'
 
 /** the spaces I write about, in the order /writing shows them; a lane with no notes is hidden */
 export const NOTE_LANES: ReadonlyArray<{ id: NoteLane; label: string }> = [
   { id: 'outbuiltit', label: 'Outbuiltit' },
+  { id: 'travel-measured', label: 'Travel Measured' },
   { id: 'code-review', label: 'Code review' },
   { id: 'hackathons', label: 'Hackathons' },
   { id: 'videos', label: 'Making the videos' },
@@ -56,6 +58,62 @@ export type Note = {
 }
 
 export const NOTES: ReadonlyArray<Note> = [
+  {
+    slug: 'site-said-every-30-minutes',
+    lane: 'travel-measured',
+    title: 'My site said every 30 minutes. It recorded about every 5 hours.',
+    dek: 'Travel Measured’s whole pitch is “measured, not guessed”. The one number I never measured was my own recorder’s schedule.',
+    date: '2026-10-31',
+    body: [
+      {
+        kind: 'p',
+        text: 'Travel Measured is a crowd calendar for theme parks. It records the posted wait time of the rides, turns those readings into a crowd level for each day, and labels every day as measured or estimated. The labels are the point: if a day says measured, it was.',
+      },
+      {
+        kind: 'p',
+        text: 'Every park page also said the waits were recorded every 30 minutes. It was in 11 page titles, the about page, the method page and the share image. It wasn’t true.',
+      },
+      { kind: 'h', text: 'What the schedule said, and what ran' },
+      {
+        kind: 'p',
+        text: 'The recorder is a GitHub Actions workflow. Each run fetches posted waits from Queue-Times’ public JSON API, six parks at a time, and writes them to Postgres. The schedule asks for a run every 30 minutes:',
+      },
+      { kind: 'code', lang: 'yaml', code: 'on:\n  schedule:\n    - cron: "*/30 * * * *"' },
+      {
+        kind: 'p',
+        text: 'GitHub treats that line as a request, not a promise. Scheduled runs can start late, or not at all, when GitHub is busy. Between 12 and 15 Oct the workflow ran 15 times in about 69 hours — one run every 4.9 hours on average, against the 138 the schedule asked for. Over 18 days it ran 99 times: 3 to 7 runs a day instead of 48.',
+      },
+      { kind: 'h', text: 'I wrote the risk down and never checked it' },
+      {
+        kind: 'p',
+        text: 'The worst part is that I knew. My decisions log for 12 Oct, the day I chose GitHub Actions, says: “GitHub’s schedule is not exact and can run late or skip under load.” I wrote the cost down, then put “every 30 minutes” on every page anyway, and never compared the two.',
+      },
+      {
+        kind: 'p',
+        text: 'It surfaced on 15 Oct, in a sceptical review of my own projects that I ran with Claude Code before interviews. The review read the workflow’s run history next to the page titles, and the two didn’t match.',
+      },
+      { kind: 'h', text: 'Why it mattered more on this site' },
+      {
+        kind: 'p',
+        text: 'A measured day built from 3 to 5 readings stands on much less than one built from 48. The label was right about where the number came from; the copy overstated how much data stood behind it. On a site that sells itself on being honest about its data, that was the worst claim to get wrong.',
+      },
+      { kind: 'h', text: 'The fix, in three parts' },
+      {
+        kind: 'list',
+        items: [
+          'Stop claiming a cadence. On 30 Oct I took “every 30 minutes” off every page that said it. No page states a fixed schedule now.',
+          'Show the real one. The method page reads the last 24 hours of runs from the database and says how many there were. Today it says: “Recorded 5 times in the last 24 hours.”',
+          'Trigger it from outside GitHub. A cron-job.org job will call the workflow’s dispatch API every 30 minutes. That part isn’t switched on yet. When it is, the method page will show it, because the number comes from the runs, not from me.',
+        ],
+      },
+      { kind: 'h', text: 'What I do differently now' },
+      {
+        kind: 'p',
+        text: 'Any number a page states about the system itself — how often it runs, how many things it covers, how fresh the data is — comes from the system’s own records, not from the copy. If I can’t compute it, I don’t state it.',
+      },
+      { kind: 'link', label: 'See the count on the live method page', href: 'https://travelmeasured.vercel.app/method' },
+    ],
+  },
   {
     slug: 'escalation-gate',
     lane: 'outbuiltit',

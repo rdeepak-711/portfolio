@@ -64,10 +64,12 @@ describe('portfolio claims match the CV', () => {
     })
   }
 
-  it('the escalation-gate write-up has none of the retired claims', () => {
-    const text = JSON.stringify(NOTES.find((n) => n.slug === 'escalation-gate'))
-    for (const phrase of BANNED) {
-      expect(text.includes(phrase), `"${phrase}" in the write-up`).toBe(false)
+  it('no note has any of the retired claims', () => {
+    for (const note of NOTES) {
+      const text = JSON.stringify(note)
+      for (const phrase of BANNED) {
+        expect(text.includes(phrase), `"${phrase}" in ${note.slug}`).toBe(false)
+      }
     }
   })
 

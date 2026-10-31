@@ -30,6 +30,18 @@ function BlockView({ block }: { block: Block }) {
           ))}
         </ul>
       )
+    case 'link':
+      return (
+        <a
+          href={block.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group inline-flex items-center gap-1.5 font-medium text-ink underline underline-offset-4 transition-colors hover:text-accent"
+        >
+          {block.label}
+          <span className="text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-accent">↗</span>
+        </a>
+      )
     case 'code':
       return (
         <pre className="overflow-x-auto border border-line bg-paper px-4 py-3.5">

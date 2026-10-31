@@ -84,3 +84,17 @@ describe('writing lanes', () => {
     for (const slug of RETIRED_NOTE_SLUGS) expect(noteBySlug(slug), slug).toBeUndefined()
   })
 })
+
+describe('Travel Measured', () => {
+  it('has the every-30-minutes post in its own lane, linking the live method page', () => {
+    const n = noteBySlug('site-said-every-30-minutes')
+    expect(n?.lane).toBe('travel-measured')
+    const links = n!.body.filter((b) => b.kind === 'link')
+    expect(links.map((l) => l.kind === 'link' && l.href)).toContain('https://travelmeasured.vercel.app/method')
+  })
+
+  it('every link block is https', () => {
+    for (const n of NOTES)
+      for (const b of n.body) if (b.kind === 'link') expect(b.href, n.slug).toMatch(/^https:\/\//)
+  })
+})

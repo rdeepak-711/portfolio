@@ -123,3 +123,17 @@ Why the site is the way it is. Newest first. Never delete an entry; mark it reve
 **Why this won:** 13 of 15 notes were LeetCode, so an FDE hiring manager opening /writing saw a DSA practice log. The 4 notes kept each record a mistake I made or found (stale DP values, a no-op `.lower()`, check-before-store order, a maxFreq that never drops). The 9 retired ones were textbook tricks that any LeetCode explainer already covers. Hiding empty lanes avoids the sparse sections that weakened rahulm.me.
 
 **Cost:** the 9 notes are gone from the site; they're still in git history. Outbuiltit and Claude Code hold 1 note each until the new posts land. The Meta hackathon is not listed (rejected 31 Oct). Kiroween (entered solo, due 4 Dec) gets a post only from real build progress.
+
+## 2026-10-31 · First Travel Measured post; notes can link out
+
+**Decided:** add a Travel Measured lane and the post "My site said every 30 minutes. It recorded about every 5 hours." Notes gain a `link` block that opens in a new tab with `rel="noopener noreferrer"`. The honesty test now checks every note against BANNED, not only the escalation-gate one.
+
+**Considered:** filing Travel Measured under Outbuiltit. It isn't one of the studio's products, so that would blur the studio line. Also considered pasting the URL as plain text in a paragraph, but it wouldn't be clickable.
+
+**Why this won:** the post is a mistake story (a claim the system didn't back), like the LeetCode notes kept. Every fact traces to a source:
+- `career-ops/audit/travel-measured.md`: 15 runs in ~69 h, a 4.9 h mean gap, audited 15 Oct.
+- travel-measured-site `docs/decisions.md`: the 12 Oct risk line and "99 runs in 18 days, 11 titles" (30 Oct).
+- commit 85275df: the claim dropped.
+- live /method: "Recorded 5 times in the last 24 hours" on 31 Oct.
+
+**Cost:** the post states the cron-job.org trigger isn't on yet. When Deepak turns it on (D0), add a dated line to the post rather than rewriting history. No traffic numbers are published, and the repo isn't linked because it's private.
