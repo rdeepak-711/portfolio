@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import Home from './page'
 import { LANES, videosByLane } from '@/content/videos'
 
@@ -13,10 +13,12 @@ describe('homepage — Building section', () => {
     expect(container.querySelector('section#building')).not.toBeNull()
   })
 
+  // scoped to Building: a video's note can also be listed in the Writing collection
   it('teases the three most recent videos', () => {
-    render(<Home />)
+    const { container } = render(<Home />)
+    const building = within(container.querySelector<HTMLElement>('section#building')!)
     for (const v of recent) {
-      expect(screen.getByText(v.title), `${v.slug} missing from homepage`).toBeInTheDocument()
+      expect(building.getByText(v.title), `${v.slug} missing from Building`).toBeInTheDocument()
     }
   })
 
