@@ -2,6 +2,7 @@ import type { FaqEntry } from './types'
 
 export const FAQ: FaqEntry[] = [
   { q: 'Who is Deepak?', a: 'Deepak Ramesh is a Forward Deployed / Applied AI Engineer in Chennai, open to remote work.', claimIds: ['F2', 'U1'] },
+  { q: 'What does Deepak do now?', a: 'Deepak is a Software Engineer at Firestorm Internet, a travel company, where he joined as the only developer in Jul 2025. He builds and runs its AI site-building pipeline (70+ sites), CrowdTracker, the multi-tenant forum platform and the enquiry inbox, and mentors a junior developer.', claimIds: ['F1', 'F2', 'F7', 'F8', 'F10'] },
   { q: 'What has Deepak actually built?', a: 'Deepak built a site-building pipeline, CrowdTracker, a multi-tenant forum app, f1weekend.co and an enquiry inbox.', claimIds: ['F2', 'F7', 'F8', 'F9', 'F10'] },
   { q: 'Which agents and automations has Deepak built?', a: 'Deepak built a staged site-generation pipeline and escalation-gate, which checks citations and merge safety when finding a pull request for an issue.', claimIds: ['F2', 'F5', 'P1'] },
   { q: 'Has Deepak deployed real products?', a: 'Deepak built CrowdTracker, f1weekend.co, a forum platform with 3 live forums, LifeDots and the site-building pipeline.', claimIds: ['F2', 'F7', 'F8', 'F9', 'P4'] },
