@@ -259,3 +259,20 @@ A test bars any note from calling LifeDots a "LeetCode tracker" or stating a use
 - Dee crosses over content for a moment mid-hop on desktop.
 - On phones he covers a 52px corner while you scroll.
 - The stops depend on section ids, so renaming a section means updating `ROUTE` in `flight.ts`.
+
+## 2026-10-31 · Dee rides a paper plane instead of floating (reverses part of the entry above)
+
+**Decided:** what travels is now Dee riding a paper plane folded from a lined build-log page, with a rust check mark on the wing.
+- The plane points along its path, turning nose-up as it climbs and nose-down as it dives, mirrored for left or right. It floats slightly when still.
+- It faces the text while hovering, and Dee waves after hovering 350 ms.
+- At the contact dock, Dee hops off and stands waving beside the parked plane.
+- The path, lag, trail and stops are unchanged.
+- `DeeBody` is shared by `DeeFigure` and `PlaneRider`, so the standing Dee and the rider can't drift apart.
+
+**Why:** Deepak, after watching it: "having a person like mascot moving vs having a paper rocket is different feel". A person sliding sideways through the air reads as a glitch; a plane is an object that flies, so the hop reads as flight. The plane keeps Dee on screen and the folded build-log page keeps it ours, not a copy of rahulm.me's blue plane.
+
+**Considered:** Dee throwing the plane from the hero and only the plane travelling (cleaner motion, but Dee is off screen for most of the page); going back to the peek idea.
+
+**Cost:** at gutter size, Dee's face is about 30px, so the rider reads as "a person on a plane" rather than as Deepak specifically. The standing Dee at the contact section carries the likeness.
+
+**Dev note:** Turbopack's dev cache on the USB volume kept serving the old `globals.css` after an append; restarting the dev server didn't help, and only `rm -rf .next` did.

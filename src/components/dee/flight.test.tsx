@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { chase, desktopStops, ease, frameAt, phoneStops, type Layout, type Stop } from './flight'
+import { chase, desktopStops, ease, frameAt, headingAt, phoneStops, type Layout, type Stop } from './flight'
 
 const layout = (over: Partial<Layout> = {}): Layout => ({
   vw: 1440, vh: 900, maxScroll: 8000, contentLeft: 228, contentRight: 1212,
@@ -99,5 +99,30 @@ describe('DeeFlight mount', () => {
     const { default: DeeFlight } = await import('./DeeFlight')
     const { container } = render(<DeeFlight />)
     expect(container.querySelector('[data-dee-flight]')).toBeNull()
+  })
+})
+
+describe('headingAt', () => {
+  const stops: Stop[] = [{ s: 0, x: 1300, y: 450, scale: 1, pose: 'explain' }, { s: 1000, x: 100, y: 450, scale: 1, pose: 'code' }]
+
+  it('points the nose the way the plane is going, both scroll directions', () => {
+    expect(headingAt(stops, 500, 1).facing).toBe(-1)
+    expect(headingAt(stops, 500, -1).facing).toBe(1)
+  })
+
+  // after mirror + rotate, the nose points along facing·(cos θ, sin θ); screen y grows downward
+  const noseY = (h: { facing: number; angle: number }) => h.facing * Math.sin((h.angle * Math.PI) / 180)
+
+  it('climbs on the way up the hop and dives on the way down', () => {
+    expect(noseY(headingAt(stops, 250, 1))).toBeLessThan(0)
+    expect(noseY(headingAt(stops, 750, 1))).toBeGreaterThan(0)
+    const back = [...stops].reverse().map((p, i) => ({ ...p, s: i * 1000 }))
+    expect(noseY(headingAt(back, 250, 1))).toBeLessThan(0)
+    for (let s = 10; s < 1000; s += 40) expect(Math.abs(headingAt(stops, s, 1).angle)).toBeLessThanOrEqual(30)
+  })
+
+  it('has no heading when still or parked at a stop', () => {
+    expect(headingAt(stops, 500, 0)).toEqual({ facing: 0, angle: 0 })
+    expect(headingAt(stops, 2000, 1)).toEqual({ facing: 0, angle: 0 })
   })
 })

@@ -179,3 +179,21 @@ body {
 #top, [id^="project-"], #how-i-work, #contact {
   scroll-margin-top: 80px;
 }
+
+/* Travelling Dee (DeeFlight): the rider swaps for the standing Dee on landing; he waves while hovering */
+.dee-flight-mirror { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.dee-flight-plane, .dee-flight-landed { transition: opacity 0.35s ease-out; }
+.dee-flight-landed { opacity: 0; }
+.dee-flight[data-landed="true"] .dee-flight-plane { opacity: 0; }
+.dee-flight[data-landed="true"] .dee-flight-landed { opacity: 1; }
+.dee-wave { transform-box: fill-box; transform-origin: 0% 100%; }
+
+@keyframes dee-wave {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-14deg); }
+  75% { transform: rotate(10deg); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dee-flight[data-settled="true"] .dee-wave { animation: dee-wave 0.9s ease-in-out 2; }
+}

@@ -73,7 +73,7 @@ const ROUTE: { id: string; pose: Pose }[] = [
 // Wide screens: big in the hero dock, then side to side through the gutters, landing beside the email
 export function desktopStops(l: Layout): Stop[] {
   const gutter = Math.min(l.contentLeft, l.vw - l.contentRight)
-  const scale = clamp((gutter - 24) / DEE_BOX, 0.5, 0.8)
+  const scale = clamp((gutter - 24) / DEE_BOX, 0.5, 1.1)
   const side = (i: number) => (i % 2 === 0 ? l.contentRight + gutter / 2 : l.contentLeft - gutter / 2)
   const stops: Stop[] = []
   if (l.heroDock) {
@@ -93,7 +93,7 @@ export function desktopStops(l: Layout): Stop[] {
     const d = l.contactDock
     // land when the dock is two-thirds down the screen, or at the bottom of the page if that comes first
     const s = clamp(d.top + d.height / 2 - l.vh * 0.62, 0, l.maxScroll)
-    if (s > stops[stops.length - 1].s) stops.push({ s, x: d.left + d.width / 2, y: d.top + d.height / 2 - s, scale: clamp(Math.min(d.width, d.height) / DEE_BOX, 0.3, 0.6), pose: 'explain' })
+    if (s > stops[stops.length - 1].s) stops.push({ s, x: d.left + d.width / 2, y: d.top + d.height / 2 - s, scale: 0.7, pose: 'explain' })
   }
   return stops
 }
@@ -101,7 +101,7 @@ export function desktopStops(l: Layout): Stop[] {
 // Phones and narrow windows: no gutter, so Dee walks along the bottom edge as a progress marker,
 // from the left corner toward the launcher, and only while the page is moving.
 export function phoneStops(l: Layout, launcherLeft: number): Stop[] {
-  const size = 52
+  const size = 76
   const y = l.vh - size / 2 - 18
   const start = 16 + size / 2
   const end = Math.max(start, launcherLeft - size / 2 - 12)
@@ -114,4 +114,21 @@ export function phoneStops(l: Layout, launcherLeft: number): Stop[] {
   })
   if (l.maxScroll > stops[stops.length - 1].s) stops.push({ s: l.maxScroll, x: end, y, scale: size / DEE_BOX, pose: 'explain' })
   return stops
+}
+
+// Which way the plane points while it travels. `dir` is +1 scrolling down, −1 scrolling up, 0 still.
+// facing 1 = nose right, −1 = nose left (the drawing is mirrored); angle is the CSS rotation in
+// degrees applied after the mirror, so the nose ends up along facing·(cos, sin) of it. Clamped to
+// ±30° so a steep hop still reads as a glide.
+export function headingAt(stops: Stop[], s: number, dir: number): { facing: 1 | -1 | 0; angle: number } {
+  if (dir === 0) return { facing: 0, angle: 0 }
+  const a = frameAt(stops, s)
+  const b = frameAt(stops, s + 4 * Math.sign(dir))
+  const dx = b.x - a.x
+  const dy = b.y - a.y
+  if (Math.hypot(dx, dy) < 0.05) return { facing: 0, angle: 0 }
+  const facing = Math.abs(dx) < 0.02 ? 0 : dx > 0 ? 1 : -1
+  // nose-right: atan2(dy, dx); mirrored nose-left: atan2(−dy, −dx); purely vertical: tip 30° toward travel
+  const deg = facing === 0 ? (dy > 0 ? 30 : -30) : (Math.atan2(facing * dy, facing * dx) * 180) / Math.PI
+  return { facing, angle: clamp(deg, -30, 30) }
 }
