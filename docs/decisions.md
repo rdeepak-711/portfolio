@@ -99,3 +99,10 @@ Why the site is the way it is. Newest first. Never delete an entry; mark it reve
 **Considered:** failing the whole request with a 500 (what happened with a mistyped Redis URL); failing open on spend too.
 **Why:** a store outage should cost visitors an answer quality step, not the page, and should never be able to lift the $5/day cap. The page already shows sources as chips, so inline tags were noise.
 **Cost:** while Redis is down there are no rate limits, and Dee answers only from the fallback model or the FAQ.
+
+## 2026-10-31 — A proof chip links only to a page that shows the number
+
+**Decided:** proof chips (GA4 numbers, install counts, forum count) are plain text unless the target page shows that number. Unlinked: CrowdTracker GA4 and user counts, f1weekend GA4, 3 live forums (pointed at a GitHub profile), LifeDots installs, the résumé-scorer audit (its page never existed and returned 404). The case studies were rewritten from the evidence register: "5 → 32 in 4 weeks", "36", "4–10 days" and "₹1L+" are gone (not in the register, or interview-only), "+70% throughput" is gone (register U3: source not given, interview only), and "85–90% accuracy" is no longer shown as Deepak's metric (it was the AI scientist's classifier). The UiPath page gained the invoice section the home page already linked to. Dee's LinkedIn link was wrong (/in/deepakramesh) and is now /in/rdeepak.
+**Considered:** hosting GA4 screenshots as proof. Not done: the CrowdTracker GA4 property is Firestorm's, so publishing it needs their OK.
+**Why:** a link styled as proof that lands on a page without the number reads as padding to a careful reviewer, and costs the real numbers their credibility.
+**Cost:** the numbers lose a click-through. They stay checkable in an interview from the register's sources.

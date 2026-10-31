@@ -5,7 +5,7 @@ export const PROFILE = {
   email: 'deepakrameshh@gmail.com',
   links: {
     github: 'https://github.com/rdeepak-711',
-    linkedin: 'https://www.linkedin.com/in/deepakramesh/',
+    linkedin: 'https://www.linkedin.com/in/rdeepak/',
     site: 'https://rdeepak.vercel.app',
   },
 }

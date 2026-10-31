@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Scaling site production 5 → 32 in 4 weeks · Deepak Ramesh",
+  title: "70+ sites from one AI pipeline · Deepak Ramesh",
   description:
-    "How I built the AI content pipeline (Python, Bash, WP-CLI, Claude) that took Firestorm's site production from about 5 a month to 32 in four weeks, with a human gate where the model was least reliable.",
+    "How I built the AI content pipeline (Python, Bash, WP-CLI, Claude) that has produced 70+ Firestorm sites, with a human gate where the model was least reliable.",
   openGraph: {
-    title: "Scaling site production 5 → 32 in 4 weeks",
+    title: "70+ sites from one AI pipeline",
     description:
       "The single-prompt failure that forced the split into stages, the human gate on images, and the review agents that removed the next bottleneck.",
     type: "article",
@@ -22,10 +22,10 @@ function H({ no, children }: { no: string; children: React.ReactNode }) {
 }
 
 const METRICS = [
-  ["5 → 32", "sites in 4 weeks"],
-  ["₹1L+", "commission, month one"],
-  ["4–10 days → hours", "per-site build time"],
   ["70+", "sites produced"],
+  ["~5 / month", "by hand, before"],
+  ["days → hours", "per-site build time"],
+  ["< 45 min", "one review round"],
 ];
 
 export default function CaseStudy() {
@@ -43,12 +43,12 @@ export default function CaseStudy() {
         Case Study · Firestorm Internet
       </p>
       <h1 className="mt-4 font-display text-[clamp(2rem,6vw,3.25rem)] font-semibold leading-[1.06] tracking-[-0.025em]">
-        Scaling site production 5 → 32 in 4 weeks.
+        70+ sites from one AI pipeline.
       </h1>
       <p className="mt-6 max-w-[60ch] text-lg text-muted">
-        An AI content pipeline that took site production from a manual,
-        days-per-site job to 32 published sites in a month, while keeping a
-        human in the loop where the model was least reliable.
+        An AI content pipeline that turned a manual, days-per-site job into
+        a few hours per site, while keeping a human in the loop where the
+        model was least reliable.
       </p>
 
       <dl className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-4">
@@ -65,7 +65,7 @@ export default function CaseStudy() {
         <p>
           The business runs on volume: many niche WordPress sites, each needing
           a configured theme, plugins, design, and a body of written content.
-          Built by hand, a single site took 4–10 days — provisioning, plugin
+          Built by hand, a single site took days — provisioning, plugin
           setup, design, then writing and publishing dozens of pages. That
           didn&apos;t scale to the targets, and most of the work was mechanical.
         </p>
@@ -111,10 +111,9 @@ export default function CaseStudy() {
 
         <H no="06">Outcome</H>
         <p>
-          Per-site build time fell from 4–10 days to a few hours. Production
-          went from about 5 sites a month to 32 in the first four weeks and 36
-          in the next four. More than 70 sites have come out of the pipeline. Those
-          sites earned ₹1L+ in affiliate commission in the first month.
+          Per-site build time fell from days to a few hours, against about 5
+          sites a month by hand before. More than 70 sites have come out of the
+          pipeline.
         </p>
 
         <H no="07">What I&apos;d do next</H>

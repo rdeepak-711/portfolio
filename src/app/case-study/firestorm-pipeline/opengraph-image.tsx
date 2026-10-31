@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Scaling site production 5 → 32 in 4 weeks — case study";
+export const alt = "70+ sites from one AI pipeline — case study";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -10,7 +10,7 @@ const MUTED = "#5c574f";
 const LINE = "#e2ddd6";
 const ACCENT = "#c2541f";
 
-const METRICS = ["5 to 32 sites in 4 weeks", "70+ sites", "human gate on images"];
+const METRICS = ["70+ sites", "days to hours per site", "human gate on images"];
 
 export default function Image() {
   return new ImageResponse(
@@ -33,7 +33,7 @@ export default function Image() {
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", fontSize: 70, fontWeight: 700, letterSpacing: -2, lineHeight: 1.05, maxWidth: 1000 }}>
-            Scaling site production 5 to 32 in 4 weeks
+            70+ sites from one AI pipeline
           </div>
           <div style={{ display: "flex", marginTop: 18, fontSize: 30, color: MUTED }}>by Deepak Ramesh</div>
         </div>

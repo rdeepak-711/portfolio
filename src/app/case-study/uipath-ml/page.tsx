@@ -4,11 +4,11 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Routing 10K+ emails a month into SAP and ServiceNow · Deepak Ramesh",
   description:
-    "How I built the automations around a Communications Mining email classifier at UiPath, wired its output into SAP and ServiceNow, and lifted enterprise workflow throughput by 70%.",
+    "How I built the automations around a Communications Mining email classifier at UiPath, wired its output into SAP and ServiceNow, and fixed invoice intake by changing the input.",
   openGraph: {
     title: "Routing 10K+ emails a month into SAP and ServiceNow",
     description:
-      "Building the automations around a Communications Mining classifier, wiring its output into SAP and ServiceNow, and lifting workflow throughput 70%.",
+      "Building the automations around a Communications Mining classifier, wiring its output into SAP and ServiceNow, and taking complete invoice entries from 45% to 85–90%.",
     type: "article",
   },
 };
@@ -23,9 +23,9 @@ function H({ no, children }: { no: string; children: React.ReactNode }) {
 
 const METRICS = [
   ["10K+ / mo", "emails routed"],
-  ["85–90%", "accuracy"],
-  ["+70%", "workflow throughput"],
-  ["200+", "client sources"],
+  ["200+", "mailboxes"],
+  ["45% → 85–90%", "complete invoice entries"],
+  ["SAP · ServiceNow", "systems wired in"],
 ];
 
 export default function UiPathCaseStudy() {
@@ -46,10 +46,9 @@ export default function UiPathCaseStudy() {
         Routing 10K+ emails a month into SAP and ServiceNow.
       </h1>
       <p className="mt-6 max-w-[60ch] text-lg text-muted">
-        The automations around an email classifier that sorted enterprise
-        mail from 200+ sources at 85–90% accuracy, and the part that mattered
-        most: getting its output into the SAP and ServiceNow systems where the
-        actual work happens.
+        The automations around an AI scientist&apos;s email classifier, and the
+        part that mattered most: getting its output into the SAP and
+        ServiceNow systems where the actual work happens.
       </p>
 
       <dl className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-4">
@@ -74,9 +73,11 @@ export default function UiPathCaseStudy() {
         <H no="02">The classification model</H>
         <p>
           The model was an AI scientist&apos;s, built on UiPath&apos;s
-          Communications Mining. It reached 85–90% accuracy on historical mail.
-          My job was everything around it: taking its output and turning it into
-          automations that did the work.
+          Communications Mining. My job was everything around it: I was the
+          core developer in UiPath Studio on a delivery team with a business
+          analyst, the AI scientist, a manager and a solution architect, taking
+          the model&apos;s output and turning it into automations that did the
+          work.
         </p>
 
         <H no="03">Bridging ML to enterprise systems</H>
@@ -94,11 +95,19 @@ export default function UiPathCaseStudy() {
         <p>
           I redesigned the exception handling, routing logic, and validation
           across the SAP/ServiceNow integrations — catching the malformed,
-          ambiguous, and edge-case inputs that break naive automations. Tightening
-          those paths improved overall workflow throughput by 70%.
+          ambiguous, and edge-case inputs that break naive automations.
         </p>
 
-        <H no="05">Computer Vision for legacy interfaces</H>
+        <H no="05">The invoice problem was the input</H>
+        <p>
+          Invoice intake kept failing because the entries coming in were
+          incomplete, so no amount of model tuning would fix it. I changed the
+          input instead: an Excel template with drop-downs, so each field could
+          only take a valid value. Complete entries went from 45% to 85–90%, as
+          measured by the business analyst at delivery.
+        </p>
+
+        <H no="06">Computer Vision for legacy interfaces</H>
         <p>
           Some of the systems involved had no API — only old desktop UIs over
           remote sessions. I used UiPath Computer Vision to automate extraction
@@ -106,16 +115,15 @@ export default function UiPathCaseStudy() {
           reach systems that otherwise couldn&apos;t be touched programmatically.
         </p>
 
-        <H no="06">Outcome</H>
+        <H no="07">Outcome</H>
         <p>
-          The system classified and routed 10K+ emails a month across 200+
-          sources at 85–90% accuracy, and the workflow rework lifted throughput
-          by 70%. It also gave me the instinct I carry into LLM work now: a model
+          The automations routed 10K+ emails a month from 200+ mailboxes into
+          SAP and ServiceNow. It also gave me the instinct I carry into LLM work now: a model
           is the easy part; the hard, valuable part is wiring its output safely
           into the systems and processes that depend on it.
         </p>
 
-        <H no="07">What I took from it</H>
+        <H no="08">What I took from it</H>
         <p>
           This is where I learned to treat model output as a signal to be
           validated and routed, not trusted blindly: validation, routing rules,

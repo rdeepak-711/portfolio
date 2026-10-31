@@ -10,7 +10,7 @@ const MUTED = "#5c574f";
 const LINE = "#e2ddd6";
 const ACCENT = "#c2541f";
 
-const METRICS = ["10K+ emails / month", "85-90% accuracy", "+70% throughput"];
+const METRICS = ["10K+ emails / month", "SAP and ServiceNow", "45% to 85-90% complete invoices"];
 
 export default function Image() {
   return new ImageResponse(
