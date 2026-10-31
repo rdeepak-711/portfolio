@@ -14,6 +14,24 @@ const MODES: { id: Mode; label: string }[] = [
   { id: 'cto', label: 'CTO' }, { id: 'interviewer', label: 'Interviewer' },
 ]
 
+// Under an answer: where each cited fact comes from, then the pages a visitor can open to check it.
+// Links come only from the knowledge base, never from model text, and each page shows once.
+function AnswerSources({ claimIds }: { claimIds: string[] }) {
+  const cited = claimIds.map((id) => CLAIMS.find((claim) => claim.id === id && claim.public)).filter((claim) => claim !== undefined)
+  const links = [...new Map(cited.flatMap((claim) => claim.links ?? []).map((link) => [link.href, link])).values()]
+  const chip = 'mt-3 mr-2 inline-flex rounded-full border border-line px-2 py-1 font-mono text-[0.68rem] text-muted'
+  const linked = new Set(links.map((link) => link.href))
+  return <>
+    {cited.map((claim) => claim.sourceUrl && !linked.has(claim.sourceUrl)
+      ? <a key={claim.id} href={claim.sourceUrl} target="_blank" rel="noreferrer" className={`${chip} underline-offset-2 hover:underline`}>{claim.sourceLabel}</a>
+      : <span key={claim.id} className={chip}>{claim.sourceLabel}</span>)}
+    {links.length > 0 && <div className="mt-3 flex flex-wrap gap-2">{links.map((link) => {
+      const external = link.href.startsWith('http')
+      return <a key={link.href} href={link.href} {...(external ? { target: '_blank', rel: 'noreferrer' } : {})} className="inline-flex items-center gap-1 rounded-full border border-ink/30 px-2.5 py-1 text-xs text-ink hover:border-accent hover:text-accent">{link.label}<span aria-hidden="true">{external ? '↗' : '→'}</span></a>
+    })}</div>}
+  </>
+}
+
 export default function Dee() {
   const [open, setOpen] = useState(false)
   const [mode, setMode] = useState<Mode>('recruiter')
@@ -155,7 +173,7 @@ export default function Dee() {
             {tourStop && <div className="rounded border border-line p-4"><p className="font-mono text-xs uppercase tracking-wider text-muted">Stop {tourIndex! + 1} of {TOUR_STOPS.length}</p>{tourStop.lines.map((line) => <p key={line} className="mt-2 text-sm">{line}</p>)}<div className="mt-4 flex gap-3"><button type="button" onClick={nextStop} className="rounded bg-ink px-3 py-2 text-sm text-paper">Next</button><button type="button" onClick={() => { setTourIndex(null); setTourDone(false) }} className="px-2 py-2 text-sm text-muted underline">Skip tour</button></div></div>}
             {!tourStop && <div className="flex flex-wrap gap-2" aria-label="Choose audience mode">{MODES.map((item) => <button key={item.id} type="button" aria-pressed={mode === item.id} onClick={() => setMode(item.id)} className={`rounded-full border px-3 py-1.5 font-mono text-xs ${mode === item.id ? 'border-accent bg-accent-soft text-ink' : 'border-line text-muted'}`}>{item.label}</button>)}</div>}
             {messages.filter((m) => m.role === 'user').map((message, index) => <p key={`${index}-${message.content}`} className="ml-8 rounded bg-accent-soft px-3 py-2 text-sm">{message.content}</p>)}
-            <div aria-live="polite" aria-atomic="true">{answer && <div className="rounded border border-line p-3"><p className="text-sm">{answer.text}</p>{answer.claimIds.map((id) => { const claim = CLAIMS.find((item) => item.id === id); if (!claim) return null; const chipClass = 'mt-3 mr-2 inline-flex rounded-full border border-line px-2 py-1 font-mono text-[0.68rem] text-muted'; return claim.sourceUrl ? <a key={id} href={claim.sourceUrl} target="_blank" rel="noreferrer" className={`${chipClass} underline-offset-2 hover:underline`}>{claim.sourceLabel}</a> : <span key={id} className={chipClass}>{claim.sourceLabel}</span> })}</div>}{busy && <p className="text-sm text-muted">Dee is checking the record…</p>}{error && <p role="alert" className="text-sm text-accent">{error}</p>}{sent && <p className="text-sm">Sent. Deepak usually replies within a day by email.</p>}</div>
+            <div aria-live="polite" aria-atomic="true">{answer && <div className="rounded border border-line p-3"><p className="text-sm">{answer.text}</p><AnswerSources claimIds={answer.claimIds}/></div>}{busy && <p className="text-sm text-muted">Dee is checking the record…</p>}{error && <p role="alert" className="text-sm text-accent">{error}</p>}{sent && <p className="text-sm">Sent. Deepak usually replies within a day by email.</p>}</div>
             {showAskButton && <button type="button" onClick={() => { setAskOpen(true); setTourIndex(null); setSent(false) }} className="rounded border border-accent px-3 py-2 text-sm hover:bg-accent-soft">Ask Deepak</button>}
             {askOpen && !sent && <form role="form" aria-label="Ask Deepak" onSubmit={sendAsk} className="space-y-3 border-t border-line pt-4"><label className="block text-sm">Your question<textarea name="question" required minLength={5} maxLength={2000} defaultValue={messages.filter((m) => m.role === 'user').at(-1)?.content ?? ''} className="mt-1 block w-full rounded border border-line bg-paper p-2"/></label><label className="block text-sm">Your email<input ref={input} name="email" type="email" required className="mt-1 block w-full rounded border border-line bg-paper p-2"/></label><label className="block text-sm">Name (optional)<input name="name" className="mt-1 block w-full rounded border border-line bg-paper p-2"/></label><label className="block text-sm">Company (optional)<input name="company" className="mt-1 block w-full rounded border border-line bg-paper p-2"/></label><label className="sr-only" aria-hidden="true">Website<input name="website" tabIndex={-1} autoComplete="off"/></label><button disabled={busy} className="rounded bg-ink px-3 py-2 text-sm text-paper disabled:opacity-50">Send</button><button type="button" onClick={() => setAskOpen(false)} className="ml-3 text-sm text-muted underline">Cancel</button></form>}
           </div>

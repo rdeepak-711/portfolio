@@ -276,3 +276,17 @@ A test bars any note from calling LifeDots a "LeetCode tracker" or stating a use
 **Cost:** at gutter size, Dee's face is about 30px, so the rider reads as "a person on a plane" rather than as Deepak specifically. The standing Dee at the contact section carries the likeness.
 
 **Dev note:** Turbopack's dev cache on the USB volume kept serving the old `globals.css` after an append; restarting the dev server didn't help, and only `rm -rf .next` did.
+
+## 2026-10-31 · Dee gives links a visitor can check
+
+**Decided:**
+- Claims gain an optional `links` list: the public pages where a visitor can check the claim. 11 claims carry links, and every URL was checked live on 31 Oct.
+- Under each answer, Dee shows one button per unique page for the claims it cited.
+- The system prompt lists each claim's link labels and tells the model to name the button ("open A real packet below") and never write or invent a URL.
+- A source label links to its `sourceUrl` only when no button already points there.
+
+**Why:** on the live site, asked "can I check it?", Dee answered "through Deepak's public materials". The rendering already supported links, but every claim had `sourceUrl: null`, and the model didn't know any links existed.
+
+**Considered:** letting the model write URLs in its text. Rejected: URLs from the model can be made up, and links taken only from the knowledge base can't be.
+
+**Cost:** the links are hand-kept in `src/content/dee/claims.ts`; a renamed post or a moved site means editing them there. `links.test.ts` pins the important ones.

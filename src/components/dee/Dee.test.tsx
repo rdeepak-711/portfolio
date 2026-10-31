@@ -93,6 +93,23 @@ describe('Dee', () => {
     expect(String(fetchMock.mock.calls[0][0])).toBe('/api/dee')
   })
 
+  it('turns cited claims into links a visitor can check, once each', async () => {
+    const fetchMock = vi.fn(async () => new Response(JSON.stringify({ text: 'Yes, escalation-gate.', claimIds: ['P1', 'P2'], escalate: false, source: 'primary' })))
+    vi.stubGlobal('fetch', fetchMock)
+    const user = await open()
+    await user.click(screen.getByRole('button', { name: 'Just ask' }))
+    await user.type(screen.getByLabelText('Ask Dee a question'), 'Can I check it?{enter}')
+    await screen.findByText('Yes, escalation-gate.')
+    const expected = [...CLAIMS.find((c) => c.id === 'P1')!.links!, ...CLAIMS.find((c) => c.id === 'P2')!.links!]
+    for (const l of expected) {
+      const a = screen.getByRole('link', { name: new RegExp(l.label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) })
+      expect(a).toHaveAttribute('href', l.href)
+      if (l.href.startsWith('http')) expect(a).toHaveAttribute('target', '_blank')
+    }
+    const all = screen.getAllByRole('link').map((a) => a.getAttribute('href'))
+    expect(new Set(all).size).toBe(all.length)
+  })
+
   it('offers Ask Deepak when Dee escalates, and sends the form', async () => {
     const fetchMock = vi.fn(async (url: string) =>
       url === '/api/dee'
