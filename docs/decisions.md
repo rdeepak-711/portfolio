@@ -113,3 +113,13 @@ Why the site is the way it is. Newest first. Never delete an entry; mark it reve
 **Considered:** rebuilding to all 20 points; leaving the accent and only using it for large text.
 **Why:** the portfolio exists to back the CV quickly; every hour here is an hour not applying. The accent is used on 12px labels, so it had to pass at small sizes.
 **Cost:** screenshots go stale when the sites change and need retaking. Core Web Vitals are unmeasured until the site is deployed.
+
+## 2026-10-31 · Writing grouped by lane; 9 LeetCode notes retired
+
+**Decided:** /writing groups notes into lanes (Outbuiltit, Code review, Hackathons, Making the videos, Job hunt, Claude Code, LeetCode), and a lane with no notes is hidden. 9 of the 13 LeetCode notes are retired: best-time-buy-sell, two-sum-ii, valid-palindrome, valid-sudoku, group-anagrams, 3sum, top-k, product-except-self and contains-duplicate. Each retired URL now 308-redirects to /writing via `next.config.ts`. A test caps the LeetCode lane at 4.
+
+**Considered:** keeping all 13 in a collapsed LeetCode lane, which preserves every page but leaves /writing at 13 of 15 LeetCode. The other option was deleting the retired notes without redirects, which breaks any shared link.
+
+**Why this won:** 13 of 15 notes were LeetCode, so an FDE hiring manager opening /writing saw a DSA practice log. The 4 notes kept each record a mistake I made or found (stale DP values, a no-op `.lower()`, check-before-store order, a maxFreq that never drops). The 9 retired ones were textbook tricks that any LeetCode explainer already covers. Hiding empty lanes avoids the sparse sections that weakened rahulm.me.
+
+**Cost:** the 9 notes are gone from the site; they're still in git history. Outbuiltit and Claude Code hold 1 note each until the new posts land. The Meta hackathon is not listed (rejected 31 Oct). Kiroween (entered solo, due 4 Dec) gets a post only from real build progress.

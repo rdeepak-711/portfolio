@@ -13,8 +13,39 @@ export type Block =
   | { kind: 'code'; lang: string; code: string }
   | { kind: 'list'; items: string[] }
 
+export type NoteLane = 'outbuiltit' | 'code-review' | 'hackathons' | 'videos' | 'job-hunt' | 'claude-code' | 'leetcode'
+
+/** the spaces I write about, in the order /writing shows them; a lane with no notes is hidden */
+export const NOTE_LANES: ReadonlyArray<{ id: NoteLane; label: string }> = [
+  { id: 'outbuiltit', label: 'Outbuiltit' },
+  { id: 'code-review', label: 'Code review' },
+  { id: 'hackathons', label: 'Hackathons' },
+  { id: 'videos', label: 'Making the videos' },
+  { id: 'job-hunt', label: 'Job hunt' },
+  { id: 'claude-code', label: 'Claude Code' },
+  { id: 'leetcode', label: 'LeetCode' },
+]
+
+/**
+ * Notes taken down on 31 Oct 2026: textbook LeetCode tricks with no mistake of
+ * my own in them. next.config.ts redirects each one to /writing so old links
+ * don't 404.
+ */
+export const RETIRED_NOTE_SLUGS: ReadonlyArray<string> = [
+  'best-time-buy-sell-no-minimum',
+  'two-sum-ii-sorted-deletes-the-hashmap',
+  'valid-palindrome-skip-dont-clean',
+  'valid-sudoku-one-loop-two-checks',
+  'group-anagrams-stop-sorting',
+  '3sum-two-sum-sorted',
+  'top-k-frequent-min-heap',
+  'product-except-self-prefix-suffix',
+  'contains-duplicate-set-trick',
+]
+
 export type Note = {
   slug: string
+  lane: NoteLane
   title: string
   /** one-line standfirst — also the meta description */
   dek: string
@@ -27,6 +58,7 @@ export type Note = {
 export const NOTES: ReadonlyArray<Note> = [
   {
     slug: 'escalation-gate',
+    lane: 'outbuiltit',
     title: 'escalation-gate: from a GitHub issue to a checked root cause and the PR that fixes it',
     dek: 'A model cites the code, a checker verifies every citation, and SQL cuts 192 open PRs to 25. It also caught a mistake in my own review.',
     date: '2026-10-11',
@@ -100,106 +132,8 @@ export const NOTES: ReadonlyArray<Note> = [
     ],
   },
   {
-    slug: 'best-time-buy-sell-no-minimum',
-    title: 'Best Time to Buy and Sell Stock: I never track the minimum price',
-    dek: 'Most solutions keep a minPrice variable. This one keeps two pointers — and the buy pointer teleports.',
-    date: '2026-07-31',
-    body: [
-      {
-        kind: 'p',
-        text: 'The standard solution to this problem keeps a running minimum. Walk the array, remember the cheapest price seen so far, and at each step check today’s price against it. That is correct and it is O(n). My version doesn’t have that variable at all — there is no minPrice, and no call to min().',
-      },
-      {
-        kind: 'p',
-        text: 'It keeps two pointers instead. b is the buy day, s is the sell day. Sell walks right and subtracts, and there are exactly two outcomes.',
-      },
-      { kind: 'h', text: 'The only line that matters' },
-      {
-        kind: 'code',
-        lang: 'python',
-        code: `if(a<0):
-    b = s
-else:
-    ans = max(ans, prices[s]-prices[b])`,
-      },
-      {
-        kind: 'p',
-        text: 'If the profit is negative, b = s. Buy doesn’t step forward one day — it teleports all the way to wherever sell currently is. That single line is doing the job the minPrice variable does in every other version.',
-      },
-      { kind: 'h', text: 'Why the jump is safe' },
-      {
-        kind: 'p',
-        text: 'The claim is that b always holds the cheapest price in everything seen so far. It holds by induction. At the start b is index 0, trivially the cheapest of the first one. Then sell visits every index in order, one at a time — so if a price ever comes in below the current buy price, buy moves onto it immediately, on that same iteration. There is no way to pass a new minimum without landing on it.',
-      },
-      {
-        kind: 'p',
-        text: 'That is also why skipping days costs nothing. Every day strictly between the old b and the new one was priced higher than the old b — otherwise buy would already have jumped there when sell passed it. A day dearer than a day you can still buy is worthless as a purchase, forever. So the jump discards them permanently, not provisionally.',
-      },
-      { kind: 'h', text: 'LeetCode’s own example hides this' },
-      {
-        kind: 'p',
-        text: 'On the given [7, 1, 5, 3, 6, 4], buy jumps from index 0 to index 1 — a single step. The set of skipped days is empty, so you can watch the whole thing run and never see the behaviour that makes it work. Use [7, 8, 9, 1, 5, 3, 6, 4] instead: buy jumps 0 to 3, straight past 8 and 9, both dearer than the 7 it was sitting on. Same answer, 5.',
-      },
-      {
-        kind: 'list',
-        items: [
-          '8 − 7 = 1 — profit, ans = 1',
-          '9 − 7 = 2 — profit, ans = 2',
-          '1 − 7 = −6 — negative, so buy jumps from index 0 to index 3, skipping 8 and 9',
-          '5 − 1 = 4 — profit, ans = 4',
-          '3 − 1 = 2 — no improvement, ans stays 4',
-          '6 − 1 = 5 — profit, ans = 5',
-          '4 − 1 = 3 — no improvement, ans stays 5',
-        ],
-      },
-      {
-        kind: 'p',
-        text: 'Buy lands on index 3 and never moves again — it found the cheapest day in the array and there was nothing left to beat it. Sell walks the remaining four days on its own.',
-      },
-      { kind: 'h', text: 'The solution' },
-      {
-        kind: 'code',
-        lang: 'python',
-        code: `class Solution:
-    def maxProfit(self, prices: List[int]) -> int:
-        b = 0
-        s = 1
-        ans = 0
-        while(s<len(prices)):
-            a = prices[s]-prices[b]
-            if(a<0):
-                b = s
-            else:
-                ans = max(ans, prices[s]-prices[b])
-            s += 1
-        return ans`,
-      },
-      { kind: 'h', text: 'Two honest notes on this code' },
-      {
-        kind: 'p',
-        text: 'The subtraction happens twice — once into a, then again inside the max(). It costs nothing measurable and I have left it as submitted rather than tidying it after the fact.',
-      },
-      {
-        kind: 'p',
-        text: 'And s starts at 1, not 0. On a single-price array the loop never runs and it returns 0, which is the right answer — you cannot sell after buying if there is no day after. Worth checking rather than assuming, because an off-by-one here fails silently on exactly one input.',
-      },
-      { kind: 'h', text: 'Cost' },
-      {
-        kind: 'list',
-        items: [
-          'Time: O(n) — sell visits each day once and never goes back',
-          'Space: O(1) — two integers, and no minimum stored anywhere',
-          'Brute force, by comparison: O(n²) for every buy/sell pair',
-        ],
-      },
-      {
-        kind: 'p',
-        text: 'The wider point is that a pointer can be a variable. Once you notice that b is the running minimum, you stop needing something to hold it.',
-      },
-    ],
-  },
-  {
     slug: 'longest-repeating-maxfreq-never-drops',
+    lane: 'leetcode',
     title: 'Longest Repeating Character Replacement: maxFreq never goes down',
     dek: 'The window shrinks and maxFreq stays high — so it is genuinely wrong about the current window. The answer is still correct, and one bound is why.',
     date: '2026-07-31',
@@ -290,255 +224,8 @@ else:
     ],
   },
   {
-    slug: 'two-sum-ii-sorted-deletes-the-hashmap',
-    title: 'Two Sum II: one word in the title deletes the hash map',
-    dek: 'Two Sum needs a dictionary. Two Sum II gives you "sorted" — and that one word replaces it with two integers.',
-    date: '2026-07-29',
-    body: [
-      {
-        kind: 'p',
-        text: 'Two Sum and Two Sum II ask for the same thing: find the pair that adds to the target. The first one needs a hash map — you walk the array once, and for each number you ask whether you have already seen its complement. That is O(n) time, but it is also O(n) space, because you are storing everything you have seen.',
-      },
-      {
-        kind: 'p',
-        text: 'Two Sum II changes exactly one thing in the title: the array is sorted. That word deletes the map.',
-      },
-      { kind: 'h', text: 'Start wide, not narrow' },
-      {
-        kind: 'p',
-        text: 'Put one pointer at each end and add them. Because the array is sorted, that first sum is the largest one you can make from the smallest element and the largest one you can make from the largest element — which means every comparison you make tells you something structural, not incidental.',
-      },
-      {
-        kind: 'list',
-        items: [
-          'Sum is too small — the left number is the problem, because the right one is already the biggest available. Move left inward.',
-          'Sum is too big — the right number is the problem, for the mirror reason. Move right inward.',
-          'Sum equals the target — done.',
-        ],
-      },
-      { kind: 'h', text: 'Why the move is a proof, not a guess' },
-      {
-        kind: 'p',
-        text: 'This is the part worth internalising, and it is the part a brute-force mental model misses. When the sum is too big and you move the right pointer in, you are not just trying the next thing. You are discarding that element permanently — and you are allowed to, because it is the largest remaining value. If it was too big paired with the smallest remaining value, it is too big paired with every other remaining value too.',
-      },
-      {
-        kind: 'p',
-        text: 'So one pointer move does not eliminate one candidate pair. It eliminates every pair that element belonged to, in a single step. That is why the whole thing runs in one pass instead of n².',
-      },
-      { kind: 'h', text: 'The trace' },
-      {
-        kind: 'p',
-        text: 'On [1, 3, 4, 5, 7, 11] with target 9, the pointers move five times and land on 4 + 5. Note that both rules fire — this is worth checking on your own examples, because on LeetCode’s own [2, 7, 11, 15] the left pointer never moves at all, and you can convince yourself you understand the algorithm while only ever having watched half of it run.',
-      },
-      {
-        kind: 'list',
-        items: [
-          '1 + 11 = 12, too big — move right in',
-          '1 + 7 = 8, too small — move left in',
-          '3 + 7 = 10, too big — move right in',
-          '3 + 5 = 8, too small — move left in',
-          '4 + 5 = 9 — found',
-        ],
-      },
-      { kind: 'h', text: 'The solution' },
-      {
-        kind: 'code',
-        lang: 'python',
-        code: `class Solution:
-    def twoSum(self, numbers: List[int], target: int) -> List[int]:
-        l = 0
-        r = len(numbers)-1
-        while(l<r):
-            x = numbers[l]+numbers[r]
-            if x == target:
-                return [l+1, r+1]
-            elif x < target:
-                l+=1
-            else:
-                r-=1`,
-      },
-      { kind: 'h', text: 'The trap: this one is 1-indexed' },
-      {
-        kind: 'p',
-        text: 'Two Sum II returns positions, not indices — the problem statement says the array is 1-indexed. So the answer is [l+1, r+1], not [l, r]. On the trace above that is [3, 4], not [2, 3]. It is the kind of thing that passes your head and fails the submission.',
-      },
-      {
-        kind: 'p',
-        text: 'There is also no return statement after the loop. That is deliberate and it is safe here only because the problem guarantees exactly one solution exists — the loop cannot finish without finding it. Do not copy that habit into a problem without that guarantee.',
-      },
-      { kind: 'h', text: 'Cost' },
-      {
-        kind: 'list',
-        items: [
-          'Time: O(n) — each element is passed at most once',
-          'Space: O(1) — two integers, no dictionary',
-          'Two Sum, by comparison: O(n) time but O(n) space for the hash map',
-        ],
-      },
-      {
-        kind: 'p',
-        text: 'Sorted input is not a detail in the constraints. It is usually the whole solution, and it is worth training yourself to read it as one.',
-      },
-    ],
-  },
-  {
-    slug: 'valid-palindrome-skip-dont-clean',
-    title: 'Valid Palindrome: skip the junk, don’t clean it',
-    dek: 'The usual one-liner filters the string into a new one first. You never have to build that second string.',
-    date: '2026-07-29',
-    body: [
-      {
-        kind: 'p',
-        text: 'Valid Palindrome gives you a string full of spaces, commas and colons, and asks whether it reads the same forwards and backwards once you ignore everything that is not a letter or a digit. Almost every solution starts the same way — filter the string down, then compare it to its reverse.',
-      },
-      {
-        kind: 'code',
-        lang: 'python',
-        code: `t = [c.lower() for c in s if c.isalnum()]
-return t == t[::-1]`,
-      },
-      {
-        kind: 'p',
-        text: 'That works, and in an interview it is a perfectly reasonable first answer. But it allocates: the filtered list is a whole second copy of the input, and the reversal is arguably a third. If the follow-up question is "can you do it in constant space", this shape has no answer.',
-      },
-      { kind: 'h', text: 'The junk never has to move' },
-      {
-        kind: 'p',
-        text: 'The insight is that you do not need a clean string to compare characters — you need a way to land on the next character worth comparing. Two pointers walk inward from each end, and when one lands on a space or a comma, it just keeps walking. The punctuation is skipped in place. It is never removed, because it never had to be.',
-      },
-      {
-        kind: 'code',
-        lang: 'python',
-        code: `class Solution:
-    def isPalindrome(self, s: str) -> bool:
-        l = 0
-        r = len(s)-1
-        s = s.lower()
-        while(l<r):
-            while l<r and not(ord('0')<=ord(s[l])<=ord('9') or ord('a')<=ord(s[l])<=ord('z')):
-                l+=1
-            while l<r and not(ord('0')<=ord(s[r])<=ord('9') or ord('a')<=ord(s[r])<=ord('z')):
-                r-=1
-            if s[l]!=s[r]:
-                return False
-            l+=1
-            r-=1
-        return True`,
-      },
-      {
-        kind: 'p',
-        text: 'On "race a car" the pointers lock r against r, a against a, c against c. Then the right pointer lands on a space, walks past it, and compares e against a — mismatch, return False. The other space in that string is never even visited.',
-      },
-      { kind: 'h', text: 'The check that stops it crashing' },
-      {
-        kind: 'p',
-        text: 'The easiest thing to drop from this solution is the l<r sitting inside the two inner while loops. It looks redundant — the outer loop already checks it. It is not redundant, and here is the input that proves it.',
-      },
-      {
-        kind: 'p',
-        text: 'Feed it ".," — a string with no alphanumeric characters at all. The outer loop starts with l=0, r=1, so it runs. The first inner loop starts walking left forward looking for something alphanumeric, and there is nothing to find. With the guard, l stops at 1 and the loop exits; s[1] equals s[1] and the function returns True. Without the guard, nothing stops l — it walks to index 2 and Python raises an IndexError.',
-      },
-      {
-        kind: 'p',
-        text: 'That is the entire job of those two comparisons: the outer loop guards the pair, the inner ones guard the search for the pair.',
-      },
-      { kind: 'h', text: 'Cost, honestly' },
-      {
-        kind: 'list',
-        items: [
-          'Time: O(n) — each character is crossed at most once',
-          'Space: O(1) for the algorithm — two integers, no filtered copy',
-          'But s = s.lower() allocates a full copy of the string, because Python strings are immutable',
-        ],
-      },
-      {
-        kind: 'p',
-        text: 'So the function is not genuinely O(1) space, and it is worth saying that out loud rather than rounding it off. The algorithm is constant-space; the lower() call is not, and Python gives you no in-place alternative. If you needed true O(1), you would drop the lower() and case-fold the two characters at the point of comparison instead.',
-      },
-      {
-        kind: 'p',
-        text: 'The transferable idea is smaller than the problem: when you catch yourself building a cleaned copy of an input just to walk over it, check whether a pointer could have skipped the parts you were about to delete.',
-      },
-    ],
-  },
-  {
-    slug: 'valid-sudoku-one-loop-two-checks',
-    title: 'Valid Sudoku: check a row, get its column for free',
-    dek: 'The obvious solution is three separate passes over the board. One loop can do two of them at once.',
-    date: '2026-07-28',
-    body: [
-      {
-        kind: 'p',
-        text: 'Valid Sudoku asks for three things: every row has no repeated digit, every column has no repeated digit, every 3×3 box has no repeated digit. The shape almost everyone reaches for is three separate passes over the same 81 cells — one for rows, one for columns, one for boxes.',
-      },
-      { kind: 'h', text: 'Rows and columns share an index' },
-      {
-        kind: 'p',
-        text: 'Row i and column i are not independent things to visit separately — they are both indexed by the same number. So instead of looping i from 0 to 8 for rows, then looping again for columns, one loop can check both: for each i, read board[i][j] (row i) and board[j][i] (column i) in the same inner pass.',
-      },
-      {
-        kind: 'code',
-        lang: 'python',
-        code: `class Solution:
-    def isValidSudoku(self, board: List[List[str]]) -> bool:
-        for i in range(9):
-            row = set()
-            col = set()
-            for j in range(9):
-                if board[i][j] != ".":
-                    if board[i][j] in row:
-                        return False
-                    row.add(board[i][j])
-
-                if board[j][i] != ".":
-                    if board[j][i] in col:
-                        return False
-                    col.add(board[j][i])
-        for hop_i in [0,3,6]:
-            for hop_j in [0,3,6]:
-                square = set()
-                for i in range(3):
-                    for j in range(3):
-                        if board[hop_i+i][hop_j+j]!=".":
-                            if board[hop_i+i][hop_j+j] in square:
-                                return False
-                            square.add(board[hop_i+i][hop_j+j])
-        return True`,
-      },
-      { kind: 'h', text: 'A board that looks clean and isn’t' },
-      {
-        kind: 'p',
-        text: 'Take a board where every row, checked on its own, has no repeats, and every column, checked on its own, has no repeats. That board can still be invalid — because a 3×3 box can hold a duplicate that never lines up in the same row or the same column. Two 9s in the top-left box, positioned diagonally from each other, will pass every row check and every column check and still be wrong.',
-      },
-      {
-        kind: 'p',
-        text: 'That is the entire reason the box loop has to exist as its own pass — it is the only check that can’t be folded into the row/column loop, because a box isn’t indexed by a single i the way a row or column is.',
-      },
-      {
-        kind: 'p',
-        text: 'I didn’t take this on faith. I fuzz-tested the combined-loop solution against a brute-force reference (build the row, column, and box as plain lists, check each for duplicates directly) across 2,000 random boards, and hand-built the row-clean/column-clean/box-dirty case above to confirm the failure mode specifically — both matched on every trial.',
-      },
-      { kind: 'h', text: 'Cost — a real count, not a complexity win' },
-      {
-        kind: 'p',
-        text: 'It would be easy to claim this is “faster,” and that would be dishonest. The board is fixed at 9×9, so both the combined-loop version and three-separate-loops version are O(1) — there’s no n that grows here. What’s real is the number of loop constructs: three separate passes (rows, columns, boxes) versus two (rows+columns together, then boxes).',
-      },
-      {
-        kind: 'list',
-        items: [
-          'Naive: 3 passes — one each for rows, columns, boxes',
-          'Combined: 2 passes — rows and columns together, then boxes',
-          'Both: O(1) time and space — the board size never changes, so there is no asymptotic improvement, only fewer loops',
-        ],
-      },
-      {
-        kind: 'p',
-        text: 'The win here is not speed. It’s that column i was never a separate thing to go looking for — it was sitting right next to row i the whole time.',
-      },
-    ],
-  },
-  {
     slug: 'caveman-shorter-not-cheaper',
+    lane: 'claude-code',
     title: 'A skill that shortens Claude’s answers — and the claim I could not prove',
     dek: 'The obvious pitch is that shorter replies save you tokens. I measured it, and that part did not hold.',
     date: '2026-07-17',
@@ -579,61 +266,8 @@ return t == t[::-1]`,
     ],
   },
   {
-    slug: 'group-anagrams-stop-sorting',
-    title: 'Group Anagrams: stop sorting, start counting',
-    dek: 'Most solutions sort every word to build the dictionary key. Counting letters does the same job in linear time.',
-    date: '2026-07-20',
-    body: [
-      {
-        kind: 'p',
-        text: 'The standard Group Anagrams solution sorts each word and uses the sorted string as a dictionary key. It works, and it costs more than it needs to.',
-      },
-      { kind: 'h', text: 'What anagrams actually share' },
-      {
-        kind: 'p',
-        text: 'Two words are anagrams when they contain the same letters the same number of times. Sorting is one way to expose that, but it is indirect — you are paying to order the letters when you only care about how many of each there are.',
-      },
-      {
-        kind: 'p',
-        text: 'Count them instead. Twenty-six slots, one per letter. Every anagram of a word produces an identical count array, so that array is a perfect key.',
-      },
-      {
-        kind: 'code',
-        lang: 'python',
-        code: `class Solution:
-    def groupAnagrams(self, strs: List[str]) -> List[List[str]]:
-        matches={}
-        for strr in strs:
-            s=[0]*26
-            for c in strr.lower():
-                s[ord(c)-ord('a')]+=1
-            pre=matches.get(tuple(s),[])
-            pre.append(strr)
-            matches[tuple(s)]=pre
-        return list(matches.values())`,
-      },
-      { kind: 'h', text: 'Why the tuple is load-bearing' },
-      {
-        kind: 'p',
-        text: 'The counts start as a list, and a list cannot be a dictionary key in Python — it is mutable, so it is unhashable, and using one raises TypeError. Wrapping it in a tuple freezes it into something hashable. That single call is what makes the whole approach work.',
-      },
-      { kind: 'h', text: 'The cost difference' },
-      {
-        kind: 'list',
-        items: [
-          'Sorting each word: O(n · k log k) — the log k is the sort, per word',
-          'Counting letters: O(n · k) — one pass per word',
-          'Same grouping, same answer, one factor cheaper',
-        ],
-      },
-      {
-        kind: 'p',
-        text: 'On short words the difference is academic. The point is that the sort was never doing anything the count could not — it was just the first idea that came to mind.',
-      },
-    ],
-  },
-  {
     slug: 'two-sum-ordering',
+    lane: 'leetcode',
     title: 'Two Sum: the two lines everyone gets backwards',
     dek: 'The hash map is the easy part. The order of the check and the store is what decides whether it is correct.',
     date: '2026-07-20',
@@ -689,80 +323,8 @@ return t == t[::-1]`,
     ],
   },
   {
-    slug: '3sum-two-sum-sorted',
-    title: '3Sum is just Two Sum, once you sort',
-    dek: 'The brute force is three nested loops. Sorting first turns the inner two into a two-pointer scan — the exact trick Two Sum uses on a sorted array.',
-    date: '2026-07-21',
-    body: [
-      {
-        kind: 'p',
-        text: '3Sum asks for every unique triplet that sums to zero. It looks like it needs three nested loops, and the first solution most people reach for is exactly that — pick i, pick j, pick k, check the sum. It works and it is O(n³), which times out the moment the array gets large.',
-      },
-      { kind: 'h', text: 'The reframe' },
-      {
-        kind: 'p',
-        text: 'Sort the array first. Now fix the first number, nums[i]. The other two have to sum to its negative, −nums[i]. Finding two numbers that hit a fixed target inside a sorted array is not a new problem — it is Two Sum, and on a sorted array you solve it with two pointers instead of a hash map: one starting at the left of the remaining range, one at the right.',
-      },
-      { kind: 'h', text: 'How the pointers move' },
-      {
-        kind: 'p',
-        text: 'Compare the pair’s sum to the target. Too small? Move the left pointer up, because the array is sorted and everything to the right is larger. Too big? Move the right pointer down. Equal? Record the triplet. Each pointer only ever moves inward, so for a fixed i the whole scan is linear — no rescanning, no second loop over the same elements.',
-      },
-      {
-        kind: 'code',
-        lang: 'python',
-        code: `class Solution:
-    def threeSum(self, nums: list[int]) -> list[list[int]]:
-        nums.sort()
-        ans = []
-        for i in range(len(nums)):
-            if nums[i]>0:
-                break
-            if i>0 and nums[i]==nums[i-1]:
-                continue
-            x = i+1
-            y = len(nums)-1
-            while(x<y):
-                if nums[x]+nums[y]==-nums[i]:
-                    ans.append([nums[i], nums[x], nums[y]])
-                    x+=1
-                    y-=1
-                    while x<y and nums[x]==nums[x-1]:
-                        x+=1
-                    while x<y and nums[y]==nums[y+1]:
-                        y-=1
-                elif nums[x]+nums[y]<-nums[i]:
-                    x+=1
-                else:
-                    y-=1
-        return ans`,
-      },
-      { kind: 'h', text: 'The two details that make it correct and fast' },
-      {
-        kind: 'p',
-        text: 'Duplicates are the part that quietly breaks a solution that is otherwise right. The same triplet can be reached more than once, so you skip past repeated values in three places: for i at the top of the loop, and for both pointers after recording a match. Miss those and the logic is correct but the output has duplicate triplets.',
-      },
-      {
-        kind: 'p',
-        text: 'The other detail is the early break. Because the array is sorted, once nums[i] is positive there is no way three numbers starting from it can sum to zero — everything from here on is positive. Breaking there skips the tail of the array for free.',
-      },
-      { kind: 'h', text: 'Cost' },
-      {
-        kind: 'list',
-        items: [
-          'Brute force: O(n³) — three nested loops',
-          'Sorted + two pointers: O(n²) — one sort, then n passes of a linear scan',
-          'The sort is the unlock — it makes both the two-pointer scan and the de-duplication possible',
-        ],
-      },
-      {
-        kind: 'p',
-        text: 'That is the whole move: one call to sort turns a problem that looks cubic into one you already know how to solve.',
-      },
-    ],
-  },
-  {
     slug: 'valid-anagram-immutable-lower',
+    lane: 'leetcode',
     title: 'Valid Anagram: the two lines that did nothing',
     dek: 'I wrote s.lower() and t.lower(), and they changed nothing — Python strings are immutable, so the result is thrown away unless you assign it. The solution passed anyway, for the wrong reason.',
     date: '2026-07-22',
@@ -818,171 +380,8 @@ return t == t[::-1]`,
     ],
   },
   {
-    slug: 'top-k-frequent-min-heap',
-    title: 'Top K Frequent: a min-heap to keep the biggest',
-    dek: 'To hold on to the k most frequent numbers, the instinct is a max-heap. The trick is the opposite — a min-heap of size k, run like a bouncer at the door.',
-    date: '2026-07-22',
-    body: [
-      {
-        kind: 'p',
-        text: 'Top K Frequent asks for the k numbers that appear most often. The obvious plan is to count everything and sort by frequency, which is O(n log n). You do not have to sort — and the approach that avoids it uses a heap in a way that looks backwards at first.',
-      },
-      { kind: 'h', text: 'The counterintuitive part' },
-      {
-        kind: 'p',
-        text: 'You want the largest counts, so the instinct is a max-heap. Use a min-heap instead, capped at size k. The reason is exactly what a min-heap is bad at: the smallest element sits on top, first to come out. That is the wrong thing to return, but the right thing to throw away — so the min-heap becomes a machine for cheaply discarding the least frequent element, which is what keeping the top k actually requires.',
-      },
-      { kind: 'h', text: 'The bouncer' },
-      {
-        kind: 'p',
-        text: 'Count the numbers, then push each (count, number) pair into the heap. The moment the heap holds more than k, pop — and because it is a min-heap, the pop removes the lowest count in the room. Do that for every number and the heap never exceeds k. Whatever is still inside when you finish is the top k.',
-      },
-      {
-        kind: 'p',
-        text: 'Take nums = [1, 1, 1, 2, 2, 3] with k = 2. The counts are 1→3, 2→2, 3→1. All three go in; the heap is now over capacity, so it pops the smallest count — 3, which appeared once. Two survive: 1 and 2. That is the answer.',
-      },
-      {
-        kind: 'code',
-        lang: 'python',
-        code: `from collections import Counter
-from heapq import heappush, heappop,
-  class Solution:
-    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
-        presence = Counter(nums)
-        temp = []
-        for key, value in presence.items():
-            heappush(temp,(value, key))
-            if len(temp)>k:
-                heappop(temp)
-        ans=[]
-        for value, key in temp:
-            ans.append(key)
-        return ans`,
-      },
-      { kind: 'h', text: 'Why the pair is (count, number) and not the other way' },
-      {
-        kind: 'p',
-        text: 'A Python heap orders tuples by their first element. The count has to come first so the heap compares on frequency — that is the whole point, popping the least frequent. Put the number first and the heap would order by the number’s value and evict the wrong element. The tuple order is load-bearing, the same way it is in the counting solution to Group Anagrams.',
-      },
-      { kind: 'h', text: 'Cost' },
-      {
-        kind: 'list',
-        items: [
-          'Count everything, then sort: O(n log n)',
-          'This: O(n log k) — every push and pop is log k, and the heap never holds more than k',
-          'Space: O(n) for the counts, plus O(k) for the heap',
-        ],
-      },
-      {
-        kind: 'p',
-        text: 'One honest caveat: bucket sort by frequency solves this in O(n), so the heap is not the asymptotic winner. It is the answer worth knowing because it is the one interviewers expect, and because O(n log k) beats sorting the whole thing when k is small.',
-      },
-    ],
-  },
-  {
-    slug: 'product-except-self-prefix-suffix',
-    title: 'Product of Array Except Self: left times right',
-    dek: 'Division is banned, so the tidy "multiply everything, divide it out" trick is gone. Every answer is just the product of everything on its left times everything on its right.',
-    date: '2026-07-23',
-    body: [
-      {
-        kind: 'p',
-        text: 'Product of Array Except Self asks for an array where each slot holds the product of every other element. The obvious move — multiply the whole array once, then divide out nums[i] at each index — is exactly what the problem forbids. It also quietly breaks the moment a zero appears. So the interesting solution never divides at all.',
-      },
-      { kind: 'h', text: 'Every answer is two products' },
-      {
-        kind: 'p',
-        text: 'Look at one index. The product of everything except nums[i] splits cleanly into two halves: the product of all the elements to its left, and the product of all the elements to its right. Multiply those two and you have the answer for that index — the element itself never enters the calculation, which is the whole point.',
-      },
-      { kind: 'h', text: 'Two sweeps' },
-      {
-        kind: 'p',
-        text: 'Sweep left to right first. At each index, record the running product of everything seen so far — that is the left, or prefix, product. Then sweep right to left, carrying a second running product of everything on that side, and multiply it into what you already stored. After both passes, every slot holds left times right.',
-      },
-      {
-        kind: 'p',
-        text: 'Worked example on [1, 2, 3, 4]: the left products are [1, 1, 2, 6], the right products are [24, 12, 4, 1], and multiplying them position by position gives [24, 12, 8, 6]. For the 3 at index 2, that is 2 (its left) times 4 (its right) — 8, the product of 1, 2 and 4.',
-      },
-      { kind: 'h', text: 'Why one array is enough' },
-      {
-        kind: 'p',
-        text: 'The trick that keeps it at O(1) extra space: the answer array does double duty. The first pass writes the left products directly into it. The second pass never needs a separate suffix array — it carries the right product in a single variable and folds it into each slot in place as it walks backward.',
-      },
-      {
-        kind: 'code',
-        lang: 'python',
-        code: `class Solution:
-    def productExceptSelf(self, nums: List[int]) -> List[int]:
-        prev = 1
-        ans = [1]
-        n = len(nums)
-        for i in range(1, n):
-            prev=prev*nums[i-1]
-            ans.append(prev)
-        prev = nums[-1]
-        for i in range(n-2, -1, -1):
-            ans[i]=ans[i]*prev
-            prev*=nums[i]
-        return ans`,
-      },
-      {
-        kind: 'p',
-        text: 'The first loop builds ans as the prefix products (ans[0] is 1 — nothing sits to the left of the first element). The second loop seeds prev with the last element and walks backward, multiplying the running right-product into each slot, then extending it. The output array does not count as extra space, so this is O(1) beyond the answer.',
-      },
-      { kind: 'h', text: 'Cost' },
-      {
-        kind: 'list',
-        items: [
-          'Brute force — recompute the product of the others at every index: O(n²)',
-          'This — two linear passes: O(n) time',
-          'Space: O(1) extra (the answer array aside), and no division, so a zero in the input is never a problem',
-        ],
-      },
-    ],
-  },
-  {
-    slug: 'contains-duplicate-set-trick',
-    title: 'Contains Duplicate: let the set do the work',
-    dek: 'Checking for a repeat looks like it needs nested loops. It needs one line — a set can’t hold duplicates, so if the set is shorter than the array, something repeated.',
-    date: '2026-07-26',
-    body: [
-      {
-        kind: 'p',
-        text: 'Contains Duplicate asks a yes/no question: does the array have any repeated value? The first instinct is to compare every pair — O(n²), and far more work than the question actually needs.',
-      },
-      { kind: 'h', text: 'A set already answers it' },
-      {
-        kind: 'p',
-        text: 'A set stores each distinct value once — by definition it can’t hold a duplicate. So build a set from the array and look at the sizes. If nothing repeated, the set holds exactly as many elements as the array. If anything repeated, those extra copies collapse into one, and the set comes out shorter.',
-      },
-      {
-        kind: 'p',
-        text: 'That turns the whole problem into a length comparison: the array has a duplicate exactly when its length differs from the length of its set.',
-      },
-      {
-        kind: 'code',
-        lang: 'python',
-        code: `class Solution:
-    def containsDuplicate(self, nums: List[int]) -> bool:
-        return len(nums) != len(set(nums))`,
-      },
-      { kind: 'h', text: 'Cost' },
-      {
-        kind: 'list',
-        items: [
-          'Brute force — compare every pair: O(n²)',
-          'This — build the set once, compare lengths: O(n) time, O(n) space',
-          'Sorting then scanning for equal neighbours also works, but that is O(n log n)',
-        ],
-      },
-      {
-        kind: 'p',
-        text: 'It isn’t so much a trick as picking the structure whose entire job is "no duplicates," and reading the one fact it hands you for free — its size.',
-      },
-    ],
-  },
-  {
     slug: 'longest-consecutive-why-my-dp-failed',
+    lane: 'leetcode',
     title: 'Longest Consecutive: why my clever solution gave 6 instead of 7',
     dek: 'I tried to score every number from its neighbours. It broke — and the reason is a good one: stale values, and information that only flows the way you iterate.',
     date: '2026-07-26',

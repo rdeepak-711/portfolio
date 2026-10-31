@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { NOTES, noteBySlug, noteForVideo } from './notes'
+import { NOTES, NOTE_LANES, RETIRED_NOTE_SLUGS, noteBySlug, noteForVideo } from './notes'
 import { VIDEOS } from './videos'
 
 describe('NOTES data integrity', () => {
@@ -65,5 +65,22 @@ describe('lookups', () => {
 
   it('returns undefined when a video has no note', () => {
     expect(noteForVideo('a-video-nobody-wrote-about')).toBeUndefined()
+  })
+})
+
+describe('writing lanes', () => {
+  it('every note sits in a declared lane', () => {
+    const declared = new Set(NOTE_LANES.map((l) => l.id))
+    for (const n of NOTES) expect(declared.has(n.lane), `${n.slug} → ${n.lane}`).toBe(true)
+  })
+
+  // LeetCode is one lane, not the whole site: keep only the notes where I
+  // found or made a real mistake, not textbook tricks
+  it('keeps LeetCode to a few notes', () => {
+    expect(NOTES.filter((n) => n.lane === 'leetcode').length).toBeLessThanOrEqual(4)
+  })
+
+  it('retired notes are gone from NOTES', () => {
+    for (const slug of RETIRED_NOTE_SLUGS) expect(noteBySlug(slug), slug).toBeUndefined()
   })
 })
