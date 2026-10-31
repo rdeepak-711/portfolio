@@ -6,7 +6,7 @@
   --color-ink: oklch(0.20 0.012 75);
   --color-muted: oklch(0.52 0.012 75);
   --color-line: oklch(0.88 0.008 75);
-  --color-accent: oklch(0.62 0.18 42);
+  --color-accent: oklch(0.56 0.17 42); /* 4.66:1 on paper, passes WCAG AA for small text */
   --color-accent-soft: oklch(0.93 0.045 55);
 }
 

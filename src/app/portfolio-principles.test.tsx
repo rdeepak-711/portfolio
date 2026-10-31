@@ -6,7 +6,7 @@ import SectionNav from './section-nav'
 describe('portfolio principles', () => {
   it('shows each live project with a captioned screenshot and alt text', () => {
     const c = render(<Home />).container
-    for (const id of ['project-crowdtracker', 'project-gate', 'project-platform']) {
+    for (const id of ['project-factory', 'project-crowdtracker', 'project-gate', 'project-platform']) {
       const fig = c.querySelector(`#${id} figure`)
       expect(fig, id).not.toBeNull()
       const img = fig!.querySelector('img')!
@@ -22,6 +22,12 @@ describe('portfolio principles', () => {
       expect(first, id).not.toBeNull()
       expect(first!.textContent, id).not.toMatch(/Next\.js|MySQL|multi-tenant|WP-CLI|MCP/)
     }
+  })
+
+  it('links a site the pipeline built', () => {
+    const c = render(<Home />).container
+    const hrefs = [...c.querySelectorAll('#project-factory a')].map((a) => a.getAttribute('href'))
+    expect(hrefs).toContain('https://operagarnier-guide.com/')
   })
 
   it('links the live forum', () => {

@@ -106,3 +106,10 @@ Why the site is the way it is. Newest first. Never delete an entry; mark it reve
 **Considered:** hosting GA4 screenshots as proof. Not done: the CrowdTracker GA4 property is Firestorm's, so publishing it needs their OK.
 **Why:** a link styled as proof that lands on a page without the number reads as padding to a careful reviewer, and costs the real numbers their credibility.
 **Cost:** the numbers lose a click-through. They stay checkable in an interview from the register's sources.
+
+## 2026-10-31 — Portfolio checked against the 20 portfolio principles; accent darkened for contrast
+
+**Decided:** implement only the gaps, not all 20 (14 were already met). Added captioned live screenshots for all four headline projects (taken with Playwright, analytics blocked; the escalation-gate shot is cropped above the issue #424 box, which is flagged wrong), a plain-language first line per project before the tech, a link to a site the pipeline built (operagarnier-guide.com) and to the Louvre forum, a menu cut to Work · Method · Experience · Writing · Contact · Résumé, and "Open live site" instead of "Open project". The accent moved from oklch(0.62 0.18 42) to oklch(0.56 0.17 42): 3.65:1 on paper failed WCAG AA for the small mono labels; 4.66:1 passes.
+**Considered:** rebuilding to all 20 points; leaving the accent and only using it for large text.
+**Why:** the portfolio exists to back the CV quickly; every hour here is an hour not applying. The accent is used on 12px labels, so it had to pass at small sizes.
+**Cost:** screenshots go stale when the sites change and need retaking. Core Web Vitals are unmeasured until the site is deployed.
