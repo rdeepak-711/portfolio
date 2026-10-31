@@ -241,3 +241,21 @@ A test bars any note from calling LifeDots a "LeetCode tracker" or stating a use
 - The outside-work test banned the word "merged" outright; it now bans only claims that work landed.
 
 **Cost:** none known. The blank factory screenshot seen in one headless capture was lazy-load timing, not a bug: the image serves 200 in under 0.05 s.
+
+## 2026-10-31 · The travelling Dee (DeeFlight, built by Claude)
+
+**Decided:** one fixed Dee follows the scroll, modelled on rahulm.me's paper plane. On wide screens he starts large in the hero dock, hops between the left and right gutters at each project and section (pose per stop, leaning up to 8° the way he goes, a rust dotted trail), and lands in the dock beside the email address. Where the gutter is narrower than 136px (phones, small laptops) he walks along the bottom edge toward the launcher instead, and only while the page is moving. With reduced motion turned on he stays printed in the hero on desktop and doesn't appear on phones. Path maths is pure and tested in `src/components/dee/flight.ts`; `DeeFlight.tsx` only measures and draws.
+
+**Considered:**
+- Dee peeking out of the launcher at each proof chip (about 2 h, lower risk, less memorable).
+- A full redesign around the flight.
+- Deepak picked the full flight plus the six-section tightening.
+- This reverses the 31 Oct UI-plan line "a second moving Dee would compete with the launcher". It no longer competes, because the inline Dee figures are gone (UI v4 step 5), so only the flying Dee and the launcher remain.
+
+**Why this won:** the critique's top P1 was "no signature motion", and the hero had about 40% empty paper on desktop. A companion that stops beside each proof turns scrolling into a guided tour without hiding any claim.
+
+**Cost:**
+- One requestAnimationFrame loop runs while the home page is open (transform and opacity only).
+- Dee crosses over content for a moment mid-hop on desktop.
+- On phones he covers a 52px corner while you scroll.
+- The stops depend on section ids, so renaming a section means updating `ROUTE` in `flight.ts`.
