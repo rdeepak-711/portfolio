@@ -49,6 +49,8 @@ export default function DeeFlight() {
   const figures = useRef<Record<Pose, HTMLDivElement | null>>({ explain: null, check: null, code: null })
 
   useEffect(() => {
+    // no measuring tools (old browsers, jsdom): the launcher Dee is enough
+    if (typeof window.matchMedia !== 'function' || typeof ResizeObserver === 'undefined') return
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)')
     const pick = () => setMode(reduce.matches ? 'still' : 'fly')
     pick()

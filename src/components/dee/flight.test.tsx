@@ -92,3 +92,12 @@ describe('phoneStops', () => {
     expect(stops[stops.length - 1].s).toBe(l.maxScroll)
   })
 })
+
+describe('DeeFlight mount', () => {
+  it('renders nothing, without throwing, where matchMedia or ResizeObserver is missing', async () => {
+    const { render } = await import('@testing-library/react')
+    const { default: DeeFlight } = await import('./DeeFlight')
+    const { container } = render(<DeeFlight />)
+    expect(container.querySelector('[data-dee-flight]')).toBeNull()
+  })
+})
