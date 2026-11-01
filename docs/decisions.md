@@ -290,3 +290,13 @@ A test bars any note from calling LifeDots a "LeetCode tracker" or stating a use
 **Considered:** letting the model write URLs in its text. Rejected: URLs from the model can be made up, and links taken only from the knowledge base can't be.
 
 **Cost:** the links are hand-kept in `src/content/dee/claims.ts`; a renamed post or a moved site means editing them there. `links.test.ts` pins the important ones.
+
+## 2026-11-01 · Log Dee chats so usage can be measured
+
+**Decided:** every answered chat is logged to Upstash Redis (`dee:chats`, newest first, capped at 5,000, plus a per-day counter), and opening Dee fires a GA4 `dee_open` event. Each record holds the time, session ID, mode, last question (cut to 500 characters), which model answered, whether Dee escalated, and the turn count. `npm run dee:stats` prints the last 14 days and the latest questions.
+
+**Why:** Dee went live on 31 Oct with no record of use at all, so there was no way to tell whether recruiters open it, and so whether a "Dee for any portfolio" product is worth testing. Opens divided by page views, and chats divided by opens, are the first two numbers that answer that.
+
+**Considered:** GA4 events only (no question text, so no way to see what visitors actually ask); a database such as Supabase (a new dependency and service when Redis is already wired in for the rate limit); logging IPs (more than the question needs, and personal data).
+
+**Cost:** questions visitors type are stored in Redis indefinitely up to the cap; anyone with the Upstash token can read them. Each chat costs three extra Redis commands, which the free Upstash tier covers at this traffic.
