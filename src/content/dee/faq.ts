@@ -20,5 +20,9 @@ export const FAQ: FaqEntry[] = [
   { q: 'How did CrowdTracker grow?', a: 'CrowdTracker moved from 60–70 visits/day to 108,043 users and 163,804 views between 1 Jun and 27 Oct 2026. The migration removed a ceiling, while content also grew.', claimIds: ['F7'] },
   { q: 'Is pull request #480 merged?', a: 'No. Deepak’s fix PR #480 is open and not merged.', claimIds: ['P2'] },
   { q: 'How many users does LifeDots have?', a: 'LifeDots had 51 installs in 30 days; the number of active users is unknown.', claimIds: ['P4'] },
+  { q: 'What is Deepak’s tech stack?', a: 'Python, FastAPI, Celery and Redis on the backend; PostgreSQL and MySQL; TypeScript, React and Next.js; Docker, Google Cloud and Vercel; pytest and Vitest. On the AI side, LLM pipelines with Claude and OpenAI models, agents and MCP servers.', claimIds: ['S1'] },
+  { q: 'Has Deepak worked with clients directly?', a: 'Yes. At UiPath he led most client delivery calls for two enterprise client teams, explaining what was being automated and how.', claimIds: ['U5', 'U1'] },
+  { q: 'What is UrDee?', a: 'UrDee is Deepak’s test of a portfolio chatbot that learns a person one question a day. It launched on 2 Nov 2026 and has no usage data yet.', claimIds: ['P11'] },
+  { q: 'What is Travel Measured?', a: 'Travel Measured is Deepak’s crowd-calendar site for 20 parks, built on live ride waits it records from Queue-Times.', claimIds: ['P12'] },
   { q: 'Where did Deepak study?', a: 'Deepak earned a B.E. in Computer Science from Coimbatore Institute of Technology.', claimIds: ['E1'] },
 ]

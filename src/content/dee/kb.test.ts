@@ -50,6 +50,17 @@ describe('claims (from the evidence register)', () => {
     expect(t.toLowerCase()).not.toMatch(/health|father|dad|ill/)
   })
 
+  it('covers the stack, client-facing work, build speed, UrDee and Travel Measured (added 2 Nov 2026)', () => {
+    for (const tool of ['Python', 'FastAPI', 'PostgreSQL', 'TypeScript', 'Next.js', 'Docker', 'pytest', 'MCP']) expect(byId('S1')!.text, tool).toContain(tool)
+    expect(byId('U5')!.text).toContain('client delivery calls')
+    expect(byId('U6')!.text).toContain('70%')
+    expect(byId('F11')!.text).toContain('4–10 days')
+    expect(byId('P11')!.text).toContain('UrDee')
+    expect(byId('P11')!.text.toLowerCase()).toContain('no usage data yet')
+    expect(byId('P12')!.text).toContain('20 parks')
+    expect(byId('P12')!.text).toContain('458,875')
+  })
+
   it('every claim has a confidence and a source label', () => {
     for (const c of CLAIMS) {
       expect(['verified', 'confirmed', 'self-reported']).toContain(c.confidence)
@@ -75,7 +86,7 @@ describe('faq', () => {
   it('covers the recruiter questions', () => {
     expect(FAQ.length).toBeGreaterThanOrEqual(14)
     const qs = FAQ.map((f) => f.q.toLowerCase()).join(' | ')
-    for (const topic of ['who', 'built', 'agent', 'deployed', 'claude code', 'end to end', 'strongest', 'debug', 'build for', 'weakness', 'why', 'fail', 'ask him', 'ai write']) {
+    for (const topic of ['stack', 'clients', 'urdee', 'travel measured', 'who', 'built', 'agent', 'deployed', 'claude code', 'end to end', 'strongest', 'debug', 'build for', 'weakness', 'why', 'fail', 'ask him', 'ai write']) {
       expect(qs, topic).toContain(topic)
     }
   })
@@ -99,14 +110,14 @@ describe('limits', () => {
 })
 
 describe('golden eval set', () => {
-  it('has 40 cases in the agreed mix with unique ids', () => {
-    expect(GOLDEN).toHaveLength(40)
+  it('has 45 cases in the agreed mix with unique ids', () => {
+    expect(GOLDEN).toHaveLength(45)
     const count = (k: string) => GOLDEN.filter((g) => g.kind === k).length
-    expect(count('factual')).toBe(15)
+    expect(count('factual')).toBe(20)
     expect(count('unknown')).toBe(10)
     expect(count('adversarial')).toBe(10)
     expect(count('tone')).toBe(5)
-    expect(new Set(GOLDEN.map((g) => g.id)).size).toBe(40)
+    expect(new Set(GOLDEN.map((g) => g.id)).size).toBe(45)
   })
 
   it('factual cases cite real claims; unknown cases expect escalation', () => {
