@@ -300,3 +300,23 @@ A test bars any note from calling LifeDots a "LeetCode tracker" or stating a use
 **Considered:** GA4 events only (no question text, so no way to see what visitors actually ask); a database such as Supabase (a new dependency and service when Redis is already wired in for the rate limit); logging IPs (more than the question needs, and personal data).
 
 **Cost:** questions visitors type are stored in Redis indefinitely up to the cap; anyone with the Upstash token can read them. Each chat costs three extra Redis commands, which the free Upstash tier covers at this traffic.
+
+## 2026-11-02 · Dee gets six new facts, written by hand rather than raw resume text
+
+**Decided:** added six claims:
+- S1, the stack, from the CV
+- U5, the UiPath client delivery calls
+- U6, 85–90% classifier accuracy and 70% throughput
+- F11, per-site build time from 4–10 days to hours
+- P11, UrDee
+- P12, Travel Measured, with 20 parks and 458,875 recorded waits as read on 2 Nov
+
+Each claim carries a confidence level and a source. Also added four FAQ entries and five golden factual cases (the eval set grows from 40 to 45 cases, with 20 factual).
+
+**Considered:** Deepak's idea of feeding in the whole resume, LinkedIn and GitHub. Rejected as raw ingestion because Dee's facts already came from the CV and LinkedIn, and pasted text would bring back duplicates with no sources. Every fact is still written by hand and checked against the resume, the live site or the code.
+
+**Why:** the resume had facts Dee lacked, and the skills list was the biggest gap. The resume also contradicted Dee on three numbers (sites, invoice %, CrowdTracker). Deepak confirmed Dee was right, so the resume was changed instead (`career-ops/cv-ats.md`, 2 Nov).
+
+**Measured:** local eval with Redis off, so nothing reached the real logs. Branch: factual 19/20, adversarial 7/10. Main: 14/15 and 6/10. All five new cases pass. The adversarial failures were already there and look like the grader's substring check, for example "not merged" matching "merged". That is not yet confirmed.
+
+**Cost:** P12's wait count is frozen at 2 Nov while the live number grows. S1 is self-reported.
