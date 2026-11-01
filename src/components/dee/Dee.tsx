@@ -53,7 +53,12 @@ export default function Dee() {
   const wasOpen = useRef(false)
   useEffect(() => {
     // Return focus to the launcher only after Dee closes, never on page load
-    if (open) closeButton.current?.focus()
+    if (open) {
+      closeButton.current?.focus()
+      // GA4: count how many visitors open Dee (gtag is loaded in layout.tsx)
+      const gtag = (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag
+      gtag?.('event', 'dee_open')
+    }
     else if (wasOpen.current) launcher.current?.focus()
     wasOpen.current = open
   }, [open])

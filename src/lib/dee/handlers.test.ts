@@ -128,3 +128,30 @@ describe('notifyDeepak', () => {
     expect(await notifyDeepak(askInput, { fetch: throwing as unknown as typeof fetch, env: {} })).toEqual({ email: false, telegram: false })
   })
 })
+
+describe('Dee chat log', () => {
+  it('logs each answered chat without the visitor IP', async () => {
+    const logChat = vi.fn(async () => {})
+    const deps = deeDeps({ logChat })
+    await createDeeHandler(deps)(deeReq(ask, '9.9.9.9'))
+    expect(logChat).toHaveBeenCalledOnce()
+    const entry = logChat.mock.calls[0][0] as Record<string, unknown>
+    expect(entry).toMatchObject({ sessionId: 's1', mode: 'recruiter', question: 'How many sites did he build?', source: 'primary', escalate: false, turns: 1 })
+    expect(typeof entry.at).toBe('string')
+    expect(JSON.stringify(entry)).not.toContain('9.9.9.9')
+  })
+
+  it('cuts long questions to 500 characters', async () => {
+    const logChat = vi.fn(async () => {})
+    const long = { ...ask, messages: [{ role: 'user', content: 'x'.repeat(1500) }] }
+    await createDeeHandler(deeDeps({ logChat }))(deeReq(long))
+    expect((logChat.mock.calls[0][0] as { question: string }).question).toHaveLength(500)
+  })
+
+  it('still answers when logging fails', async () => {
+    const deps = deeDeps({ logChat: vi.fn(async () => { throw new Error('redis down') }) })
+    const res = await createDeeHandler(deps)(deeReq(ask))
+    expect(res.status).toBe(200)
+    expect((await res.json()).source).toBe('primary')
+  })
+})

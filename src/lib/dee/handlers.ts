@@ -29,6 +29,18 @@ export type DeeDeps = {
   price: { inputPerMTok: number; outputPerMTok: number }
   claims?: typeof CLAIMS
   faq?: FaqEntry[]
+  logChat?: (entry: ChatLogEntry) => Promise<void>
+}
+
+// One answered chat, kept so Deepak can see whether visitors use Dee. No IP is stored.
+export type ChatLogEntry = {
+  at: string
+  sessionId: string
+  mode: Mode
+  question: string
+  source: 'primary' | 'fallback' | 'faq'
+  escalate: boolean
+  turns: number
 }
 
 export type AskDeps = {
@@ -87,6 +99,18 @@ export function createDeeHandler(deps: DeeDeps): (req: Request) => Promise<Respo
     reply = { ...reply, text: stripClaimTags(reply.text) }
     if (findPolicyViolations(reply.text).length || ungroundedNumbers(reply.text, claims).length) {
       reply = { text: "Dee can't verify that answer. Want to use Ask Deepak?", claimIds: [], escalate: true, usage: reply.usage }
+    }
+    if (deps.logChat) {
+      const question = [...messages].reverse().find((message) => message.role === 'user')?.content ?? ''
+      await deps.logChat({
+        at: new Date().toISOString(),
+        sessionId: data.sessionId as string,
+        mode: data.mode as Mode,
+        question: question.slice(0, 500),
+        source,
+        escalate: reply.escalate,
+        turns: messages.filter((message) => message.role === 'user').length,
+      }).catch(() => { /* logging never blocks an answer */ })
     }
     const known = new Set(claims.map((c) => c.id))
     return json({ text: reply.text, claimIds: reply.claimIds.filter((id) => known.has(id)), escalate: reply.escalate, source })

@@ -1,5 +1,5 @@
 import type { AskInput } from './ask'
-import type { ModelReply } from './handlers'
+import type { ChatLogEntry, ModelReply } from './handlers'
 import { MemoryStore, type CounterStore } from './rate-limit'
 
 type Env = Record<string, string | undefined>
@@ -44,7 +44,16 @@ export function createClients(env: Env = process.env, fetcher: typeof fetch = fe
     else console.log('Dee ask received:', ask)
   }
 
-  return { store, spentToday, addSpend, primary, fallback, save }
+  // Newest first, capped at 5,000 entries, plus a per-day counter for quick totals
+  const logChat = async (entry: ChatLogEntry) => {
+    if (!redis) { console.log('Dee chat:', entry); return }
+    const day = entry.at.slice(0, 10)
+    await redis.command(['LPUSH', 'dee:chats', JSON.stringify(entry)])
+    await redis.command(['LTRIM', 'dee:chats', '0', '4999'])
+    await redis.command(['INCR', `dee:chats:${day}`])
+  }
+
+  return { store, spentToday, addSpend, primary, fallback, save, logChat }
 }
 
 class RedisRest implements CounterStore {
