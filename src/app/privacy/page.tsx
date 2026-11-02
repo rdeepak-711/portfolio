@@ -29,6 +29,10 @@ const SECTIONS = [
     p: 'Access can be removed at any time at myaccount.google.com/permissions. Deleting the token on the laptop also stops the script.',
   },
   {
+    h: 'Dee, the chat assistant',
+    p: 'When you ask Dee a question, the question and Dee’s answer are stored, with where your visit came from (the referring site and any ?ref= tag), the first page you opened, your device type (phone, tablet or computer), and an approximate location (city, region and country) that the hosting provider estimates. Your IP address is not stored. Only the latest 5,000 chats are kept, and only I read them.',
+  },
+  {
     h: 'This website',
     p: 'rdeepak.vercel.app uses Google Analytics 4 to count page visits, how people arrive and which pages they read. It sets cookies and collects usage data such as pages viewed, device type and approximate location. You can block it with your browser’s cookie or tracker settings.',
   },
@@ -62,7 +66,7 @@ export default function Privacy() {
         <p className="max-w-[62ch] leading-relaxed text-muted">
           Questions: <a className="text-accent hover:underline" href="mailto:deepakrameshh@gmail.com">deepakrameshh@gmail.com</a>
         </p>
-        <p className="font-mono text-xs text-muted">Updated 27 Oct 2026</p>
+        <p className="font-mono text-xs text-muted">Updated 2 Nov 2026</p>
       </div>
     </main>
   )

@@ -1,4 +1,5 @@
 import type { FaqEntry, Mode } from '@/content/dee/types'
+import { formatDigest, parseOrigin, visitorFromHeaders } from './visitor'
 import { answerLink, emailSubject, pickNextQuestion, validateAnswer, verifyQuestion, type StoredAnswer } from './answers'
 import { offersToForward } from './forward'
 import { CLAIMS } from '@/content/dee/claims'
@@ -45,6 +46,16 @@ export type ChatLogEntry = {
   source: 'primary' | 'fallback' | 'faq'
   escalate: boolean
   turns: number
+  // Added 2 Nov: the exchange plus where the visitor came from and opened Dee. No IP.
+  answer?: string
+  claimIds?: string[]
+  ref?: string
+  referrer?: string
+  landing?: string
+  country?: string
+  region?: string
+  city?: string
+  device?: string
 }
 
 export type AskDeps = {
@@ -117,6 +128,10 @@ export function createDeeHandler(deps: DeeDeps): (req: Request) => Promise<Respo
         source,
         escalate: reply.escalate,
         turns: messages.filter((message) => message.role === 'user').length,
+        answer: reply.text.slice(0, 1000),
+        claimIds: reply.claimIds,
+        ...parseOrigin(data.origin),
+        ...visitorFromHeaders(req.headers),
       }).catch(() => { /* logging never blocks an answer */ })
     }
     const byId = new Map(claims.filter((c) => c.public).map((c) => [c.id, c]))
@@ -166,6 +181,8 @@ export type DailyDeps = {
   markAsked: (id: string) => Promise<void>
   emailDeepak: (subject: string, text: string) => Promise<boolean>
   bank: { id: string; q: string }[]
+  recentChats?: () => Promise<ChatLogEntry[]>
+  now?: () => Date
 }
 
 // Vercel Cron calls this once a day with "Authorization: Bearer <CRON_SECRET>"
@@ -173,14 +190,20 @@ export function createDailyHandler(deps: DailyDeps): (req: Request) => Promise<R
   return async (req) => {
     if (!deps.cronSecret || req.headers.get('authorization') !== `Bearer ${deps.cronSecret}`) return json({ error: 'Unauthorized.' }, 401)
     if (!deps.answerSecret) return json({ error: 'DEE_ANSWER_SECRET is not set.' }, 500)
+    const chats = await (deps.recentChats?.() ?? Promise.resolve([])).catch(() => [] as ChatLogEntry[])
+    const digest = formatDigest(chats, deps.now?.() ?? new Date())
     const next = pickNextQuestion(await deps.recentAskQuestions(), deps.bank, await deps.askedIds())
-    if (!next) return json({ sent: false, reason: 'No questions left.' })
-    const link = answerLink(deps.siteUrl, next, deps.answerSecret)
-    const from = next.kind === 'visitor' ? 'A visitor asked Dee this, and it had no answer.' : "Today's question for Dee."
-    const sent = await deps.emailDeepak(emailSubject(next.question), `${from}\n\n${next.question}\n\nAnswer it here (takes a minute):\n${link}\n\nOnce you tick "Dee can say this publicly", Dee uses your answer straight away.`)
+    let questionPart = 'No questions left to ask you. Add more to DAILY_QUESTIONS.'
+    if (next) {
+      const link = answerLink(deps.siteUrl, next, deps.answerSecret)
+      const from = next.kind === 'visitor' ? 'A visitor asked Dee this, and it had no answer.' : "Today's question for Dee."
+      questionPart = `${from}\n\n${next.question}\n\nAnswer it here (takes a minute):\n${link}\n\nOnce you tick "Dee can say this publicly", Dee uses your answer straight away.`
+    }
+    const subject = next ? emailSubject(next.question) : `Dee: ${digest.count} questions in the last 24 hours`
+    const sent = await deps.emailDeepak(subject, `${questionPart}\n\n---\n\nWHAT VISITORS ASKED DEE\n\n${digest.text}`)
     // Only mark it asked once the email went out, so a failed send is retried tomorrow
-    if (sent) await deps.markAsked(next.id)
-    return json({ sent, id: next.id, kind: next.kind })
+    if (sent && next) await deps.markAsked(next.id)
+    return json({ sent, id: next?.id ?? null, kind: next?.kind ?? null, chats: digest.count })
   }
 }
 

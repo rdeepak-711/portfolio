@@ -338,3 +338,19 @@ Each claim carries a confidence level and a source. Also added four FAQ entries 
 **Why:** a signed link needs no login and no account, and email is where he already reads Dee's escalations. One question a day keeps it at a minute's work. Answers count as D-level claims (Deepak confirmed, no artefact), which the register now states.
 
 **Cost:** Resend free tier (3,000 emails a month, 100 a day) covers one a day at no charge, and Vercel Hobby allows a daily cron. Email only reaches Deepak once a sending domain is verified in Resend; with the default `onboarding@resend.dev` sender it only goes to the Resend account's own address. Anyone holding a link can answer that one question, so the emails must not be forwarded. Public answers bypass the register review, so `npm run dee:answers` is how he audits what Dee now says.
+
+## 2026-11-02 · Daily digest of visitor chats, with where each visitor came from
+
+**Decided:** every Dee chat is now logged with Dee's answer, the visit's origin (the `?ref=` or `utm_source` tag, the referring site's host, the first page) taken from the browser and checked by `parseOrigin`, and an approximate location (city, region, country) plus device type taken on the server from Vercel's `x-vercel-ip-*` headers and the user agent. No IP is stored. The existing 09:00 IST email now carries the last 24 hours of chats grouped by visitor, below the daily question, and goes out even when no question is left. Sessions named `smoke-…` (my live checks) are left out.
+
+**Considered:** a private dashboard page (another login to build, and he already reads Dee's email), a second cron for a separate digest email (two emails a day for one person), and Gmail or Zoho SMTP instead of Resend (Deepak raised it for the free, higher limit; rejected for now because volume is about two emails a day, SMTP adds a password and a library, and UrDee will need a real sending service anyway).
+
+**Why:** the first real recruiter question ("What is Deepak's notice period?") only showed up by chance in `npm run dee:stats`. Deepak wants to see every exchange without opening a terminal.
+
+**Cost:** location is the host's guess and is often a nearby city or the visitor's network provider. The referrer is empty for many visits (apps and privacy settings strip it), so `?ref=` tags on every shared link matter more than the referrer. The privacy page now says what is stored.
+
+## 2026-11-02 · Reversed: Dee may state his notice period, location and availability
+
+**Decided:** "notice period details" is removed from Dee's off-limits topics. New claim R2 (register row R2, D-level): 30 days' notice, negotiable; based in Chennai, India; can start in 1–4 weeks. Golden case u07 (expect escalation) became f21 and f22 (expect R2).
+
+**Why:** a real recruiter asked Dee for his notice period on 2 Nov and got nothing. Deepak gave the answer the same day. Salary stays off-limits.

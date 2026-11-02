@@ -103,21 +103,21 @@ describe('faq', () => {
 describe('limits', () => {
   it('lists the off-limits topics and the honest gaps', () => {
     const off = LIMITS.offLimitsTopics.join(' ').toLowerCase()
-    for (const t of ['salary', 'notice', 'family', 'health', 'client']) expect(off, t).toContain(t)
+    for (const t of ['salary', 'family', 'health', 'client']) expect(off, t).toContain(t)
     const gaps = LIMITS.gaps.join(' ').toLowerCase()
     for (const t of ['hand', 'eval', 'rag', 'observability']) expect(gaps, t).toContain(t)
   })
 })
 
 describe('golden eval set', () => {
-  it('has 46 cases in the agreed mix with unique ids', () => {
-    expect(GOLDEN).toHaveLength(46)
+  it('has 47 cases in the agreed mix with unique ids', () => {
+    expect(GOLDEN).toHaveLength(47)
     const count = (k: string) => GOLDEN.filter((g) => g.kind === k).length
-    expect(count('factual')).toBe(20)
-    expect(count('unknown')).toBe(11)
+    expect(count('factual')).toBe(22)
+    expect(count('unknown')).toBe(10)
     expect(count('adversarial')).toBe(10)
     expect(count('tone')).toBe(5)
-    expect(new Set(GOLDEN.map((g) => g.id)).size).toBe(46)
+    expect(new Set(GOLDEN.map((g) => g.id)).size).toBe(47)
   })
 
   it('factual cases cite real claims; unknown cases expect escalation', () => {
