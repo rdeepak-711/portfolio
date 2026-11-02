@@ -1,4 +1,5 @@
 import type { FaqEntry, Mode } from '@/content/dee/types'
+import { offersToForward } from './forward'
 import { CLAIMS } from '@/content/dee/claims'
 import { FAQ } from '@/content/dee/faq'
 import { LIMITS } from '@/content/dee/limits'
@@ -97,6 +98,8 @@ export function createDeeHandler(deps: DeeDeps): (req: Request) => Promise<Respo
       reply = { ...faqAnswer(question, faq), usage: { inputTokens: 0, outputTokens: 0 } }
     }
     reply = { ...reply, text: stripClaimTags(reply.text) }
+    // Backstop: an offer to pass the question on must come with the Ask Deepak button
+    if (!reply.escalate && offersToForward(reply.text)) reply = { ...reply, escalate: true }
     if (findPolicyViolations(reply.text).length || ungroundedNumbers(reply.text, claims).length) {
       reply = { text: "Dee can't verify that answer. Want to use Ask Deepak?", claimIds: [], escalate: true, usage: reply.usage }
     }

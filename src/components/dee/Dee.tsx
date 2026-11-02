@@ -45,6 +45,8 @@ export default function Dee() {
   const [question, setQuestion] = useState('')
   const [error, setError] = useState('')
   const [hello, setHello] = useState(false)
+  // Visitors who clicked "Talk to mine" on UrDee land with ?ref=mind
+  const [fromUrDee, setFromUrDee] = useState(false)
   const launcher = useRef<HTMLButtonElement>(null)
   const closeButton = useRef<HTMLButtonElement>(null)
   const input = useRef<HTMLInputElement>(null)
@@ -66,6 +68,7 @@ export default function Dee() {
   // Greet once per visit, after the landing bounce
   useEffect(() => {
     try {
+      if (new URLSearchParams(window.location.search).get('ref') === 'mind') setFromUrDee(true)
       if (sessionStorage.getItem('dee-hello')) return
       sessionStorage.setItem('dee-hello', '1')
     } catch { /* storage blocked: greet anyway */ }
@@ -161,7 +164,7 @@ export default function Dee() {
   return (
     <>
       {hello && !open && <div className="dee-hello fixed bottom-[4.75rem] right-5 z-[60] flex max-w-[16rem] items-start gap-1 rounded-2xl rounded-br-sm border border-line bg-paper py-2 pl-3 pr-1 shadow-sm sm:bottom-[5.5rem] sm:right-7">
-        <button type="button" onClick={() => { setHello(false); setOpen(true) }} className="text-left text-sm text-ink hover:text-accent">Hi, I&apos;m Dee. I&apos;ll show you Deepak&apos;s work in 90 seconds.</button>
+        <button type="button" onClick={() => { setHello(false); setOpen(true) }} className="text-left text-sm text-ink hover:text-accent">{fromUrDee ? <>You came from UrDee. I&apos;m the live one. Ask me about Deepak.</> : <>Hi, I&apos;m Dee. I&apos;ll show you Deepak&apos;s work in 90 seconds.</>}</button>
         <button type="button" aria-label="Dismiss Dee greeting" onClick={() => setHello(false)} className="px-1.5 font-mono text-xs text-muted hover:text-ink">×</button>
       </div>}
       <button ref={launcher} type="button" aria-label="Open Dee, Deepak's guide" onClick={() => { setHello(false); setOpen(true) }} className="dee-launcher fixed bottom-5 right-5 z-[60] flex items-center gap-2 rounded-full border border-line bg-paper px-3 py-2 shadow-sm hover:border-accent sm:bottom-7 sm:right-7">
@@ -174,6 +177,7 @@ export default function Dee() {
             <button ref={closeButton} type="button" aria-label="Close Dee" onClick={() => setOpen(false)} className="rounded px-2 py-1 font-mono text-sm text-muted hover:text-ink">Esc ×</button>
           </header>
           <div className={`min-h-0 space-y-4 overflow-y-auto ${tourStop ? 'p-3' : 'flex-none p-5'}`}>
+            {!tourStop && messages.length === 0 && fromUrDee && <p className="text-sm">This is the live Dee that UrDee is built from. It only answers from what Deepak has told it, and shows the source. If he hasn&apos;t told it something, it sends your question to him.</p>}
             {!tourStop && messages.length === 0 && <div className="flex flex-wrap gap-2"><button type="button" onClick={startTour} className="rounded border border-accent bg-accent-soft px-3 py-2 text-sm">Take the 90-second tour</button><button type="button" onClick={() => input.current?.focus()} className="rounded border border-line px-3 py-2 text-sm hover:border-accent">Just ask</button></div>}
             {tourStop && <div className="rounded border border-line p-4"><p className="font-mono text-xs uppercase tracking-wider text-muted">Stop {tourIndex! + 1} of {TOUR_STOPS.length}</p>{tourStop.lines.map((line) => <p key={line} className="mt-2 text-sm">{line}</p>)}<div className="mt-4 flex gap-3"><button type="button" onClick={nextStop} className="rounded bg-ink px-3 py-2 text-sm text-paper">Next</button><button type="button" onClick={() => { setTourIndex(null); setTourDone(false) }} className="px-2 py-2 text-sm text-muted underline">Skip tour</button></div></div>}
             {!tourStop && <div className="flex flex-wrap gap-2" aria-label="Choose audience mode">{MODES.map((item) => <button key={item.id} type="button" aria-pressed={mode === item.id} onClick={() => setMode(item.id)} className={`rounded-full border px-3 py-1.5 font-mono text-xs ${mode === item.id ? 'border-accent bg-accent-soft text-ink' : 'border-line text-muted'}`}>{item.label}</button>)}</div>}

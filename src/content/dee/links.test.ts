@@ -33,7 +33,7 @@ describe('claim links (where a visitor can check a claim)', () => {
     expect(hrefs('P4')).toContain('https://lifedots.outbuiltit.com')
     expect(hrefs('U4')).toContain('/case-study/uipath-ml')
     expect(hrefs('P11')).toContain('https://urdee.outbuiltit.com')
-    expect(hrefs('P12')).toContain('https://travelmeasured.vercel.app')
+    expect(hrefs('P8')).toContain('https://travelmeasured.vercel.app')
   })
 
   it('uses only https links or this site’s own paths, with a label each', () => {

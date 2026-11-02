@@ -3,6 +3,7 @@ import { render, screen, fireEvent, act } from '@testing-library/react'
 import Dee from './Dee'
 
 const HELLO = "Hi, I'm Dee. I'll show you Deepak's work in 90 seconds."
+const URDEE_HELLO = "You came from UrDee. I'm the live one. Ask me about Deepak."
 
 beforeEach(() => {
   document.body.innerHTML = ''
@@ -10,7 +11,7 @@ beforeEach(() => {
   vi.useFakeTimers()
   vi.stubGlobal('matchMedia', (q: string) => ({ matches: false, media: q, addEventListener: () => {}, removeEventListener: () => {}, addListener: () => {}, removeListener: () => {}, onchange: null, dispatchEvent: () => false }))
 })
-afterEach(() => vi.useRealTimers())
+afterEach(() => { vi.useRealTimers(); window.history.replaceState(null, '', '/') })
 
 describe('Dee landing', () => {
   it('does not take focus when the page loads', () => {
@@ -40,5 +41,13 @@ describe('Dee landing', () => {
     act(() => { vi.advanceTimersByTime(2000) })
     fireEvent.click(screen.getByRole('button', { name: 'Dismiss Dee greeting' }))
     expect(screen.queryByText(HELLO)).toBeNull()
+  })
+
+  it('tells visitors from UrDee that this is the live Dee it is built from', () => {
+    window.history.replaceState(null, '', '/?ref=mind')
+    render(<Dee />)
+    act(() => { vi.advanceTimersByTime(2000) })
+    fireEvent.click(screen.getByText(URDEE_HELLO))
+    expect(screen.getByText(/the live Dee that UrDee is built from/)).toBeInTheDocument()
   })
 })
