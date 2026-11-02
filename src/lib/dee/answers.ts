@@ -63,6 +63,14 @@ export function validateAnswer(input: unknown): { ok: true; value: AnswerInput }
   return { ok: true, value: { id, kind: kind!, question, sig: typeof data.sig === 'string' ? data.sig : '', answer, public: isPublic } }
 }
 
+// The full question, so the inbox shows all of it; only very long visitor questions are cut, at a word boundary
+export function emailSubject(question: string, max = 150): string {
+  const q = question.replace(/\s+/g, ' ').trim()
+  if (q.length <= max) return `Dee asks: ${q}`
+  const cut = q.slice(0, max)
+  return `Dee asks: ${cut.slice(0, cut.lastIndexOf(' ') > 0 ? cut.lastIndexOf(' ') : max).replace(/[\s,.;:]+$/, '')}…`
+}
+
 export function formatDay(iso: string): string {
   return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata' })
 }

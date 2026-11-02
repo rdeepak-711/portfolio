@@ -1,5 +1,5 @@
 import type { FaqEntry, Mode } from '@/content/dee/types'
-import { answerLink, pickNextQuestion, validateAnswer, verifyQuestion, type StoredAnswer } from './answers'
+import { answerLink, emailSubject, pickNextQuestion, validateAnswer, verifyQuestion, type StoredAnswer } from './answers'
 import { offersToForward } from './forward'
 import { CLAIMS } from '@/content/dee/claims'
 import { FAQ } from '@/content/dee/faq'
@@ -177,7 +177,7 @@ export function createDailyHandler(deps: DailyDeps): (req: Request) => Promise<R
     if (!next) return json({ sent: false, reason: 'No questions left.' })
     const link = answerLink(deps.siteUrl, next, deps.answerSecret)
     const from = next.kind === 'visitor' ? 'A visitor asked Dee this, and it had no answer.' : "Today's question for Dee."
-    const sent = await deps.emailDeepak(`Dee asks: ${next.question.slice(0, 70)}`, `${from}\n\n${next.question}\n\nAnswer it here (takes a minute):\n${link}\n\nOnce you tick "Dee can say this publicly", Dee uses your answer straight away.`)
+    const sent = await deps.emailDeepak(emailSubject(next.question), `${from}\n\n${next.question}\n\nAnswer it here (takes a minute):\n${link}\n\nOnce you tick "Dee can say this publicly", Dee uses your answer straight away.`)
     // Only mark it asked once the email went out, so a failed send is retried tomorrow
     if (sent) await deps.markAsked(next.id)
     return json({ sent, id: next.id, kind: next.kind })
