@@ -360,3 +360,13 @@ Each claim carries a confidence level and a source. Also added four FAQ entries 
 **Decided:** claim S2 says Deepak used Docker in escalation-gate v2 (each proposed fix runs in a container with no network, resource limits and a read-only root, `gate/prove.py`) and in small projects, built with Claude Code, and never in production. `kb.test.ts` now allows the word Docker only in S2 and requires the "not in production" line. Golden u11 ("Docker in production?") became f23, expecting S2. Claim R3 holds his own answer to "why hire you" (self-reported). Both are in the register (S2 V+D, R3 S).
 
 **Why:** a visitor asked about Docker, and Deepak confirmed the use. The code shows it, so it passes the register rule that cut Docker earlier the same day, as long as the claim stays at "test box, not production". The ban was on an unbacked skill-list entry, not on the word.
+
+## 2026-11-02 · Dee's chat scrolls inside itself on phones; the page behind is locked while it is open
+
+**Decided:** the chat body in `src/components/dee/Dee.tsx` is `flex-initial` (it was `flex-none`) with `overscroll-contain`, and an effect sets `overflow: hidden` on `<html>` while the chat is open. The lock is skipped during the tour.
+
+**Why:** on a phone the chat body could not shrink, so once a chat grew past the panel (85dvh) it was clipped instead of scrolling, the input box was pushed out of sight, and every swipe scrolled the site behind. Measured on live at 390×640: chat body 796 px in a 542 px panel, a swipe moved the page 195 px and the chat 0. After the fix the same swipe moves the chat 196 px and the page 0.
+
+**Considered:** `overscroll-contain` alone (does nothing while the body itself cannot scroll), and `position: fixed` on `<body>` (the heavier iOS lock that also needs the scroll position restored). Locking `<html>` overflow is enough on current iOS Safari and Chrome.
+
+**Cost:** the tour still lets the page scroll, on purpose, because it moves the page to each section. Very old iOS Safari (before 16) ignores `overflow: hidden` on `<html>`, so there the page can still move behind the backdrop, but the chat itself now scrolls.

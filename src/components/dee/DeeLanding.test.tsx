@@ -43,6 +43,18 @@ describe('Dee landing', () => {
     expect(screen.queryByText(HELLO)).toBeNull()
   })
 
+  it('keeps the page behind still while the chat is open, but not during the tour', () => {
+    render(<Dee />)
+    fireEvent.click(screen.getByRole('button', { name: "Open Dee, Deepak's guide" }))
+    expect(document.documentElement.style.overflow).toBe('hidden')
+    fireEvent.click(screen.getByRole('button', { name: 'Take the 90-second tour' }))
+    expect(document.documentElement.style.overflow).toBe('')
+    fireEvent.click(screen.getByRole('button', { name: 'Skip tour' }))
+    expect(document.documentElement.style.overflow).toBe('hidden')
+    fireEvent.click(screen.getByRole('button', { name: 'Close Dee' }))
+    expect(document.documentElement.style.overflow).toBe('')
+  })
+
   it('tells visitors from UrDee that this is the live Dee it is built from', () => {
     window.history.replaceState(null, '', '/?ref=mind')
     render(<Dee />)
