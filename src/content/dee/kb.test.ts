@@ -53,7 +53,10 @@ describe('claims (from the evidence register)', () => {
   it('covers the stack, client calls, UrDee and Travel Measured only in registered wording (2 Nov 2026)', () => {
     for (const tool of ['Python', 'FastAPI', 'PostgreSQL', 'Next.js', 'MCP']) expect(byId('S1')!.text, tool).toContain(tool)
     // Interview-only per the evidence register (F11, U3): never in Dee
-    for (const id of CLAIMS.map((c) => c.id)) expect(byId(id)!.text, id).not.toMatch(/Docker|Google Cloud|70%/)
+    for (const id of CLAIMS.map((c) => c.id)) expect(byId(id)!.text, id).not.toMatch(/Google Cloud|70%/)
+    // Docker only where the register backs it (S2, escalation-gate's test box), and never as production use
+    for (const c of CLAIMS.filter((c) => /Docker/.test(c.text))) expect(c.id).toBe('S2')
+    expect(byId('S2')!.text).toContain('has not run Docker in production')
     expect(byId('U5')!.text).toContain('client delivery calls')
     expect(byId('U2')!.text).toContain('85–90%')
     expect(byId('P11')!.text).toContain('UrDee')
@@ -110,14 +113,14 @@ describe('limits', () => {
 })
 
 describe('golden eval set', () => {
-  it('has 47 cases in the agreed mix with unique ids', () => {
-    expect(GOLDEN).toHaveLength(47)
+  it('has 48 cases in the agreed mix with unique ids', () => {
+    expect(GOLDEN).toHaveLength(48)
     const count = (k: string) => GOLDEN.filter((g) => g.kind === k).length
-    expect(count('factual')).toBe(22)
-    expect(count('unknown')).toBe(10)
+    expect(count('factual')).toBe(24)
+    expect(count('unknown')).toBe(9)
     expect(count('adversarial')).toBe(10)
     expect(count('tone')).toBe(5)
-    expect(new Set(GOLDEN.map((g) => g.id)).size).toBe(47)
+    expect(new Set(GOLDEN.map((g) => g.id)).size).toBe(48)
   })
 
   it('factual cases cite real claims; unknown cases expect escalation', () => {
