@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "eval:dee": "node --experimental-strip-types --experimental-specifier-resolution=node scripts/dee-eval.ts",
-    "dee:stats": "node --env-file=.env scripts/dee-stats.mjs"
+    "dee:stats": "node --env-file=.env scripts/dee-stats.mjs",
+    "dee:answers": "node --env-file=.env scripts/dee-answers.mjs"
   },
   "dependencies": {
     "next": "16.2.9",

@@ -320,3 +320,21 @@ Each claim carries a confidence level and a source. Also added four FAQ entries 
 **Measured:** local eval with Redis off, so nothing reached the real logs. Branch: factual 19/20, adversarial 7/10. Main: 14/15 and 6/10. All five new cases pass. The adversarial failures were already there and look like the grader's substring check, for example "not merged" matching "merged". That is not yet confirmed.
 
 **Cost:** P12's wait count is frozen at 2 Nov while the live number grows. S1 is self-reported.
+
+## 2026-11-02 · Reversed in part: Dee's new facts must come from the evidence register
+
+**Decided:** the six facts added earlier the same day were checked against `07_EVIDENCE_REGISTER.md` and cut back to what it holds. S1 lists only the tools seen in code (Python, Bash, WP-CLI, React, FastAPI, Celery, Redis, Next.js, MySQL, PostgreSQL, MCP, Claude, Claude Code, UiPath Studio). U6 (70%) and F11 (build time) are gone. U5 is one sentence. P12 is replaced by the register's P8 wording. `kb.test.ts` now fails if Docker, Google Cloud or 70% appear in any claim.
+
+**Considered:** keeping the resume wording, because Deepak wrote the resume. Rejected: the portfolio rule is that a claim absent from the register is not said in public, and live Dee had already told a visitor Docker was in his skills, which nothing on file shows.
+
+**Cost:** Dee knows less than the resume says. Anything Deepak wants back has to go into the register first, with evidence or his confirmation.
+
+## 2026-11-02 · Dee learns from one emailed question a day
+
+**Decided:** when Dee can't answer, the question waits in `dee:asks`. A Vercel Cron job (`vercel.json`, 03:30 UTC = 09:00 IST) calls `GET /api/dee/daily`, which emails Deepak the oldest question not yet asked, or else the next one from `DAILY_QUESTIONS`. The email holds a link to `/dee/answer` signed with HMAC (`DEE_ANSWER_SECRET`). His answer is saved in Redis, and if he ticks "Dee can say this publicly" it becomes a claim `Q-<id>`, labelled with the date, that Dee can cite within a minute. The chat response now carries each cited source, so these facts show their label even though the browser bundle doesn't contain them.
+
+**Considered:** a Telegram bot (no extra domain setup, but answering long questions on a phone keyboard in Telegram is worse and needs a webhook), an admin page with a password (another secret to manage and a login screen to build), and editing `claims.ts` by hand per answer (needs a deploy each time, which is the friction this removes).
+
+**Why:** a signed link needs no login and no account, and email is where he already reads Dee's escalations. One question a day keeps it at a minute's work. Answers count as D-level claims (Deepak confirmed, no artefact), which the register now states.
+
+**Cost:** Resend free tier (3,000 emails a month, 100 a day) covers one a day at no charge, and Vercel Hobby allows a daily cron. Email only reaches Deepak once a sending domain is verified in Resend; with the default `onboarding@resend.dev` sender it only goes to the Resend account's own address. Anyone holding a link can answer that one question, so the emails must not be forwarded. Public answers bypass the register review, so `npm run dee:answers` is how he audits what Dee now says.

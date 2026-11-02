@@ -7,7 +7,8 @@ import { TOUR_STOPS } from '@/lib/dee/tour'
 import DeeFigure from './DeeFigure'
 
 type ChatMessage = { role: 'user' | 'assistant'; content: string }
-type Answer = { text: string; claimIds: string[]; escalate: boolean }
+type Source = { id: string; label: string; url: string | null; links: { href: string; label: string }[] }
+type Answer = { text: string; claimIds: string[]; escalate: boolean; sources?: Source[] }
 const DISCLOSURE = "Dee is an AI guide. It answers from Deepak's verified record and hands anything else to him."
 const MODES: { id: Mode; label: string }[] = [
   { id: 'recruiter', label: 'Recruiter' }, { id: 'founder', label: 'Founder' },
@@ -16,8 +17,11 @@ const MODES: { id: Mode; label: string }[] = [
 
 // Under an answer: where each cited fact comes from, then the pages a visitor can open to check it.
 // Links come only from the knowledge base, never from model text, and each page shows once.
-function AnswerSources({ claimIds }: { claimIds: string[] }) {
-  const cited = claimIds.map((id) => CLAIMS.find((claim) => claim.id === id && claim.public)).filter((claim) => claim !== undefined)
+// The server sends each source, so facts from Deepak's answered questions (not in this bundle's CLAIMS) show theirs too.
+function AnswerSources({ claimIds, sources }: { claimIds: string[]; sources?: Source[] }) {
+  const cited = sources
+    ? sources.map((s) => ({ id: s.id, sourceLabel: s.label, sourceUrl: s.url, links: s.links }))
+    : claimIds.map((id) => CLAIMS.find((claim) => claim.id === id && claim.public)).filter((claim) => claim !== undefined)
   const links = [...new Map(cited.flatMap((claim) => claim.links ?? []).map((link) => [link.href, link])).values()]
   const chip = 'mt-3 mr-2 inline-flex rounded-full border border-line px-2 py-1 font-mono text-[0.68rem] text-muted'
   const linked = new Set(links.map((link) => link.href))
@@ -45,6 +49,8 @@ export default function Dee() {
   const [question, setQuestion] = useState('')
   const [error, setError] = useState('')
   const [hello, setHello] = useState(false)
+  // Visitors who clicked "Talk to mine" on UrDee land with ?ref=mind
+  const [fromUrDee, setFromUrDee] = useState(false)
   const launcher = useRef<HTMLButtonElement>(null)
   const closeButton = useRef<HTMLButtonElement>(null)
   const input = useRef<HTMLInputElement>(null)
@@ -65,13 +71,16 @@ export default function Dee() {
 
   // Greet once per visit, after the landing bounce
   useEffect(() => {
+    // Read in a timer, not the effect body, so the first render matches the server's
+    const fromMind = new URLSearchParams(window.location.search).get('ref') === 'mind'
+    const mark = fromMind ? setTimeout(() => setFromUrDee(true), 0) : undefined
     try {
-      if (sessionStorage.getItem('dee-hello')) return
+      if (sessionStorage.getItem('dee-hello')) return () => clearTimeout(mark)
       sessionStorage.setItem('dee-hello', '1')
     } catch { /* storage blocked: greet anyway */ }
     const show = setTimeout(() => setHello(true), 1600)
     const hide = setTimeout(() => setHello(false), 12000)
-    return () => { clearTimeout(show); clearTimeout(hide) }
+    return () => { clearTimeout(mark); clearTimeout(show); clearTimeout(hide) }
   }, [])
 
   useEffect(() => {
@@ -161,7 +170,7 @@ export default function Dee() {
   return (
     <>
       {hello && !open && <div className="dee-hello fixed bottom-[4.75rem] right-5 z-[60] flex max-w-[16rem] items-start gap-1 rounded-2xl rounded-br-sm border border-line bg-paper py-2 pl-3 pr-1 shadow-sm sm:bottom-[5.5rem] sm:right-7">
-        <button type="button" onClick={() => { setHello(false); setOpen(true) }} className="text-left text-sm text-ink hover:text-accent">Hi, I&apos;m Dee. I&apos;ll show you Deepak&apos;s work in 90 seconds.</button>
+        <button type="button" onClick={() => { setHello(false); setOpen(true) }} className="text-left text-sm text-ink hover:text-accent">{fromUrDee ? <>You came from UrDee. I&apos;m the live one. Ask me about Deepak.</> : <>Hi, I&apos;m Dee. I&apos;ll show you Deepak&apos;s work in 90 seconds.</>}</button>
         <button type="button" aria-label="Dismiss Dee greeting" onClick={() => setHello(false)} className="px-1.5 font-mono text-xs text-muted hover:text-ink">×</button>
       </div>}
       <button ref={launcher} type="button" aria-label="Open Dee, Deepak's guide" onClick={() => { setHello(false); setOpen(true) }} className="dee-launcher fixed bottom-5 right-5 z-[60] flex items-center gap-2 rounded-full border border-line bg-paper px-3 py-2 shadow-sm hover:border-accent sm:bottom-7 sm:right-7">
@@ -174,11 +183,12 @@ export default function Dee() {
             <button ref={closeButton} type="button" aria-label="Close Dee" onClick={() => setOpen(false)} className="rounded px-2 py-1 font-mono text-sm text-muted hover:text-ink">Esc ×</button>
           </header>
           <div className={`min-h-0 space-y-4 overflow-y-auto ${tourStop ? 'p-3' : 'flex-none p-5'}`}>
+            {!tourStop && messages.length === 0 && fromUrDee && <p className="text-sm">This is the live Dee that UrDee is built from. It only answers from what Deepak has told it, and shows the source. If he hasn&apos;t told it something, it sends your question to him.</p>}
             {!tourStop && messages.length === 0 && <div className="flex flex-wrap gap-2"><button type="button" onClick={startTour} className="rounded border border-accent bg-accent-soft px-3 py-2 text-sm">Take the 90-second tour</button><button type="button" onClick={() => input.current?.focus()} className="rounded border border-line px-3 py-2 text-sm hover:border-accent">Just ask</button></div>}
             {tourStop && <div className="rounded border border-line p-4"><p className="font-mono text-xs uppercase tracking-wider text-muted">Stop {tourIndex! + 1} of {TOUR_STOPS.length}</p>{tourStop.lines.map((line) => <p key={line} className="mt-2 text-sm">{line}</p>)}<div className="mt-4 flex gap-3"><button type="button" onClick={nextStop} className="rounded bg-ink px-3 py-2 text-sm text-paper">Next</button><button type="button" onClick={() => { setTourIndex(null); setTourDone(false) }} className="px-2 py-2 text-sm text-muted underline">Skip tour</button></div></div>}
             {!tourStop && <div className="flex flex-wrap gap-2" aria-label="Choose audience mode">{MODES.map((item) => <button key={item.id} type="button" aria-pressed={mode === item.id} onClick={() => setMode(item.id)} className={`rounded-full border px-3 py-1.5 font-mono text-xs ${mode === item.id ? 'border-accent bg-accent-soft text-ink' : 'border-line text-muted'}`}>{item.label}</button>)}</div>}
             {messages.filter((m) => m.role === 'user').map((message, index) => <p key={`${index}-${message.content}`} className="ml-8 rounded bg-accent-soft px-3 py-2 text-sm">{message.content}</p>)}
-            <div aria-live="polite" aria-atomic="true">{answer && <div className="rounded border border-line p-3"><p className="text-sm">{answer.text}</p><AnswerSources claimIds={answer.claimIds}/></div>}{busy && <p className="text-sm text-muted">Dee is checking the record…</p>}{error && <p role="alert" className="text-sm text-accent">{error}</p>}{sent && <p className="text-sm">Sent. Deepak usually replies within a day by email.</p>}</div>
+            <div aria-live="polite" aria-atomic="true">{answer && <div className="rounded border border-line p-3"><p className="text-sm">{answer.text}</p><AnswerSources claimIds={answer.claimIds} sources={answer.sources}/></div>}{busy && <p className="text-sm text-muted">Dee is checking the record…</p>}{error && <p role="alert" className="text-sm text-accent">{error}</p>}{sent && <p className="text-sm">Sent. Deepak usually replies within a day by email.</p>}</div>
             {showAskButton && <button type="button" onClick={() => { setAskOpen(true); setTourIndex(null); setSent(false) }} className="rounded border border-accent px-3 py-2 text-sm hover:bg-accent-soft">Ask Deepak</button>}
             {askOpen && !sent && <form role="form" aria-label="Ask Deepak" onSubmit={sendAsk} className="space-y-3 border-t border-line pt-4"><label className="block text-sm">Your question<textarea name="question" required minLength={5} maxLength={2000} defaultValue={messages.filter((m) => m.role === 'user').at(-1)?.content ?? ''} className="mt-1 block w-full rounded border border-line bg-paper p-2"/></label><label className="block text-sm">Your email<input ref={input} name="email" type="email" required className="mt-1 block w-full rounded border border-line bg-paper p-2"/></label><label className="block text-sm">Name (optional)<input name="name" className="mt-1 block w-full rounded border border-line bg-paper p-2"/></label><label className="block text-sm">Company (optional)<input name="company" className="mt-1 block w-full rounded border border-line bg-paper p-2"/></label><label className="sr-only" aria-hidden="true">Website<input name="website" tabIndex={-1} autoComplete="off"/></label><button disabled={busy} className="rounded bg-ink px-3 py-2 text-sm text-paper disabled:opacity-50">Send</button><button type="button" onClick={() => setAskOpen(false)} className="ml-3 text-sm text-muted underline">Cancel</button></form>}
           </div>

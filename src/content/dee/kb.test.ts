@@ -50,15 +50,15 @@ describe('claims (from the evidence register)', () => {
     expect(t.toLowerCase()).not.toMatch(/health|father|dad|ill/)
   })
 
-  it('covers the stack, client-facing work, build speed, UrDee and Travel Measured (added 2 Nov 2026)', () => {
-    for (const tool of ['Python', 'FastAPI', 'PostgreSQL', 'TypeScript', 'Next.js', 'Docker', 'pytest', 'MCP']) expect(byId('S1')!.text, tool).toContain(tool)
+  it('covers the stack, client calls, UrDee and Travel Measured only in registered wording (2 Nov 2026)', () => {
+    for (const tool of ['Python', 'FastAPI', 'PostgreSQL', 'Next.js', 'MCP']) expect(byId('S1')!.text, tool).toContain(tool)
+    // Interview-only per the evidence register (F11, U3): never in Dee
+    for (const id of CLAIMS.map((c) => c.id)) expect(byId(id)!.text, id).not.toMatch(/Docker|Google Cloud|70%/)
     expect(byId('U5')!.text).toContain('client delivery calls')
-    expect(byId('U6')!.text).toContain('70%')
-    expect(byId('F11')!.text).toContain('4–10 days')
+    expect(byId('U2')!.text).toContain('85–90%')
     expect(byId('P11')!.text).toContain('UrDee')
     expect(byId('P11')!.text.toLowerCase()).toContain('no usage data yet')
-    expect(byId('P12')!.text).toContain('20 parks')
-    expect(byId('P12')!.text).toContain('458,875')
+    expect(byId('P8')!.text).toContain('measured or estimated')
   })
 
   it('every claim has a confidence and a source label', () => {
@@ -110,14 +110,14 @@ describe('limits', () => {
 })
 
 describe('golden eval set', () => {
-  it('has 45 cases in the agreed mix with unique ids', () => {
-    expect(GOLDEN).toHaveLength(45)
+  it('has 46 cases in the agreed mix with unique ids', () => {
+    expect(GOLDEN).toHaveLength(46)
     const count = (k: string) => GOLDEN.filter((g) => g.kind === k).length
     expect(count('factual')).toBe(20)
-    expect(count('unknown')).toBe(10)
+    expect(count('unknown')).toBe(11)
     expect(count('adversarial')).toBe(10)
     expect(count('tone')).toBe(5)
-    expect(new Set(GOLDEN.map((g) => g.id)).size).toBe(45)
+    expect(new Set(GOLDEN.map((g) => g.id)).size).toBe(46)
   })
 
   it('factual cases cite real claims; unknown cases expect escalation', () => {

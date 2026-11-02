@@ -25,6 +25,12 @@ function deeDeps(over: Partial<Parameters<typeof createDeeHandler>[0]> = {}) {
 }
 
 describe('Dee handler', () => {
+  it('shows Ask Deepak whenever the reply offers to pass the question on', async () => {
+    const deps = deeDeps({ primary: vi.fn(async () => reply("He hasn't told me that yet, so I won't guess. I can send your question to Deepak.", [])) })
+    const body = await (await createDeeHandler(deps)(deeReq(ask))).json()
+    expect(body.escalate).toBe(true)
+  })
+
   it('answers with the primary model and records spend', async () => {
     const deps = deeDeps()
     const res = await createDeeHandler(deps)(deeReq(ask))
