@@ -354,3 +354,9 @@ Each claim carries a confidence level and a source. Also added four FAQ entries 
 **Decided:** "notice period details" is removed from Dee's off-limits topics. New claim R2 (register row R2, D-level): 30 days' notice, negotiable; based in Chennai, India; can start in 1–4 weeks. Golden case u07 (expect escalation) became f21 and f22 (expect R2).
 
 **Why:** a real recruiter asked Dee for his notice period on 2 Nov and got nothing. Deepak gave the answer the same day. Salary stays off-limits.
+
+## 2026-11-02 · Partly reversed: Dee may mention Docker, but only as escalation-gate's test box
+
+**Decided:** claim S2 says Deepak used Docker in escalation-gate v2 (each proposed fix runs in a container with no network, resource limits and a read-only root, `gate/prove.py`) and in small projects, built with Claude Code, and never in production. `kb.test.ts` now allows the word Docker only in S2 and requires the "not in production" line. Golden u11 ("Docker in production?") became f23, expecting S2. Claim R3 holds his own answer to "why hire you" (self-reported). Both are in the register (S2 V+D, R3 S).
+
+**Why:** a visitor asked about Docker, and Deepak confirmed the use. The code shows it, so it passes the register rule that cut Docker earlier the same day, as long as the claim stays at "test box, not production". The ban was on an unbacked skill-list entry, not on the word.
