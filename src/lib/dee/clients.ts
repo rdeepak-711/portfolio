@@ -78,6 +78,11 @@ export function createClients(env: Env = process.env, fetcher: typeof fetch = fe
     const raw = (await redis.command(['LRANGE', 'dee:asks', '0', '49']) ?? []) as string[]
     return raw.flatMap((value) => { try { const q = (JSON.parse(value) as AskInput).question; return q ? [q] : [] } catch { return [] } })
   }
+  const recentChats = async (): Promise<ChatLogEntry[]> => {
+    if (!redis) return []
+    const raw = (await redis.command(['LRANGE', 'dee:chats', '0', '999']) ?? []) as string[]
+    return raw.flatMap((value) => { try { return [JSON.parse(value) as ChatLogEntry] } catch { return [] } })
+  }
   const askedIds = async () => new Set(redis ? (await redis.command(['SMEMBERS', 'dee:qa:asked']) ?? []) as string[] : [])
   const markAsked = async (id: string) => { if (redis) await redis.command(['SADD', 'dee:qa:asked', id]) }
   const emailDeepak = async (subject: string, text: string): Promise<boolean> => {
@@ -90,7 +95,7 @@ export function createClients(env: Env = process.env, fetcher: typeof fetch = fe
     return Boolean(response?.ok)
   }
 
-  return { store, spentToday, addSpend, primary, fallback, save, logChat, loadAnswerClaims, saveAnswer, recentAskQuestions, askedIds, markAsked, emailDeepak }
+  return { store, spentToday, addSpend, primary, fallback, save, logChat, loadAnswerClaims, saveAnswer, recentAskQuestions, recentChats, askedIds, markAsked, emailDeepak }
 }
 
 class RedisRest implements CounterStore {

@@ -10,6 +10,7 @@ export const GET = createDailyHandler({
   answerSecret: process.env.DEE_ANSWER_SECRET,
   siteUrl: 'https://rdeepak.vercel.app',
   recentAskQuestions: clients.recentAskQuestions,
+  recentChats: clients.recentChats,
   askedIds: clients.askedIds,
   markAsked: clients.markAsked,
   emailDeepak: clients.emailDeepak,

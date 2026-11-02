@@ -36,6 +36,10 @@ function AnswerSources({ claimIds, sources }: { claimIds: string[]; sources?: So
   </>
 }
 
+function readOrigin(): unknown {
+  try { return JSON.parse(sessionStorage.getItem('dee-origin') ?? 'null') } catch { return null }
+}
+
 export default function Dee() {
   const [open, setOpen] = useState(false)
   const [mode, setMode] = useState<Mode>('recruiter')
@@ -68,6 +72,20 @@ export default function Dee() {
     else if (wasOpen.current) launcher.current?.focus()
     wasOpen.current = open
   }, [open])
+
+  // Remember where this visit started (first page only), so Deepak's digest can say where a visitor came from
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem('dee-origin')) return
+      const params = new URLSearchParams(window.location.search)
+      const host = document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, '') : ''
+      sessionStorage.setItem('dee-origin', JSON.stringify({
+        ref: params.get('ref') || params.get('utm_source') || '',
+        referrer: host && host !== window.location.hostname ? host : '',
+        landing: window.location.pathname,
+      }))
+    } catch { /* storage blocked: the chat still works without an origin */ }
+  }, [])
 
   // Greet once per visit, after the landing bounce
   useEffect(() => {
@@ -133,7 +151,7 @@ export default function Dee() {
     try {
       const response = await fetch('/api/dee', {
         method: 'POST', headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ messages: nextMessages, mode, sessionId: sessionId.current }),
+        body: JSON.stringify({ messages: nextMessages, mode, sessionId: sessionId.current, origin: readOrigin() }),
       })
       if (!response.ok) throw new Error('Dee could not answer just now. Please try again.')
       const result = await response.json() as Answer

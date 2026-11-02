@@ -23,4 +23,11 @@ const all = (await redis(['LRANGE', 'dee:chats', '0', '4999'])).map((e) => JSON.
 const sessions = new Set(all.map((e) => e.sessionId)).size
 console.log(`\nStored chats: ${all.length} from ${sessions} sessions · escalated: ${all.filter((e) => e.escalate).length}`)
 console.log(`\nLatest ${entries.length}:`)
-for (const e of entries) console.log(`  ${e.at.slice(0, 16)} [${e.mode}/${e.source}${e.escalate ? '/escalated' : ''}] ${e.question.slice(0, 120)}`)
+for (const e of entries) {
+  console.log(`  ${e.at.slice(0, 16)} [${e.mode}/${e.source}${e.escalate ? '/escalated' : ''}] ${e.question.slice(0, 120)}`)
+  // Fields added 2 Nov: where the visitor came from, where they opened Dee, and Dee's answer
+  const from = [e.ref && `?ref=${e.ref}`, e.referrer && `via ${e.referrer}`].filter(Boolean).join(' ')
+  const place = [e.city, e.region, e.country].filter(Boolean).join(', ')
+  if (from || place || e.device) console.log(`      from: ${from || 'direct'} · ${place || 'unknown location'} · ${e.device || 'unknown device'}${e.landing ? ` · first page ${e.landing}` : ''}`)
+  if (e.answer) console.log(`      Dee: ${e.answer.slice(0, 160)}`)
+}
