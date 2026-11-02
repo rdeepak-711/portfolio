@@ -109,6 +109,15 @@ export default function Dee() {
   useEffect(() => {
     if (askOpen) input.current?.focus()
   }, [askOpen])
+  // While the chat is open the page behind stays still, so a swipe on a phone scrolls the chat, not the site.
+  // The tour is left alone: it scrolls the page to each section on purpose.
+  useEffect(() => {
+    if (!open || tourIndex !== null) return
+    const root = document.documentElement
+    const previous = root.style.overflow
+    root.style.overflow = 'hidden'
+    return () => { root.style.overflow = previous }
+  }, [open, tourIndex])
   useEffect(() => {
     if (!open) return
     const onKeyDown = (event: KeyboardEvent) => {
@@ -200,7 +209,7 @@ export default function Dee() {
             <div className="flex items-center gap-3"><DeeFigure pose={tourStop?.pose ?? 'explain'} className={tourStop ? 'h-9 w-9' : 'h-12 w-12'}/><div><h2 id="dee-title" className="font-display text-xl font-semibold">Dee, Deepak&apos;s guide</h2>{!tourStop && <p className="mt-1 max-w-[34ch] text-xs text-muted">{DISCLOSURE}</p>}</div></div>
             <button ref={closeButton} type="button" aria-label="Close Dee" onClick={() => setOpen(false)} className="rounded px-2 py-1 font-mono text-sm text-muted hover:text-ink">Esc ×</button>
           </header>
-          <div className={`min-h-0 space-y-4 overflow-y-auto ${tourStop ? 'p-3' : 'flex-none p-5'}`}>
+          <div className={`min-h-0 space-y-4 overflow-y-auto overscroll-contain ${tourStop ? 'p-3' : 'flex-initial p-5'}`}>
             {!tourStop && messages.length === 0 && fromUrDee && <p className="text-sm">This is the live Dee that UrDee is built from. It only answers from what Deepak has told it, and shows the source. If he hasn&apos;t told it something, it sends your question to him.</p>}
             {!tourStop && messages.length === 0 && <div className="flex flex-wrap gap-2"><button type="button" onClick={startTour} className="rounded border border-accent bg-accent-soft px-3 py-2 text-sm">Take the 90-second tour</button><button type="button" onClick={() => input.current?.focus()} className="rounded border border-line px-3 py-2 text-sm hover:border-accent">Just ask</button></div>}
             {tourStop && <div className="rounded border border-line p-4"><p className="font-mono text-xs uppercase tracking-wider text-muted">Stop {tourIndex! + 1} of {TOUR_STOPS.length}</p>{tourStop.lines.map((line) => <p key={line} className="mt-2 text-sm">{line}</p>)}<div className="mt-4 flex gap-3"><button type="button" onClick={nextStop} className="rounded bg-ink px-3 py-2 text-sm text-paper">Next</button><button type="button" onClick={() => { setTourIndex(null); setTourDone(false) }} className="px-2 py-2 text-sm text-muted underline">Skip tour</button></div></div>}
