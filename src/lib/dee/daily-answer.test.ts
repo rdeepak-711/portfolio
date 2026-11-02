@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { createDeeHandler, createDailyHandler, createAnswerHandler } from './handlers'
 import { MemoryStore } from './rate-limit'
-import { answerToClaim, signQuestion, visitorQuestionId, type StoredAnswer } from './answers'
+import { answerToClaim, emailSubject, signQuestion, visitorQuestionId, type StoredAnswer } from './answers'
 
 const SECRET = 'test-secret'
 const stored: StoredAnswer = { id: 'd01', kind: 'daily', question: 'Why do you prefer state machines for bots?', answer: 'Because every path can be tested before a customer sees it.', at: '2026-11-03T03:30:00Z', public: true }
@@ -64,6 +64,15 @@ describe('Daily question handler', () => {
     const deps = dailyDeps({ emailDeepak: vi.fn(async () => false) })
     await createDailyHandler(deps)(cron())
     expect(deps.markAsked).not.toHaveBeenCalled()
+  })
+})
+
+describe('Email subject', () => {
+  it('shows the whole question when it fits, and cuts long ones at a word', () => {
+    expect(emailSubject('What is a problem you solved by changing the process instead of the code?')).toBe('Dee asks: What is a problem you solved by changing the process instead of the code?')
+    const long = emailSubject('word '.repeat(60))
+    expect(long.endsWith('word…')).toBe(true)
+    expect(long.length).toBeLessThanOrEqual('Dee asks: '.length + 151)
   })
 })
 
