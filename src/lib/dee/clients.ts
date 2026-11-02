@@ -1,6 +1,8 @@
 import type { AskInput } from './ask'
 import type { ChatLogEntry, ModelReply } from './handlers'
 import { MemoryStore, type CounterStore } from './rate-limit'
+import { answerToClaim, type StoredAnswer } from './answers'
+import type { Claim } from '@/content/dee/types'
 
 type Env = Record<string, string | undefined>
 type Messages = { role: 'user' | 'assistant'; content: string }[]
@@ -53,7 +55,42 @@ export function createClients(env: Env = process.env, fetcher: typeof fetch = fe
     await redis.command(['INCR', `dee:chats:${day}`])
   }
 
-  return { store, spentToday, addSpend, primary, fallback, save, logChat }
+  // Deepak's answers: dee:qa:<id> holds each one, dee:qa:live lists the public ones, dee:qa:asked the ids already emailed
+  let answerCache: { at: number; claims: Claim[] } | null = null
+  const loadAnswerClaims = async (): Promise<Claim[]> => {
+    if (!redis) return []
+    // Cached for a minute so a chat costs no extra Redis calls in a busy spell
+    if (answerCache && Date.now() - answerCache.at < 60_000) return answerCache.claims
+    const ids = (await redis.command(['SMEMBERS', 'dee:qa:live']) ?? []) as string[]
+    const raw = ids.length ? (await redis.command(['MGET', ...ids.map((id) => `dee:qa:${id}`)]) ?? []) as (string | null)[] : []
+    const claims = raw.flatMap((value) => { try { return value ? [answerToClaim(JSON.parse(value) as StoredAnswer)] : [] } catch { return [] } })
+    answerCache = { at: Date.now(), claims }
+    return claims
+  }
+  const saveAnswer = async (answer: StoredAnswer) => {
+    if (!redis) { console.log('Dee answer:', answer); return }
+    await redis.command(['SET', `dee:qa:${answer.id}`, JSON.stringify(answer)])
+    await redis.command([answer.public ? 'SADD' : 'SREM', 'dee:qa:live', answer.id])
+    answerCache = null
+  }
+  const recentAskQuestions = async (): Promise<string[]> => {
+    if (!redis) return []
+    const raw = (await redis.command(['LRANGE', 'dee:asks', '0', '49']) ?? []) as string[]
+    return raw.flatMap((value) => { try { const q = (JSON.parse(value) as AskInput).question; return q ? [q] : [] } catch { return [] } })
+  }
+  const askedIds = async () => new Set(redis ? (await redis.command(['SMEMBERS', 'dee:qa:asked']) ?? []) as string[] : [])
+  const markAsked = async (id: string) => { if (redis) await redis.command(['SADD', 'dee:qa:asked', id]) }
+  const emailDeepak = async (subject: string, text: string): Promise<boolean> => {
+    if (!env.RESEND_API_KEY) { console.log('Dee email:', subject, text); return false }
+    const response = await fetcher('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ from: env.RESEND_FROM || 'Dee <onboarding@resend.dev>', to: ['deepakrameshh@gmail.com'], subject, text }),
+    }).catch(() => null)
+    return Boolean(response?.ok)
+  }
+
+  return { store, spentToday, addSpend, primary, fallback, save, logChat, loadAnswerClaims, saveAnswer, recentAskQuestions, askedIds, markAsked, emailDeepak }
 }
 
 class RedisRest implements CounterStore {

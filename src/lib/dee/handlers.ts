@@ -1,4 +1,5 @@
 import type { FaqEntry, Mode } from '@/content/dee/types'
+import { answerLink, pickNextQuestion, validateAnswer, verifyQuestion, type StoredAnswer } from './answers'
 import { offersToForward } from './forward'
 import { CLAIMS } from '@/content/dee/claims'
 import { FAQ } from '@/content/dee/faq'
@@ -31,6 +32,8 @@ export type DeeDeps = {
   claims?: typeof CLAIMS
   faq?: FaqEntry[]
   logChat?: (entry: ChatLogEntry) => Promise<void>
+  // Facts from Deepak's own answers, merged with the static claims on every chat
+  loadAnswerClaims?: () => Promise<typeof CLAIMS>
 }
 
 // One answered chat, kept so Deepak can see whether visitors use Dee. No IP is stored.
@@ -54,7 +57,7 @@ const MODES: Mode[] = ['recruiter', 'founder', 'cto', 'interviewer']
 const DAY_SECONDS = 24 * 60 * 60
 
 export function createDeeHandler(deps: DeeDeps): (req: Request) => Promise<Response> {
-  const claims = deps.claims ?? CLAIMS
+  const baseClaims = deps.claims ?? CLAIMS
   const faq = deps.faq ?? FAQ
   return async (req) => {
     let body: unknown
@@ -76,6 +79,7 @@ export function createDeeHandler(deps: DeeDeps): (req: Request) => Promise<Respo
     } catch { /* store unavailable */ }
 
     const messages = data.messages as Messages
+    const claims = [...baseClaims, ...(await (deps.loadAnswerClaims?.() ?? Promise.resolve([])).catch(() => []))]
     const system = buildSystemPrompt({ claims, faq, limits: LIMITS, profile: PROFILE, mode: data.mode as Mode })
     let reply: ModelReply | undefined
     let source: 'primary' | 'fallback' | 'faq' = 'faq'
@@ -115,8 +119,11 @@ export function createDeeHandler(deps: DeeDeps): (req: Request) => Promise<Respo
         turns: messages.filter((message) => message.role === 'user').length,
       }).catch(() => { /* logging never blocks an answer */ })
     }
-    const known = new Set(claims.map((c) => c.id))
-    return json({ text: reply.text, claimIds: reply.claimIds.filter((id) => known.has(id)), escalate: reply.escalate, source })
+    const byId = new Map(claims.filter((c) => c.public).map((c) => [c.id, c]))
+    const claimIds = reply.claimIds.filter((id) => byId.has(id))
+    // Sources travel with the answer, because answered-question facts are not in the browser's copy of CLAIMS
+    const sources = claimIds.map((id) => { const c = byId.get(id)!; return { id, label: c.sourceLabel, url: c.sourceUrl, links: c.links ?? [] } })
+    return json({ text: reply.text, claimIds, sources, escalate: reply.escalate, source })
   }
 }
 
@@ -148,6 +155,52 @@ function isMessage(value: unknown): value is Messages[number] {
 
 function firstIp(req: Request): string {
   return req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
+}
+
+export type DailyDeps = {
+  cronSecret: string | undefined
+  answerSecret: string | undefined
+  siteUrl: string
+  recentAskQuestions: () => Promise<string[]>
+  askedIds: () => Promise<Set<string>>
+  markAsked: (id: string) => Promise<void>
+  emailDeepak: (subject: string, text: string) => Promise<boolean>
+  bank: { id: string; q: string }[]
+}
+
+// Vercel Cron calls this once a day with "Authorization: Bearer <CRON_SECRET>"
+export function createDailyHandler(deps: DailyDeps): (req: Request) => Promise<Response> {
+  return async (req) => {
+    if (!deps.cronSecret || req.headers.get('authorization') !== `Bearer ${deps.cronSecret}`) return json({ error: 'Unauthorized.' }, 401)
+    if (!deps.answerSecret) return json({ error: 'DEE_ANSWER_SECRET is not set.' }, 500)
+    const next = pickNextQuestion(await deps.recentAskQuestions(), deps.bank, await deps.askedIds())
+    if (!next) return json({ sent: false, reason: 'No questions left.' })
+    const link = answerLink(deps.siteUrl, next, deps.answerSecret)
+    const from = next.kind === 'visitor' ? 'A visitor asked Dee this, and it had no answer.' : "Today's question for Dee."
+    const sent = await deps.emailDeepak(`Dee asks: ${next.question.slice(0, 70)}`, `${from}\n\n${next.question}\n\nAnswer it here (takes a minute):\n${link}\n\nOnce you tick "Dee can say this publicly", Dee uses your answer straight away.`)
+    // Only mark it asked once the email went out, so a failed send is retried tomorrow
+    if (sent) await deps.markAsked(next.id)
+    return json({ sent, id: next.id, kind: next.kind })
+  }
+}
+
+export type AnswerDeps = { store: CounterStore; answerSecret: string | undefined; saveAnswer: (answer: StoredAnswer) => Promise<void> }
+
+export function createAnswerHandler(deps: AnswerDeps): (req: Request) => Promise<Response> {
+  return async (req) => {
+    let body: unknown
+    try { body = await req.json() } catch { return json({ error: 'Invalid JSON body.' }, 400) }
+    const validated = validateAnswer(body)
+    if (!validated.ok) return json({ error: validated.errors }, 400)
+    const { id, kind, question, sig, answer } = validated.value
+    if (!deps.answerSecret || !verifyQuestion(id, kind, question, sig, deps.answerSecret)) return json({ error: ['This link is not valid.'] }, 403)
+    try {
+      const limit = await checkRateLimit(deps.store, `answer:${firstIp(req)}`, 30, DAY_SECONDS)
+      if (!limit.allowed) return json({ error: ['Too many answers today.'] }, 429)
+    } catch { /* store unavailable */ }
+    await deps.saveAnswer({ id, kind, question, answer, at: new Date().toISOString(), public: validated.value.public })
+    return json({ ok: true, live: validated.value.public })
+  }
 }
 
 function json(body: unknown, status = 200): Response {
