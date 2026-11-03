@@ -398,3 +398,11 @@ Each claim carries a confidence level and a source. Also added four FAQ entries 
 **Considered:** having Dee read Claude Code memory or career-ops directly. Rejected, because those files hold private details and unsettled numbers that Dee must never say.
 
 **Cost:** Dee lags behind until someone runs the command and Deepak deploys. Held items (register "interview only" rows, and any number with more than one version) stay out until he answers.
+
+## 2026-11-03 · Held sync items decided: Dee may say ₹1L+ and +70%, never the GCP move
+
+**Decided (Deepak):** F4 (₹1L+ in the first month) and U3 (+70% throughput) are now Dee claims. F14 (32 sites, then 36) has a register row and a claim. F11 (GCP via Cloud Build, then Bluehost/Vercel) is ✗ for Dee. "Backoff" is gone from register row F10. The kb test now bans GCP and Cloud Build in every claim, allows 70% only in U3, and rejects "measured by" in U3, since there's no source for who measured it.
+
+**Considered:** lifting the page-level bans too. No: `content-honesty.test.tsx` still keeps '₹1L', '+70%' and '32 in the first' off the pages and notes, because the register says "not as a headline". Dee answers a direct question; the page is a headline.
+
+**Cost:** Dee can now say two self-reported numbers that have no artefact on file. If a recruiter asks for proof, the honest answer is "from his CV". The claim's sourceLabel says exactly that.
