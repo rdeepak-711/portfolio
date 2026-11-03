@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { describeOrigin, formatDigest, parseOrigin, visitorFromHeaders } from './visitor'
+import { describeOrigin, formatAsks, formatDigest, parseOrigin, visitorFromHeaders } from './visitor'
 import { createDeeHandler, createDailyHandler, type ChatLogEntry } from './handlers'
 import { MemoryStore } from './rate-limit'
 
@@ -35,7 +35,7 @@ describe('daily digest', () => {
     expect(d).toMatchObject({ count: 3, visitors: 2 })
     expect(d.text).toContain('Notice period?')
     expect(d.text).toContain('30 days.')
-    expect(d.text).toContain('offered to send it to you')
+    expect(d.text).toContain('Dee offered to send it to you')
     expect(d.text).not.toContain('test')
     expect(d.text).not.toContain('old')
   })
@@ -68,5 +68,46 @@ describe('chat log', () => {
     const entry = (logChat.mock.calls[0] as unknown[])[0] as ChatLogEntry
     expect(entry).toMatchObject({ answer: 'Deepak built sites.', ref: 'li', referrer: 'linkedin.com', city: 'Pune', country: 'IN' })
     expect(JSON.stringify(entry)).not.toContain('9.9.9.9')
+  })
+})
+
+describe('digest: test sessions and Ask Deepak requests (3 Nov)', () => {
+  const now = new Date('2026-11-02T12:00:00Z')
+
+  it('leaves out Claude test sessions as well as smoke- ones', () => {
+    const d = formatDigest([chat({ sessionId: 'claude-smoke-1', question: 'Notice?' }), chat({ sessionId: 'dee-z', question: 'Real?' })], now)
+    expect(d).toMatchObject({ count: 1, visitors: 1 })
+    expect(d.text).not.toContain('Notice?')
+  })
+
+  it('lists Ask Deepak requests from the last 24 hours with who sent them and where they were delivered', () => {
+    const text = formatAsks([
+      { question: 'Can he start in 2 weeks?', email: 'r@acme.com', name: 'Riya', company: 'Acme', at: '2026-11-02T10:00:00Z', delivered: { email: true, telegram: false } },
+      { question: 'Old one?', email: 'o@x.com', at: '2026-10-30T10:00:00Z' },
+      { question: 'No time on it?', email: 'n@x.com' },
+    ], now)
+    expect(text).toContain('1 person used Ask Deepak')
+    expect(text).toContain('Riya (Acme) <r@acme.com>')
+    expect(text).toContain('Can he start in 2 weeks?')
+    expect(text).toContain('email sent · Telegram failed')
+    expect(text).not.toContain('Old one?')
+    expect(text).not.toContain('No time on it?')
+  })
+
+  it('says so when nobody used Ask Deepak', () => {
+    expect(formatAsks([], now)).toBe('No one used Ask Deepak in the last 24 hours.')
+  })
+
+  it('puts the Ask Deepak section in the daily email', async () => {
+    const emailDeepak = vi.fn(async () => true)
+    await createDailyHandler({
+      cronSecret: 'c', answerSecret: 's', siteUrl: 'https://x', bank: [],
+      recentAskQuestions: async () => [], askedIds: async () => new Set(), markAsked: vi.fn(async () => {}),
+      emailDeepak, recentChats: async () => [], now: () => now,
+      recentAsks: async () => [{ question: 'Is he open to contract?', email: 'f@x.com', at: '2026-11-02T11:00:00Z' }],
+    })(new Request('http://x', { headers: { authorization: 'Bearer c' } }))
+    const body = emailDeepak.mock.calls[0][1] as string
+    expect(body).toContain('ASKED YOU DIRECTLY (Ask Deepak form)')
+    expect(body).toContain('Is he open to contract?')
   })
 })

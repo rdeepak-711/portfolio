@@ -11,6 +11,7 @@ export const GET = createDailyHandler({
   siteUrl: 'https://rdeepak.vercel.app',
   recentAskQuestions: clients.recentAskQuestions,
   recentChats: clients.recentChats,
+  recentAsks: clients.recentAsks,
   askedIds: clients.askedIds,
   markAsked: clients.markAsked,
   emailDeepak: clients.emailDeepak,

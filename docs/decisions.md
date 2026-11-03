@@ -370,3 +370,13 @@ Each claim carries a confidence level and a source. Also added four FAQ entries 
 **Considered:** `overscroll-contain` alone (does nothing while the body itself cannot scroll), and `position: fixed` on `<body>` (the heavier iOS lock that also needs the scroll position restored). Locking `<html>` overflow is enough on current iOS Safari and Chrome.
 
 **Cost:** the tour still lets the page scroll, on purpose, because it moves the page to each section. Very old iOS Safari (before 16) ignores `overflow: hidden` on `<html>`, so there the page can still move behind the backdrop, but the chat itself now scrolls.
+
+## 2026-11-03 · The daily email lists Ask Deepak requests, and Claude's test chats are left out of the digest
+
+**Decided:** `/api/ask-deepak` now saves each ask with `at` and `delivered` (whether the email and the Telegram message went out). The 09:00 IST email gets a third section, ASKED YOU DIRECTLY, from `formatAsks` in `src/lib/dee/visitor.ts`, which shows the last 24 hours with name, company, reply address, question and delivery status. `formatDigest` now drops `claude-` sessions as well as `smoke-` ones. The "offered to send it to you" line now says that the people who actually sent it are listed under ASKED YOU DIRECTLY.
+
+**Why:** the 3 Nov digest showed "Visitor 2 (recruiter)" asking about the notice period, but that was Claude's own smoke check (`claude-smoke…`, 2 Nov 10:32 IST) and not a recruiter. Deepak also asked whether visitor questions reach him. They do, through email and Telegram, but only when a visitor fills in the Ask Deepak form, and nothing in the digest showed whether anyone had. `dee:asks` was empty on 3 Nov, so no one had.
+
+**Considered:** keeping the old order of saving first and notifying second. That stores an ask even when Resend or Telegram hangs, but then the saved copy can't record delivery. Notifying first was chosen because both senders catch their own errors and return false.
+
+**Cost:** if the function is killed while a notify call hangs, that ask is not saved. Asks saved before 3 Nov have no `at` and never appear in the digest (there were none). The email still goes at 09:00 IST, not at the end of the day.
