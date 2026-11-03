@@ -52,8 +52,10 @@ describe('claims (from the evidence register)', () => {
 
   it('covers the stack, client calls, UrDee and Travel Measured only in registered wording (2 Nov 2026)', () => {
     for (const tool of ['Python', 'FastAPI', 'PostgreSQL', 'Next.js', 'MCP']) expect(byId('S1')!.text, tool).toContain(tool)
-    // Interview-only per the evidence register (F11, U3): never in Dee
-    for (const id of CLAIMS.map((c) => c.id)) expect(byId(id)!.text, id).not.toMatch(/Google Cloud|70%/)
+    // F11 (GCP / Cloud Build) is never in Dee (Deepak, 3 Nov). U3's +70% is allowed in Dee since 3 Nov, but only in U3
+    for (const id of CLAIMS.map((c) => c.id)) expect(byId(id)!.text, id).not.toMatch(/Google Cloud|Cloud Build|GCP/)
+    for (const c of CLAIMS.filter((c) => /70%/.test(c.text))) expect(c.id).toBe('U3')
+    expect(byId('U3')!.text).not.toMatch(/measured by/)
     // Docker only where the register backs it (S2, escalation-gate's test box), and never as production use
     for (const c of CLAIMS.filter((c) => /Docker/.test(c.text))) expect(c.id).toBe('S2')
     expect(byId('S2')!.text).toContain('has not run Docker in production')
