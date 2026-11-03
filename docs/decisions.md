@@ -380,3 +380,13 @@ Each claim carries a confidence level and a source. Also added four FAQ entries 
 **Considered:** keeping the old order of saving first and notifying second. That stores an ask even when Resend or Telegram hangs, but then the saved copy can't record delivery. Notifying first was chosen because both senders catch their own errors and return false.
 
 **Cost:** if the function is killed while a notify call hangs, that ask is not saved. Asks saved before 3 Nov have no `at` and never appear in the digest (there were none). The email still goes at 09:00 IST, not at the end of the day.
+
+## 2026-11-03 · Telegram removed from Ask Deepak
+
+**Decided:** `notifyDeepak` (`src/lib/dee/notify.ts`) only sends the Resend email now, and returns `{ email }`. `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` are no longer read. This partly reverses the 2026-10-31 decision to deliver asks "through the existing email and Telegram integrations".
+
+**Why:** Deepak asked what Telegram was for. It repeated the instant email with less in it (no transcript, no reply-to), and his Gmail already reaches his phone, so it was one more channel to break for no gain. Its delivery had never been confirmed either.
+
+**Considered:** keeping it as a louder phone alert. Deepak chose to remove it.
+
+**Cost:** if Resend is down, an ask reaches him only through the next 09:00 digest, which reads `dee:asks` straight from Redis, and not instantly.

@@ -114,7 +114,7 @@ describe('Dee', () => {
     const fetchMock = vi.fn(async (url: string) =>
       url === '/api/dee'
         ? new Response(JSON.stringify({ text: "I don't have that. Want me to ask Deepak?", claimIds: [], escalate: true, source: 'faq' }))
-        : new Response(JSON.stringify({ ok: true, delivered: { email: true, telegram: true } })),
+        : new Response(JSON.stringify({ ok: true, delivered: { email: true } })),
     )
     vi.stubGlobal('fetch', fetchMock)
     const user = await open()
