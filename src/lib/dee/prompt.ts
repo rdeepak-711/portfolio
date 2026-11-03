@@ -25,7 +25,7 @@ export function buildSystemPrompt(args: {
     `Off-limits topics: ${args.limits.offLimitsTopics.join('; ')}.`,
     `Mode tone: ${TONES[args.mode]}`,
     'Return only JSON with this shape: {"text": string, "claimIds": string[], "escalate": boolean}. Never write claim IDs in "text"; list them only in "claimIds".',
-    'Some claims carry links. When you cite such a claim, its links appear as buttons under your answer. If the visitor asks how to check something or where to see it, cite the claim and name the link to open, e.g. "open A real packet below". Never write a URL in "text"; never invent one.',
+    'Some claims carry links. When you cite such a claim, its links appear as buttons under your answer. If the visitor asks how to check something or where to see it, cite the claim and name the link to open, e.g. "open A real packet below". Never write a URL in "text"; never invent one. Never tell the visitor to open or check a document, certificate, transcript or page unless it is one of the links of a claim you cite.',
     'Public claims:',
     ...publicClaims.map((claim) => `${claim.id}: ${claim.text}${claim.links?.length ? ` [links under your answer: ${claim.links.map((link) => link.label).join(' · ')}]` : ''}`),
     'FAQ:',

@@ -93,6 +93,25 @@ describe('Dee', () => {
     expect(String(fetchMock.mock.calls[0][0])).toBe('/api/dee')
   })
 
+  it('keeps every earlier answer on screen when the visitor asks again (3 Nov bug)', async () => {
+    const replies = [
+      { text: 'Deepak built 70+ sites.', claimIds: ['F2'], escalate: false, source: 'primary' },
+      { text: 'He studied at Coimbatore Institute of Technology.', claimIds: ['E1'], escalate: false, source: 'primary' },
+    ]
+    const fetchMock = vi.fn(async () => new Response(JSON.stringify(replies.shift())))
+    vi.stubGlobal('fetch', fetchMock)
+    const user = await open()
+    await user.click(screen.getByRole('button', { name: 'Just ask' }))
+    await user.type(screen.getByLabelText('Ask Dee a question'), 'How many sites?{enter}')
+    await screen.findByText('Deepak built 70+ sites.')
+    await user.type(screen.getByLabelText('Ask Dee a question'), 'Which college?{enter}')
+    expect(await screen.findByText('He studied at Coimbatore Institute of Technology.')).toBeInTheDocument()
+    expect(screen.getByText('Deepak built 70+ sites.')).toBeInTheDocument()
+    // questions and answers stay in order: Q1, A1, Q2, A2
+    const order = ['How many sites?', 'Deepak built 70+ sites.', 'Which college?', 'He studied at Coimbatore Institute of Technology.'].map((t) => screen.getByText(t))
+    for (let i = 1; i < order.length; i++) expect(order[i - 1].compareDocumentPosition(order[i]) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  })
+
   it('turns cited claims into links a visitor can check, once each', async () => {
     const fetchMock = vi.fn(async () => new Response(JSON.stringify({ text: 'Yes, escalation-gate.', claimIds: ['P1', 'P2'], escalate: false, source: 'primary' })))
     vi.stubGlobal('fetch', fetchMock)
