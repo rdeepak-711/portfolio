@@ -110,6 +110,48 @@ describe('multi-turn chats (3 Nov bug)', () => {
   })
 })
 
+describe('one repair retry when a reply fails a check (3 Nov)', () => {
+  const notJson = { text: 'x', claimIds: [], escalate: true, invalid: true, raw: 'He has not trained models.', usage: { inputTokens: 1, outputTokens: 1 } }
+  const lastUser = (call: unknown[]) => { const m = call[1] as { role: string; content: string }[]; return m[m.length - 1] }
+
+  it('asks again, saying it must be JSON, when the reply was plain text', async () => {
+    const primary = vi.fn().mockResolvedValueOnce(notJson).mockResolvedValueOnce(reply('Deepak built 70+ sites through the pipeline.'))
+    const body = await (await createDeeHandler(deeDeps({ primary }))(deeReq(ask))).json()
+    expect(primary).toHaveBeenCalledTimes(2)
+    expect(lastUser(primary.mock.calls[1]).content).toMatch(/JSON/)
+    expect((primary.mock.calls[1][1] as { role: string; content: string }[]).at(-2)).toEqual({ role: 'assistant', content: 'He has not trained models.' })
+    expect(body.text).toBe('Deepak built 70+ sites through the pipeline.')
+  })
+
+  it('asks again, naming the word, when a correct refusal used a banned word like "salary"', async () => {
+    const primary = vi.fn().mockResolvedValueOnce(reply('His salary is not public.', [])).mockResolvedValueOnce(reply('Deepak keeps pay private. I can send your question to Deepak.', []))
+    const body = await (await createDeeHandler(deeDeps({ primary }))(deeReq({ ...ask, messages: [{ role: 'user', content: 'What is his salary?' }] }))).json()
+    expect(lastUser(primary.mock.calls[1]).content).toContain('salary')
+    expect(body.text).toBe('Deepak keeps pay private. I can send your question to Deepak.')
+    expect(body.escalate).toBe(true)
+  })
+
+  it('asks again when the reply points at a link none of its cited claims has', async () => {
+    const primary = vi.fn().mockResolvedValueOnce(reply('He corrected 4 of 4 to 3 of 4. Open the write-up to see the details.', ['P3'])).mockResolvedValueOnce(reply('He corrected 4 of 4 to 3 of 4.', ['P3']))
+    const body = await (await createDeeHandler(deeDeps({ primary }))(deeReq(ask))).json()
+    expect(primary).toHaveBeenCalledTimes(2)
+    expect(body.text).toBe('He corrected 4 of 4 to 3 of 4.')
+  })
+
+  it('gives a plain hand-off, not an error, when the retry fails too', async () => {
+    const primary = vi.fn().mockResolvedValue(notJson)
+    const body = await (await createDeeHandler(deeDeps({ primary }))(deeReq(ask))).json()
+    expect(primary).toHaveBeenCalledTimes(2)
+    expect(body).toMatchObject({ text: "Dee can't answer that from Deepak's public record. Want to ask him directly?", escalate: true })
+  })
+
+  it('calls the model once when the first reply is fine', async () => {
+    const primary = vi.fn(async () => reply('Deepak built 70+ sites through the pipeline.'))
+    await createDeeHandler(deeDeps({ primary }))(deeReq(ask))
+    expect(primary).toHaveBeenCalledOnce()
+  })
+})
+
 describe('Ask Deepak handler', () => {
   it('saves, notifies and reports delivery', async () => {
     const save = vi.fn(async () => {})
