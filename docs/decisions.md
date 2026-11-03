@@ -430,3 +430,13 @@ Each claim carries a confidence level and a source. Also added four FAQ entries 
 **Considered:** a canned answer for pay questions with no model call. Rejected, because the retry already handles pay, and the same mechanism fixes the other three problems.
 
 **Cost:** a reply that fails a check takes a second model call, about double the latency and spend for that reply. After a retry, Dee sometimes gets overcautious with numbers (for example "raised complete entries to the majority range" instead of quoting U4).
+
+## 2026-11-03 · Weaknesses dropped from Dee; WhatsApp bots stay out
+
+**Decided (Deepak):** the FAQ entry "What are Deepak's weaknesses?" and `LIMITS.gaps` are removed. The system prompt now says: if asked about weaknesses, say he hasn't shared that and offer to pass the question on. Never infer weaknesses from what the record lacks, and never raise them unasked. Interviewer mode is now "be candid about what the record does not cover" rather than "be candid about gaps". The WhatsApp bots get no claim, so Dee says it hasn't been told.
+
+**Why:** in the 3 Nov test, Dee volunteered "building hand-coding fluency" inside a recruiter's "why hire him" answer. Deepak chose to give no weaknesses at all rather than only on request.
+
+**Considered:** keeping the weaknesses answer for direct questions only (Claude's suggestion). Deepak dropped them entirely.
+
+**Cost:** an interviewer who asks about weaknesses gets a hand-off instead of an answer. The `notClaimed` limits (no RAG, fine-tuning or model-training expertise) stay, so Dee still won't overclaim.

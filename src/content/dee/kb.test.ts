@@ -91,7 +91,7 @@ describe('faq', () => {
   it('covers the recruiter questions', () => {
     expect(FAQ.length).toBeGreaterThanOrEqual(14)
     const qs = FAQ.map((f) => f.q.toLowerCase()).join(' | ')
-    for (const topic of ['stack', 'clients', 'urdee', 'travel measured', 'who', 'built', 'agent', 'deployed', 'claude code', 'end to end', 'strongest', 'debug', 'build for', 'weakness', 'why', 'fail', 'ask him', 'ai write']) {
+    for (const topic of ['stack', 'clients', 'urdee', 'travel measured', 'who', 'built', 'agent', 'deployed', 'claude code', 'end to end', 'strongest', 'debug', 'build for', 'why', 'fail', 'ask him', 'ai write']) {
       expect(qs, topic).toContain(topic)
     }
   })
@@ -106,11 +106,11 @@ describe('faq', () => {
 })
 
 describe('limits', () => {
-  it('lists the off-limits topics and the honest gaps', () => {
+  it('lists the off-limits topics, and no weaknesses (Deepak dropped them, 3 Nov)', () => {
     const off = LIMITS.offLimitsTopics.join(' ').toLowerCase()
     for (const t of ['salary', 'family', 'health', 'client']) expect(off, t).toContain(t)
-    const gaps = LIMITS.gaps.join(' ').toLowerCase()
-    for (const t of ['hand', 'eval', 'rag', 'observability']) expect(gaps, t).toContain(t)
+    expect('gaps' in LIMITS).toBe(false)
+    expect(JSON.stringify(FAQ).toLowerCase()).not.toMatch(/weakness|hand-coding|observability/)
   })
 })
 

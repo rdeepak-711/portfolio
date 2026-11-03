@@ -39,7 +39,8 @@ describe('system prompt', () => {
     const prompts = modes.map((mode) => buildSystemPrompt({ ...base, mode }))
     expect(new Set(prompts).size).toBe(4)
     expect(prompts[2].toLowerCase()).toMatch(/trade-off|file path/)
-    expect(prompts[3].toLowerCase()).toMatch(/gap|weakness/)
+    expect(prompts[3].toLowerCase()).toMatch(/does not cover/)
+    for (const p of prompts) expect(p).toContain('If asked about Deepak’s weaknesses, gaps or what he is bad at, say he hasn’t shared that')
   })
 })
 
