@@ -406,3 +406,15 @@ Each claim carries a confidence level and a source. Also added four FAQ entries 
 **Considered:** lifting the page-level bans too. No: `content-honesty.test.tsx` still keeps '₹1L', '+70%' and '32 in the first' off the pages and notes, because the register says "not as a headline". Dee answers a direct question; the page is a headline.
 
 **Cost:** Dee can now say two self-reported numbers that have no artefact on file. If a recruiter asks for proof, the honest answer is "from his CV". The claim's sourceLabel says exactly that.
+
+## 2026-11-03 · Dee keeps the whole conversation, and the second question no longer fails
+
+**Bug (Deepak's live chat, 3 Nov 06:11 UTC):** he asked "what does deepak do regularly now", then "deepak college". The first answer vanished from the panel, and the second came back as "Dee couldn't verify a response". Replaying the same two turns against production failed 3 times out of 3.
+
+**Causes:** (1) `Dee.tsx` kept only the latest answer (`answer` state, cleared on every send) and listed only the visitor's messages. (2) Earlier answers went back to the model as plain text, so the model copied that style and dropped the required JSON. `parseModelJson` then fell back. Every second question in every chat failed this way.
+
+**Decided:** each assistant message now carries its answer and sources, and the panel shows the full conversation in order and scrolls the newest message into view, top edge first. The browser sends only `{role, content}`. On the server, `asModelHistory` in `handlers.ts` rewraps earlier answers as `{"text","claimIds":[],"escalate":false}` before the model call. A live replay with that shape passed 3 times out of 3 for both a cited and an empty id list. Dee's prompt also forbids telling visitors to open a document it has no link for, because the college answer suggested "the transcript or certificate".
+
+**Considered:** having the browser send the original JSON, ids included. Rejected: the server would still have to handle plain-text history from older open tabs, and it doesn't need the ids. Also considered prefilling the reply with "{". Rejected: it's tied to one provider and does nothing for the OpenRouter fallback.
+
+**Cost:** a little extra model input per turn (about 50 characters for each earlier answer).

@@ -103,7 +103,7 @@ export function createDeeHandler(deps: DeeDeps): (req: Request) => Promise<Respo
     for (const candidate of candidates) {
       if (!candidate.client) continue
       try {
-        reply = await candidate.client(system, messages)
+        reply = await candidate.client(system, asModelHistory(messages))
         source = candidate.source
         if (source === 'primary') await deps.addSpend(costUsd(reply.usage, deps.price)).catch(() => {})
         break
@@ -157,6 +157,20 @@ export function createAskHandler(deps: AskDeps): (req: Request) => Promise<Respo
     await deps.save({ ...validated.value, at: (deps.now?.() ?? new Date()).toISOString(), delivered })
     return json({ ok: true, delivered })
   }
+}
+
+// Earlier answers come back from the browser as plain text. Sent to the model like that, it copies the
+// plain-text style and drops the JSON shape, so every second question failed to parse (3 Nov 2026).
+// Rewrap them in the reply shape; the claim ids are not known here, and the model does not need them.
+function asModelHistory(messages: Messages): Messages {
+  return messages.map((message) => {
+    if (message.role !== 'assistant') return message
+    try {
+      const parsed = JSON.parse(message.content) as Record<string, unknown>
+      if (parsed && typeof parsed.text === 'string') return message
+    } catch { /* plain text, wrap it below */ }
+    return { role: 'assistant', content: JSON.stringify({ text: message.content, claimIds: [], escalate: false }) }
+  })
 }
 
 // The UI shows sources as chips, so drop inline tags like "[F2]" or "[F2, U1]"

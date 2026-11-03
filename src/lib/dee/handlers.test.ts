@@ -84,6 +84,32 @@ function askReq(body: unknown, ip = '2.2.2.2') {
 }
 const goodAsk = { question: 'Is he open to a contract-to-hire FDE role?', email: 'founder@example.com' }
 
+describe('multi-turn chats (3 Nov bug)', () => {
+  it('sends earlier answers to the model in the JSON reply shape, so the next reply stays JSON', async () => {
+    const primary = vi.fn(async () => reply('He studied at CIT.'))
+    const deps = deeDeps({ primary })
+    const res = await createDeeHandler(deps)(deeReq({ mode: 'recruiter', sessionId: 's-multi', messages: [
+      { role: 'user', content: 'What does he do?' },
+      { role: 'assistant', content: 'Deepak builds sites.' },
+      { role: 'user', content: 'College?' },
+    ] }))
+    expect(res.status).toBe(200)
+    const sent = primary.mock.calls[0][1] as { role: string; content: string }[]
+    expect(sent[0]).toEqual({ role: 'user', content: 'What does he do?' })
+    expect(JSON.parse(sent[1].content)).toEqual({ text: 'Deepak builds sites.', claimIds: [], escalate: false })
+    expect(sent[2]).toEqual({ role: 'user', content: 'College?' })
+  })
+
+  it('leaves an earlier answer alone if it is already in the JSON shape', async () => {
+    const primary = vi.fn(async () => reply('ok'))
+    const prior = JSON.stringify({ text: 'Deepak builds sites.', claimIds: ['F2'], escalate: false })
+    await createDeeHandler(deeDeps({ primary }))(deeReq({ mode: 'recruiter', sessionId: 's-multi2', messages: [
+      { role: 'user', content: 'What does he do?' }, { role: 'assistant', content: prior }, { role: 'user', content: 'More?' },
+    ] }))
+    expect((primary.mock.calls[0][1] as { content: string }[])[1].content).toBe(prior)
+  })
+})
+
 describe('Ask Deepak handler', () => {
   it('saves, notifies and reports delivery', async () => {
     const save = vi.fn(async () => {})

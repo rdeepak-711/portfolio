@@ -9,6 +9,10 @@ import { PROFILE } from '@/content/dee/profile'
 import type { Claim, GoldenCase } from '@/content/dee/types'
 
 describe('system prompt', () => {
+  it('forbids pointing visitors at documents Dee has no link for (3 Nov: "open the transcript or certificate")', () => {
+    const p = buildSystemPrompt({ claims: CLAIMS, faq: FAQ, limits: LIMITS, profile: PROFILE, mode: 'recruiter' })
+    expect(p).toContain('Never tell the visitor to open or check a document, certificate, transcript or page unless it is one of the links of a claim you cite.')
+  })
   const secret: Claim = { id: 'ZZ9', text: 'Private detail that must not leak.', confidence: 'confirmed', sourceLabel: 'x', sourceUrl: null, public: false }
   const base = { claims: [...CLAIMS, secret], faq: FAQ, limits: LIMITS, profile: PROFILE }
 
