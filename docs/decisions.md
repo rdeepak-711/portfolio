@@ -390,3 +390,11 @@ Each claim carries a confidence level and a source. Also added four FAQ entries 
 **Considered:** keeping it as a louder phone alert. Deepak chose to remove it.
 
 **Cost:** if Resend is down, an ask reaches him only through the next 09:00 digest, which reads `dee:asks` straight from Redis, and not instantly.
+
+## 2026-11-03 · "sync Dee": a manual, checked bridge from what Deepak tells Claude to what Dee says
+
+**Decided:** a project skill at `.claude/skills/sync-dee/SKILL.md`. It compares the evidence register and career-ops profile files against `src/content/dee/claims.ts` and the live Q- answers, then sorts each missing fact into Add, Hold for Deepak, or Never. Only Add items are written, and they go into the register first. The first run added F3, F6, F13, U6 and P3, and the CGPA to E1. F13 and U6 are new register rows (backup at `07_EVIDENCE_REGISTER-2026-11-03-before.md`).
+
+**Considered:** having Dee read Claude Code memory or career-ops directly. Rejected, because those files hold private details and unsettled numbers that Dee must never say.
+
+**Cost:** Dee lags behind until someone runs the command and Deepak deploys. Held items (register "interview only" rows, and any number with more than one version) stay out until he answers.
