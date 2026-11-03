@@ -1,12 +1,12 @@
 import type { FaqEntry, Mode } from '@/content/dee/types'
-import { formatDigest, parseOrigin, visitorFromHeaders } from './visitor'
+import { formatAsks, formatDigest, parseOrigin, visitorFromHeaders } from './visitor'
 import { answerLink, emailSubject, pickNextQuestion, validateAnswer, verifyQuestion, type StoredAnswer } from './answers'
 import { offersToForward } from './forward'
 import { CLAIMS } from '@/content/dee/claims'
 import { FAQ } from '@/content/dee/faq'
 import { LIMITS } from '@/content/dee/limits'
 import { PROFILE } from '@/content/dee/profile'
-import { validateAsk, type AskInput } from './ask'
+import { validateAsk, type AskInput, type StoredAsk } from './ask'
 import { costUsd, pickModel } from './budget'
 import { faqAnswer } from './faq-match'
 import { ungroundedNumbers } from './grounding'
@@ -60,8 +60,9 @@ export type ChatLogEntry = {
 
 export type AskDeps = {
   store: CounterStore
-  save: (ask: AskInput) => Promise<void>
+  save: (ask: StoredAsk) => Promise<void>
   notify: (ask: AskInput) => Promise<{ email: boolean; telegram: boolean }>
+  now?: () => Date
 }
 
 const MODES: Mode[] = ['recruiter', 'founder', 'cto', 'interviewer']
@@ -151,8 +152,9 @@ export function createAskHandler(deps: AskDeps): (req: Request) => Promise<Respo
     if (validated.spam) return json({ ok: true })
     const limit = await checkRateLimit(deps.store, `ip:${firstIp(req)}`, 3, DAY_SECONDS)
     if (!limit.allowed) return json({ error: 'Rate limit exceeded.' }, 429)
-    await deps.save(validated.value)
+    // Notify first so the saved copy records which channels got it; the daily digest shows that
     const delivered = await deps.notify(validated.value)
+    await deps.save({ ...validated.value, at: (deps.now?.() ?? new Date()).toISOString(), delivered })
     return json({ ok: true, delivered })
   }
 }
@@ -182,6 +184,7 @@ export type DailyDeps = {
   emailDeepak: (subject: string, text: string) => Promise<boolean>
   bank: { id: string; q: string }[]
   recentChats?: () => Promise<ChatLogEntry[]>
+  recentAsks?: () => Promise<StoredAsk[]>
   now?: () => Date
 }
 
@@ -191,7 +194,9 @@ export function createDailyHandler(deps: DailyDeps): (req: Request) => Promise<R
     if (!deps.cronSecret || req.headers.get('authorization') !== `Bearer ${deps.cronSecret}`) return json({ error: 'Unauthorized.' }, 401)
     if (!deps.answerSecret) return json({ error: 'DEE_ANSWER_SECRET is not set.' }, 500)
     const chats = await (deps.recentChats?.() ?? Promise.resolve([])).catch(() => [] as ChatLogEntry[])
-    const digest = formatDigest(chats, deps.now?.() ?? new Date())
+    const now = deps.now?.() ?? new Date()
+    const digest = formatDigest(chats, now)
+    const asks = await (deps.recentAsks?.() ?? Promise.resolve([])).catch(() => [] as StoredAsk[])
     const next = pickNextQuestion(await deps.recentAskQuestions(), deps.bank, await deps.askedIds())
     let questionPart = 'No questions left to ask you. Add more to DAILY_QUESTIONS.'
     if (next) {
@@ -200,7 +205,7 @@ export function createDailyHandler(deps: DailyDeps): (req: Request) => Promise<R
       questionPart = `${from}\n\n${next.question}\n\nAnswer it here (takes a minute):\n${link}\n\nOnce you tick "Dee can say this publicly", Dee uses your answer straight away.`
     }
     const subject = next ? emailSubject(next.question) : `Dee: ${digest.count} questions in the last 24 hours`
-    const sent = await deps.emailDeepak(subject, `${questionPart}\n\n---\n\nWHAT VISITORS ASKED DEE\n\n${digest.text}`)
+    const sent = await deps.emailDeepak(subject, `${questionPart}\n\n---\n\nWHAT VISITORS ASKED DEE\n\n${digest.text}\n\n---\n\nASKED YOU DIRECTLY (Ask Deepak form)\n\n${formatAsks(asks, now)}`)
     // Only mark it asked once the email went out, so a failed send is retried tomorrow
     if (sent && next) await deps.markAsked(next.id)
     return json({ sent, id: next?.id ?? null, kind: next?.kind ?? null, chats: digest.count })

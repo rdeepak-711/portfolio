@@ -1,4 +1,4 @@
-import type { AskInput } from './ask'
+import type { StoredAsk } from './ask'
 import type { ChatLogEntry, ModelReply } from './handlers'
 import { MemoryStore, type CounterStore } from './rate-limit'
 import { answerToClaim, type StoredAnswer } from './answers'
@@ -41,7 +41,7 @@ export function createClients(env: Env = process.env, fetcher: typeof fetch = fe
     ? openRouterClient(env.OPENROUTER_API_KEY, env.OPENROUTER_MODEL, fetcher)
     : null
 
-  const save = async (ask: AskInput) => {
+  const save = async (ask: StoredAsk) => {
     if (redis) await redis.command(['LPUSH', 'dee:asks', JSON.stringify(ask)])
     else console.log('Dee ask received:', ask)
   }
@@ -73,11 +73,12 @@ export function createClients(env: Env = process.env, fetcher: typeof fetch = fe
     await redis.command([answer.public ? 'SADD' : 'SREM', 'dee:qa:live', answer.id])
     answerCache = null
   }
-  const recentAskQuestions = async (): Promise<string[]> => {
+  const recentAsks = async (): Promise<StoredAsk[]> => {
     if (!redis) return []
     const raw = (await redis.command(['LRANGE', 'dee:asks', '0', '49']) ?? []) as string[]
-    return raw.flatMap((value) => { try { const q = (JSON.parse(value) as AskInput).question; return q ? [q] : [] } catch { return [] } })
+    return raw.flatMap((value) => { try { const a = JSON.parse(value) as StoredAsk; return a?.question ? [a] : [] } catch { return [] } })
   }
+  const recentAskQuestions = async (): Promise<string[]> => (await recentAsks()).map((a) => a.question)
   const recentChats = async (): Promise<ChatLogEntry[]> => {
     if (!redis) return []
     const raw = (await redis.command(['LRANGE', 'dee:chats', '0', '999']) ?? []) as string[]
@@ -95,7 +96,7 @@ export function createClients(env: Env = process.env, fetcher: typeof fetch = fe
     return Boolean(response?.ok)
   }
 
-  return { store, spentToday, addSpend, primary, fallback, save, logChat, loadAnswerClaims, saveAnswer, recentAskQuestions, recentChats, askedIds, markAsked, emailDeepak }
+  return { store, spentToday, addSpend, primary, fallback, save, logChat, loadAnswerClaims, saveAnswer, recentAskQuestions, recentAsks, recentChats, askedIds, markAsked, emailDeepak }
 }
 
 class RedisRest implements CounterStore {

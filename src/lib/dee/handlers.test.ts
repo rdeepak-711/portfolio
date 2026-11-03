@@ -95,6 +95,13 @@ describe('Ask Deepak handler', () => {
     expect(notify).toHaveBeenCalledOnce()
   })
 
+  it('stores when the ask came in and whether email and Telegram got it, for the daily digest', async () => {
+    const save = vi.fn(async (_ask: unknown) => {})
+    const notify = vi.fn(async () => ({ email: true, telegram: false }))
+    await createAskHandler({ store: new MemoryStore(), save, notify, now: () => new Date('2026-11-03T05:00:00Z') })(askReq(goodAsk))
+    expect(save.mock.calls[0][0]).toMatchObject({ ...goodAsk, at: '2026-11-03T05:00:00.000Z', delivered: { email: true, telegram: false } })
+  })
+
   it('silently drops honeypot spam, rejects bad input, limits 3 a day per IP', async () => {
     const save = vi.fn(async () => {})
     const notify = vi.fn(async () => ({ email: true, telegram: true }))

@@ -1,4 +1,6 @@
 export type AskInput = { question: string; email: string; name?: string; company?: string; transcript?: string }
+// What is kept in Redis: the ask plus when it came in and which channels got it (added 3 Nov; older asks lack both)
+export type StoredAsk = AskInput & { at?: string; delivered?: { email: boolean; telegram: boolean } }
 
 export function validateAsk(input: unknown):
   | { ok: true; value: AskInput; spam: boolean }
