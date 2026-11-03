@@ -17,7 +17,7 @@ export const FAQ: FaqEntry[] = [
   { q: 'What failed experiment taught Deepak something?', a: 'Deepak learned that a green test suite can still miss a faulty result; his résumé-scorer audit found its score varied between 74 and 77 on one résumé.', claimIds: ['P5'] },
   { q: 'What should I ask him?', a: 'Ask Deepak how he chose the checks between stages in the site-building pipeline, or how he traced the hiring-agent issue.', claimIds: ['F2', 'F5', 'P2'] },
   { q: 'Did AI write all of this?', a: 'AI wrote most of the code under Deepak’s harness. Deepak writes the specs and tests and checks the result before it ships.', claimIds: ['F2', 'P1'] },
-  { q: 'How did CrowdTracker grow?', a: 'CrowdTracker moved from 60–70 visits/day to 108,043 users and 163,804 views between 1 Jun and 27 Oct 2026. The migration removed a ceiling, while content also grew.', claimIds: ['F7'] },
+  { q: 'How did CrowdTracker grow?', a: 'CrowdTracker moved from 60–70 visits/day to 108,043 users and 163,804 views between 1 Jun and 27 Oct 2026.', claimIds: ['F7'] },
   { q: 'Is pull request #480 merged?', a: 'No. Deepak’s fix PR #480 is open and not merged.', claimIds: ['P2'] },
   { q: 'How many users does LifeDots have?', a: 'LifeDots had 51 installs in 30 days; the number of active users is unknown.', claimIds: ['P4'] },
   { q: 'What is Deepak’s tech stack?', a: 'Python, Bash and WP-CLI for the site pipeline; React, FastAPI, Celery and Redis for the contact inbox; Next.js and MySQL for the forum platform; PostgreSQL and MCP for escalation-gate; Claude and Claude Code for LLM work.', claimIds: ['S1'] },

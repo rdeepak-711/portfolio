@@ -418,3 +418,15 @@ Each claim carries a confidence level and a source. Also added four FAQ entries 
 **Considered:** having the browser send the original JSON, ids included. Rejected: the server would still have to handle plain-text history from older open tabs, and it doesn't need the ids. Also considered prefilling the reply with "{". Rejected: it's tied to one provider and does nothing for the OpenRouter fallback.
 
 **Cost:** a little extra model input per turn (about 50 characters for each earlier answer).
+
+## 2026-11-03 · One repair retry instead of an error line; P1 rewritten from the register; R4 added
+
+**Found by a 28-question test across modes (Deepak's checklist):** Dee gave "Dee can't verify that answer" on pay, offers, "three strongest achievements" and wrong-premise questions (600+, #424). The guard was right that the draft broke a rule, but it threw away the answer. Correct refusals were blocked because they contained "salary" or "CTC", and corrections were blocked because they echoed the visitor's wrong number. Separately, on turns 6–7 of long chats, the model sometimes replied in plain text ("couldn't verify a response"). Raw replies were captured locally to confirm this.
+
+**Decided:** `replyProblems` in `handlers.ts` names what is wrong: not JSON, banned words, numbers not in the claims, or pointing at a link or document no cited claim has. If any problem is found, the same model gets one retry with `repairNote`, which says exactly what to fix and how to handle pay questions. If the retry still fails, Dee gives a plain hand-off: "Dee can't answer that from Deepak's public record. Want to ask him directly?" The model clients now mark unreadable replies `invalid` and keep `raw`. Rerunning the failing set locally against the real model gave clean answers on all 8, and 0 fallbacks in 15 turns of long chats.
+
+**Also:** P1 now uses the register's fuller wording (Claude Code root cause with citations, a checker that verifies every citation, SQL shortlist, one judge call, merge-tree without merging), so Dee can explain where the model is and isn't trusted. R4 ("about 3 years in total", Deepak 12 Oct) is a new register row, because Dee refused to total his years. The FAQ's causal line "The migration removed a ceiling, while content also grew" is gone, since nothing on file proves why CrowdTracker grew.
+
+**Considered:** a canned answer for pay questions with no model call. Rejected, because the retry already handles pay, and the same mechanism fixes the other three problems.
+
+**Cost:** a reply that fails a check takes a second model call, about double the latency and spend for that reply. After a retry, Dee sometimes gets overcautious with numbers (for example "raised complete entries to the majority range" instead of quoting U4).

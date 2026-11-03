@@ -19,6 +19,9 @@ export type ModelReply = {
   claimIds: string[]
   escalate: boolean
   usage: { inputTokens: number; outputTokens: number; cachedInputTokens?: number }
+  // Set by the model clients when the reply could not be read as the JSON shape; raw is what the model wrote
+  invalid?: boolean
+  raw?: string
 }
 type Messages = { role: 'user' | 'assistant'; content: string }[]
 type ModelClient = (system: string, messages: Messages) => Promise<ModelReply>
@@ -103,9 +106,20 @@ export function createDeeHandler(deps: DeeDeps): (req: Request) => Promise<Respo
     for (const candidate of candidates) {
       if (!candidate.client) continue
       try {
-        reply = await candidate.client(system, asModelHistory(messages))
+        const history = asModelHistory(messages)
+        reply = await candidate.client(system, history)
         source = candidate.source
         if (source === 'primary') await deps.addSpend(costUsd(reply.usage, deps.price)).catch(() => {})
+        // One repair retry, told exactly what was wrong; only failed replies cost a second call
+        const problems = replyProblems(reply, claims)
+        if (problems.length) {
+          const draft = reply.raw ?? JSON.stringify({ text: reply.text, claimIds: reply.claimIds, escalate: reply.escalate })
+          try {
+            const retry = await candidate.client(system, [...history, { role: 'assistant', content: draft }, { role: 'user', content: repairNote(problems) }])
+            if (source === 'primary') await deps.addSpend(costUsd(retry.usage, deps.price)).catch(() => {})
+            reply = retry
+          } catch { /* keep the first reply; the final check below decides */ }
+        }
         break
       } catch { /* Try the next configured model, then FAQ. */ }
     }
@@ -116,8 +130,8 @@ export function createDeeHandler(deps: DeeDeps): (req: Request) => Promise<Respo
     reply = { ...reply, text: stripClaimTags(reply.text) }
     // Backstop: an offer to pass the question on must come with the Ask Deepak button
     if (!reply.escalate && offersToForward(reply.text)) reply = { ...reply, escalate: true }
-    if (findPolicyViolations(reply.text).length || ungroundedNumbers(reply.text, claims).length) {
-      reply = { text: "Dee can't verify that answer. Want to use Ask Deepak?", claimIds: [], escalate: true, usage: reply.usage }
+    if (replyProblems(reply, claims).length) {
+      reply = { text: "Dee can't answer that from Deepak's public record. Want to ask him directly?", claimIds: [], escalate: true, usage: reply.usage }
     }
     if (deps.logChat) {
       const question = [...messages].reverse().find((message) => message.role === 'user')?.content ?? ''
@@ -157,6 +171,30 @@ export function createAskHandler(deps: AskDeps): (req: Request) => Promise<Respo
     await deps.save({ ...validated.value, at: (deps.now?.() ?? new Date()).toISOString(), delivered })
     return json({ ok: true, delivered })
   }
+}
+
+// What is wrong with a reply, in words the model can act on. Empty means it can be shown.
+function replyProblems(reply: ModelReply, claims: typeof CLAIMS): string[] {
+  if (reply.invalid) return ['it was plain text, not the required JSON object']
+  const problems: string[] = []
+  const banned = findPolicyViolations(reply.text)
+  if (banned.length) problems.push(`it used words Dee must never write: ${banned.map((w) => `"${w}"`).join(', ')}`)
+  const numbers = ungroundedNumbers(reply.text, claims)
+  if (numbers.length) problems.push(`it used numbers that are not in the public claims: ${numbers.join(', ')}`)
+  const cited = claims.filter((c) => reply.claimIds.includes(c.id))
+  if (/\b(open|see|check)\b[^.]{0,60}\b(below|write-up|transcript|certificate)\b/i.test(reply.text) && !cited.some((c) => c.links?.length)) {
+    problems.push('it told the visitor to open a link or document that none of its cited claims has')
+  }
+  return problems
+}
+
+function repairNote(problems: string[]): string {
+  return [
+    `Your last reply cannot be shown because ${problems.join('; and ')}.`,
+    'Answer the visitor\'s last question again. Return only the JSON object {"text": string, "claimIds": string[], "escalate": boolean}.',
+    'Use only numbers that appear in the public claims. If the visitor used a number that is not in them, do not repeat it; say what the record does show.',
+    'If the question is about pay, salary, CTC or job offers, say Deepak keeps that private and offer to send the question to him, without using the banned words.',
+  ].join(' ')
 }
 
 // Earlier answers come back from the browser as plain text. Sent to the model like that, it copies the

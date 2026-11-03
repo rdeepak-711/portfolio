@@ -175,11 +175,11 @@ function parseModelJson(raw: string): Omit<ModelReply, 'usage'> {
   const fallback = { text: "Dee couldn't verify a response. Want to use Ask Deepak?", claimIds: [] as string[], escalate: true }
   try {
     const candidate = raw.match(/\{[\s\S]*\}/)?.[0]
-    if (!candidate) return fallback
+    if (!candidate) return { ...fallback, invalid: true, raw }
     const parsed = JSON.parse(candidate) as Record<string, unknown>
-    if (typeof parsed.text !== 'string' || !Array.isArray(parsed.claimIds) || !parsed.claimIds.every((id) => typeof id === 'string') || typeof parsed.escalate !== 'boolean') return fallback
+    if (typeof parsed.text !== 'string' || !Array.isArray(parsed.claimIds) || !parsed.claimIds.every((id) => typeof id === 'string') || typeof parsed.escalate !== 'boolean') return { ...fallback, invalid: true, raw }
     return { text: parsed.text, claimIds: parsed.claimIds as string[], escalate: parsed.escalate }
   } catch {
-    return fallback
+    return { ...fallback, invalid: true, raw }
   }
 }
