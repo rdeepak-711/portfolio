@@ -82,14 +82,14 @@ describe('digest: test sessions and Ask Deepak requests (3 Nov)', () => {
 
   it('lists Ask Deepak requests from the last 24 hours with who sent them and where they were delivered', () => {
     const text = formatAsks([
-      { question: 'Can he start in 2 weeks?', email: 'r@acme.com', name: 'Riya', company: 'Acme', at: '2026-11-02T10:00:00Z', delivered: { email: true, telegram: false } },
+      { question: 'Can he start in 2 weeks?', email: 'r@acme.com', name: 'Riya', company: 'Acme', at: '2026-11-02T10:00:00Z', delivered: { email: false } },
       { question: 'Old one?', email: 'o@x.com', at: '2026-10-30T10:00:00Z' },
       { question: 'No time on it?', email: 'n@x.com' },
     ], now)
     expect(text).toContain('1 person used Ask Deepak')
     expect(text).toContain('Riya (Acme) <r@acme.com>')
     expect(text).toContain('Can he start in 2 weeks?')
-    expect(text).toContain('email sent · Telegram failed')
+    expect(text).toContain('Email to you: failed')
     expect(text).not.toContain('Old one?')
     expect(text).not.toContain('No time on it?')
   })

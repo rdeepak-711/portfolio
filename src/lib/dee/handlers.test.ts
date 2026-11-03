@@ -87,24 +87,24 @@ const goodAsk = { question: 'Is he open to a contract-to-hire FDE role?', email:
 describe('Ask Deepak handler', () => {
   it('saves, notifies and reports delivery', async () => {
     const save = vi.fn(async () => {})
-    const notify = vi.fn(async () => ({ email: true, telegram: true }))
+    const notify = vi.fn(async () => ({ email: true }))
     const res = await createAskHandler({ store: new MemoryStore(), save, notify })(askReq(goodAsk))
     expect(res.status).toBe(200)
-    expect(await res.json()).toEqual({ ok: true, delivered: { email: true, telegram: true } })
+    expect(await res.json()).toEqual({ ok: true, delivered: { email: true } })
     expect(save).toHaveBeenCalledOnce()
     expect(notify).toHaveBeenCalledOnce()
   })
 
-  it('stores when the ask came in and whether email and Telegram got it, for the daily digest', async () => {
+  it('stores when the ask came in and whether the email got it, for the daily digest', async () => {
     const save = vi.fn(async (_ask: unknown) => {})
-    const notify = vi.fn(async () => ({ email: true, telegram: false }))
+    const notify = vi.fn(async () => ({ email: false }))
     await createAskHandler({ store: new MemoryStore(), save, notify, now: () => new Date('2026-11-03T05:00:00Z') })(askReq(goodAsk))
-    expect(save.mock.calls[0][0]).toMatchObject({ ...goodAsk, at: '2026-11-03T05:00:00.000Z', delivered: { email: true, telegram: false } })
+    expect(save.mock.calls[0][0]).toMatchObject({ ...goodAsk, at: '2026-11-03T05:00:00.000Z', delivered: { email: false } })
   })
 
   it('silently drops honeypot spam, rejects bad input, limits 3 a day per IP', async () => {
     const save = vi.fn(async () => {})
-    const notify = vi.fn(async () => ({ email: true, telegram: true }))
+    const notify = vi.fn(async () => ({ email: true }))
     const h = createAskHandler({ store: new MemoryStore(), save, notify })
     const spam = await h(askReq({ ...goodAsk, website: 'x' }))
     expect(spam.status).toBe(200)
@@ -118,15 +118,15 @@ describe('Ask Deepak handler', () => {
 
 describe('notifyDeepak', () => {
   const askInput = { question: 'Can he start in January?', email: 'cto@example.com', name: 'Asha', company: 'Acme' }
-  const env = { RESEND_API_KEY: 're_x', TELEGRAM_BOT_TOKEN: 'tok', TELEGRAM_CHAT_ID: '42' }
+  const env = { RESEND_API_KEY: 're_x', TELEGRAM_BOT_TOKEN: 'tok', TELEGRAM_CHAT_ID: '42' }  // Telegram vars left in to prove they are ignored
 
-  it('emails deepakrameshh@gmail.com through Resend and pings Telegram', async () => {
+  it('emails deepakrameshh@gmail.com through Resend and nothing else', async () => {
     const fetchMock = vi.fn(async () => new Response('{}', { status: 200 }))
     const r = await notifyDeepak(askInput, { fetch: fetchMock as unknown as typeof fetch, env })
-    expect(r).toEqual({ email: true, telegram: true })
+    expect(r).toEqual({ email: true })
     const urls = fetchMock.mock.calls.map((c) => String(c[0]))
     expect(urls).toContain('https://api.resend.com/emails')
-    expect(urls.some((u) => u.startsWith('https://api.telegram.org/bottok/sendMessage'))).toBe(true)
+    expect(urls).toEqual(['https://api.resend.com/emails'])
     const resendCall = fetchMock.mock.calls.find((c) => String(c[0]).includes('resend'))!
     const body = JSON.parse(String((resendCall[1] as RequestInit).body))
     expect(JSON.stringify(body.to)).toContain('deepakrameshh@gmail.com')
@@ -136,9 +136,9 @@ describe('notifyDeepak', () => {
 
   it('never throws: a failed or unconfigured channel just reports false', async () => {
     const failing = vi.fn(async () => new Response('no', { status: 500 }))
-    expect(await notifyDeepak(askInput, { fetch: failing as unknown as typeof fetch, env })).toEqual({ email: false, telegram: false })
+    expect(await notifyDeepak(askInput, { fetch: failing as unknown as typeof fetch, env })).toEqual({ email: false })
     const throwing = vi.fn(async () => { throw new Error('net') })
-    expect(await notifyDeepak(askInput, { fetch: throwing as unknown as typeof fetch, env: {} })).toEqual({ email: false, telegram: false })
+    expect(await notifyDeepak(askInput, { fetch: throwing as unknown as typeof fetch, env: {} })).toEqual({ email: false })
   })
 })
 

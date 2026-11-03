@@ -61,7 +61,7 @@ export type ChatLogEntry = {
 export type AskDeps = {
   store: CounterStore
   save: (ask: StoredAsk) => Promise<void>
-  notify: (ask: AskInput) => Promise<{ email: boolean; telegram: boolean }>
+  notify: (ask: AskInput) => Promise<{ email: boolean }>
   now?: () => Date
 }
 

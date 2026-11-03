@@ -62,7 +62,7 @@ export function formatAsks(asks: StoredAsk[], now: Date): string {
   const status = (ok: boolean | undefined) => (ok === undefined ? 'unknown' : ok ? 'sent' : 'failed')
   const blocks = recent.map((a) => {
     const who = `${a.name || '(no name)'}${a.company ? ` (${a.company})` : ''} <${a.email}>`
-    return `  ${ist(a.at!)}  ${who}\n         Q: ${a.question}\n         Reached you by: email ${status(a.delivered?.email)} · Telegram ${status(a.delivered?.telegram)}`
+    return `  ${ist(a.at!)}  ${who}\n         Q: ${a.question}\n         Email to you: ${status(a.delivered?.email)}`
   })
   return `${recent.length} ${recent.length === 1 ? 'person' : 'people'} used Ask Deepak in the last 24 hours. Reply to them at the address shown.\n\n${blocks.join('\n\n')}`
 }
