@@ -22,7 +22,7 @@ npm run build        # verify it compiles before deploying
 # deploy to production (CLI is authed; scope is required in non-interactive mode):
 npx vercel@latest --prod --yes --scope onlyforthe20thcentury-5711s-projects
 ```
-Notes: project is NOT git-connected on Vercel, so `git push` does NOT auto-deploy — run the deploy command above. Vercel "Deployment Protection" is OFF (the site must be publicly viewable — never re-enable it). Stable production alias: `rdeepak.vercel.app`.
+Notes: the Vercel project IS git-connected (github rdeepak-711/portfolio, production branch `main`; checked 3 Nov 2026), so **`git push origin main` deploys to production**. Don't also run `vercel --prod`: that builds the same commit twice. Use the CLI command above only for a deploy without pushing. Vercel "Deployment Protection" is OFF (the site must be publicly viewable — never re-enable it). Stable production alias: `rdeepak.vercel.app`.
 
 ## Design system — "build log"
 Distinctive, document-like, anti-AI-slop. Do NOT drift toward generic templates.

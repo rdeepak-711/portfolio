@@ -23,7 +23,7 @@ Dee (the portfolio chatbot) knows only `src/content/dee/claims.ts` plus Deepak's
    - **Never.** Pay, expected CTC, contract terms (dates included), family or health detail beyond "family reasons", which companies he is applying to, take-homes for a live hiring process, anything from auto-memory that isn't in the profile files.
 4. **Write.** Add register rows first, then claims in `claims.ts` (next free id in the right letter: F Firestorm, U UiPath, P personal, R role, E education, S skills). Write in plain third person, the register's wording, no claim stronger than its evidence. `confidence` matches the register: V → `verified`, D → `confirmed`, S → `self-reported`.
 5. **Check.** `npx vitest run` and `npx tsc --noEmit`. `src/app/content-honesty.test.tsx` must still pass; if a sync retires a claim, add its wording to the BANNED list there.
-6. **Commit** on a branch `dee-sync-<date>` as Deepak (no co-author trailer), merge to main, log a dated entry in `docs/decisions.md`. Deepak deploys: `vercel --prod` (Claude's deploys are blocked by auto mode).
+6. **Commit** on a branch `dee-sync-<date>` as Deepak (no co-author trailer), merge to main, log a dated entry in `docs/decisions.md`. Deepak deploys by pushing: `git push origin main` (the Vercel project is git-connected, so the push is the production deploy; don't also run `vercel --prod`).
 7. **Report** to Deepak as three short lists: added (id + one line each), held (why, and the one question that would clear it), contradictions fixed.
 
 If the user said "sync Dee" with no further approval, apply only the **Add** bucket and report the rest. Never move an item out of **Hold** without his answer.
