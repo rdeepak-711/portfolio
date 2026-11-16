@@ -440,3 +440,13 @@ Each claim carries a confidence level and a source. Also added four FAQ entries 
 **Considered:** keeping the weaknesses answer for direct questions only (Claude's suggestion). Deepak dropped them entirely.
 
 **Cost:** an interviewer who asks about weaknesses gets a hand-off instead of an answer. The `notClaimed` limits (no RAG, fine-tuning or model-training expertise) stay, so Dee still won't overclaim.
+
+## 2026-11-16 · Public résumé switches to the ATS build, without a phone number; the duplicate PDF goes
+
+**Decided:** `public/Deepak-R-Resume.pdf` is now the go-to résumé built from `career-ops/cv-ats.md` (titled "AI Automation Engineer", no WhatsApp bots line) instead of the 27 Oct build from `cv.md`. The phone number is stripped in `output/build-ats.sh`'s post-process, because `cv-to-html.py` hardcodes it for every company CV. `public/deepak-ramesh-resume.pdf` is deleted, and its URL permanently redirects to `/Deepak-R-Resume.pdf` in `next.config.ts`.
+
+**Considered:** keeping the duplicate as a second identical file (the old rule, so old links work). Deepak asked for it deleted; a redirect keeps the old links working with one file. Also considered removing the phone in `cv-to-html.py`, rejected because the company-specific CVs sent directly still use it.
+
+**Why:** a public, downloadable PDF gets scraped, so the phone stays off it. One résumé file means the portfolio and `~/Documents/Deepak R Resume.pdf` can't drift apart.
+
+**Cost:** recruiters who only have the public PDF can't phone him. The phone still appears on CVs sent directly.
